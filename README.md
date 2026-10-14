@@ -25,11 +25,23 @@ nella partita con il suo punteggio.
 
 ## Come funziona online
 
-Il sito è **statico** (cartella `public/`, pubblicabile su Netlify con `netlify.toml`). La partita gira nel
-browser dell'organizzatore: i telefoni dei giocatori si collegano direttamente a lui via **WebRTC**
-([PeerJS](https://peerjs.com), incluso in `public/vendor/`). Il server pubblico gratuito di PeerJS serve solo a
-far incontrare i dispositivi; per le reti mobili più restrittive PeerJS usa i suoi server STUN/TURN.
-Non ci sono account né database: i quiz creati restano nel browser di chi li ha creati.
+Il sito è **statico** (cartella `public/`, pubblicata su Netlify con `netlify.toml`). La partita gira nel
+browser dell'organizzatore; i telefoni non si collegano tra loro direttamente, ma si scambiano i messaggi
+attraverso **5 relay pubblici [Nostr](https://nostr.com)** (WebSocket sicuri sulla porta 443, la stessa dei
+siti web). Per questo **funziona anche se ognuno usa una connessione diversa**: 4G/5G, Wi-Fi di casa,
+hotspot, reti di operatori diversi.
+
+- Ogni messaggio è un evento Nostr *effimero* (inoltrato, non salvato) firmato con una chiave creata dal
+  telefono: la firma identifica il giocatore, quindi nessuno può rispondere al posto di un altro.
+- Lo stesso messaggio parte su tutti i relay e chi lo riceve scarta i doppioni: se uno o più relay non
+  funzionano, la partita va avanti con gli altri.
+- Risposte e richieste di ingresso vengono ripetute finché l'host non conferma; ogni 4 secondi l'host invia
+  un segnale con la fase della partita e chi è rimasto indietro (rete persa, app in sottofondo, pagina
+  ricaricata) si rimette in pari da solo.
+- Non ci sono account né database: i quiz creati restano nel browser di chi li ha creati.
+
+Libreria inclusa: [nostr-tools](https://github.com/nbd-wtf/nostr-tools) 2.25.2 (pubblico dominio) in
+`public/vendor/`.
 
 ## Sviluppo locale
 
@@ -39,8 +51,7 @@ npm start          # http://localhost:3000  (organizzatore: /host)
 npm test
 ```
 
-Per provare dal telefono sulla stessa rete Wi-Fi apri `http://<ip-del-computer>:3000`.
-Con un server PeerJS locale si può aggiungere `?signal=localhost:9000` agli indirizzi.
+Per provare dal telefono apri `http://<ip-del-computer>:3000` (serve comunque internet per i relay).
 
 ## Funzionalità
 
@@ -62,7 +73,7 @@ Con un server PeerJS locale si può aggiungere `?signal=localhost:9000` agli ind
 public/index.html   App del giocatore             public/js/player.js
 public/host.html    App dell'organizzatore + editor  public/js/host.js
 public/js/game.js   Logica di gioco (giocatori, risposte, punteggi, classifica)
-public/js/net.js    Impostazioni WebRTC/PeerJS e blocco dello spegnimento schermo
+public/js/net.js    Rete di gioco via relay Nostr e blocco dello spegnimento schermo
 public/js/quizzes.js  Quiz di esempio
 netlify.toml        Pubblicazione statica della cartella public/
 server.js           Server statico solo per lo sviluppo locale
@@ -94,7 +105,7 @@ Evidence: `ev_2976fa3cc771f0379a076df171a0793ab73ad211dd4c5fdc7c495100ec1cff7c`
 
 **Scelte di progettazione (non osservate)**
 
-- WebRTC peer-to-peer (PeerJS) al posto di CometD: nessun server di gioco, nessun account.
+- Relay pubblici Nostr al posto di CometD: nessun server di gioco da gestire, nessun account.
 - Domanda e risposte mostrate anche sui telefoni dei giocatori, così si gioca senza schermo condiviso.
 - Formula del punteggio e del bonus combo: modello semplificato, non letto dal codice originale.
 - Implementati solo i tipi `quiz` e vero/falso; gli altri tipi osservati restano fuori.

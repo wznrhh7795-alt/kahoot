@@ -1,5 +1,5 @@
 // Logica di gioco pura: nessuna rete e nessun timer qui dentro, così è testabile.
-// Gira nel browser dell'host (host.js), che collega PeerJS e i timer a questa classe.
+// Gira nel browser dell'host (host.js), che collega la rete (net.js) e i timer a questa classe.
 (function (root) {
 'use strict';
 

@@ -180,121 +180,111 @@
     renderHome();
   };
 
-  // ---- Creazione della partita (PeerJS) ----
+  // ---- Creazione della partita (relay Nostr, vedi net.js) ----
+  const HEARTBEAT_MS = 4000;
+  const PLAYER_TIMEOUT_MS = 20000;
   const newPin = () => String(Math.floor(100000 + Math.random() * 900000));
 
-  function hostGame(quiz, attempt = 0) {
+  async function hostGame(quiz) {
     const error = validateQuiz(quiz);
     if (error) return alert(error);
     show('h-connecting');
     const pin = newPin();
-    const peer = new Peer(QuizNet.peerId(pin), QuizNet.peerOptions());
-    let opened = false;
-
-    peer.on('open', () => {
-      opened = true;
-      session = {
-        pin,
-        peer,
-        quiz,
-        game: new Game(pin, quiz),
-        conns: new Map(), // chiave giocatore -> connessione
-        banned: new Set(),
-        timer: null,
-        phaseEndsAt: 0,
-        hostPlays: false,
-        hostAnswered: false,
-      };
-      QuizNet.keepScreenOn();
-      openLobby();
+    const s = {
+      pin,
+      quiz,
+      game: new Game(pin, quiz),
+      lastSeen: new Map(), // chiave pubblica del giocatore -> ultimo messaggio ricevuto
+      banned: new Set(),
+      timer: null,
+      heartbeat: null,
+      phaseEndsAt: 0,
+      hostPlays: false,
+      hostAnswered: false,
+      seq: 0,
+    };
+    s.bus = new QuizNet.Bus({
+      secretKey: QuizNet.newSecretKey(),
+      listenTag: QuizNet.hostTag(pin),
+      sendTag: QuizNet.playersTag(pin),
+      onMessage: (from, msg) => session === s && onMessage(from, msg),
+      onStatus: (n) => session === s && $('net-warning').classList.toggle('hidden', n > 0),
     });
-
-    peer.on('error', (err) => {
-      if (opened) return console.warn('PeerJS:', err.type, err);
-      peer.destroy();
-      if (err.type === 'unavailable-id' && attempt < 5) return hostGame(quiz, attempt + 1);
-      alert('Impossibile creare la partita. Controlla la connessione a internet e riprova.');
-      renderHome();
-    });
-
-    // Se il telefono perde il collegamento al server di segnalazione, ci riproviamo:
-    // le connessioni già aperte con i giocatori continuano a funzionare.
-    peer.on('disconnected', () => {
-      if (session?.peer === peer) setTimeout(() => !peer.destroyed && peer.disconnected && peer.reconnect(), 1500);
-    });
-
-    peer.on('connection', (conn) => {
-      conn.on('data', (msg) => onMessage(conn, msg));
-      conn.on('close', () => onClose(conn));
-      conn.on('error', () => onClose(conn));
-    });
+    try {
+      await s.bus.ready(15000);
+    } catch {
+      s.bus.close();
+      alert('Impossibile collegarsi alla rete di gioco. Controlla la connessione a internet e riprova.');
+      return renderHome();
+    }
+    session = s;
+    s.heartbeat = setInterval(tick, HEARTBEAT_MS);
+    QuizNet.keepScreenOn();
+    openLobby();
   }
 
   function joinUrl() {
     const url = new URL('/', location.href);
     url.searchParams.set('pin', session.pin);
-    const signal = new URLSearchParams(location.search).get('signal');
-    if (signal) url.searchParams.set('signal', signal);
     return url.toString();
   }
 
-  // ---- Messaggi dai giocatori ----
-  function onMessage(conn, msg) {
-    if (!session || !msg || typeof msg !== 'object') return;
+  const phaseOf = (state) => (state === 'scoreboard' ? 'results' : state);
+
+  // Ogni pochi secondi: segnale di vita ai giocatori (con la fase attuale, così chi è rimasto
+  // indietro chiede di rimettersi in pari) e pulizia di chi non risponde più.
+  function tick() {
     const { game } = session;
-    switch (msg.t) {
-      case 'ping':
-        return conn.send({ t: 'pong' });
-      case 'join':
-      case 'rejoin': {
-        const key = String(msg.key || '').slice(0, 64);
-        if (!key || key === HOST_KEY) return conn.send({ t: 'joinError', message: 'Richiesta non valida.' });
-        if (session.banned.has(key)) {
-          conn.send({ t: 'kicked' });
-          return setTimeout(() => conn.close(), 300);
+    broadcast({ t: 'hb', phase: phaseOf(game.state), index: game.index });
+    if (game.state === 'lobby') {
+      let changed = false;
+      for (const key of [...game.players.keys()]) {
+        if (key !== HOST_KEY && !isConnected(key)) {
+          game.removePlayer(key);
+          changed = true;
         }
-        if (!game.players.has(key)) {
-          const res = game.addPlayer(key, msg.nickname);
-          if (res.error) return conn.send({ t: msg.t === 'join' ? 'joinError' : 'rejoinFailed', message: res.error });
-        }
-        attach(conn, key);
-        const player = game.players.get(key);
-        conn.send({ t: 'joined', nickname: player.nickname, score: player.score, title: session.quiz.title });
-        sendSnapshot(key);
-        return renderPlayers();
       }
-      case 'answer':
-        if (conn.key) submit(conn.key, msg.choice);
-        return;
+      if (changed) renderPlayers();
     }
-  }
-
-  function attach(conn, key) {
-    const previous = session.conns.get(key);
-    conn.key = key;
-    session.conns.set(key, conn);
-    if (previous && previous !== conn) previous.close();
-  }
-
-  function onClose(conn) {
-    if (!session || !conn.key || session.conns.get(conn.key) !== conn) return;
-    session.conns.delete(conn.key);
-    // In sala d'attesa chi esce sparisce; a partita iniziata conserva i punti e può rientrare.
-    if (session.game.state === 'lobby') session.game.removePlayer(conn.key);
-    renderPlayers();
     checkAllAnswered();
   }
 
-  const isConnected = (key) => key === HOST_KEY ? session.hostPlays : session.conns.get(key)?.open;
+  // ---- Messaggi dai giocatori (from = chiave pubblica che ha firmato il messaggio) ----
+  function onMessage(from, msg) {
+    const { game } = session;
+    if (game.players.has(from)) session.lastSeen.set(from, Date.now());
+    switch (msg.t) {
+      case 'hello':
+        return send(from, { t: 'welcome', title: session.quiz.title });
+      case 'join':
+      case 'rejoin': {
+        if (session.banned.has(from)) return send(from, { t: 'kicked' });
+        if (!game.players.has(from)) {
+          const res = game.addPlayer(from, msg.nickname);
+          if (res.error) return send(from, { t: msg.t === 'join' ? 'joinError' : 'rejoinFailed', message: res.error });
+        }
+        session.lastSeen.set(from, Date.now());
+        const player = game.players.get(from);
+        send(from, { t: 'joined', nickname: player.nickname, score: player.score, title: session.quiz.title, snapshot: snapshot(from) });
+        return renderPlayers();
+      }
+      case 'answer':
+        if (game.players.has(from) && msg.q === game.index) submit(from, msg.choice);
+        return;
+      // 'hb': basta aver aggiornato lastSeen.
+    }
+  }
+
+  const isConnected = (key) =>
+    key === HOST_KEY ? session.hostPlays : Date.now() - (session.lastSeen.get(key) || 0) < PLAYER_TIMEOUT_MS;
 
   function send(key, msg) {
     if (key === HOST_KEY) return;
-    const conn = session.conns.get(key);
-    if (conn?.open) conn.send(msg);
+    session.bus.send({ ...msg, to: key, seq: ++session.seq });
   }
 
   function broadcast(msg) {
-    for (const key of session.game.players.keys()) send(key, msg);
+    session.bus.send({ ...msg, to: '*', seq: ++session.seq });
   }
 
   function remaining() {
@@ -307,45 +297,50 @@
   }
 
   function resultMessage(player) {
-    const q = session.game.question;
+    const { game } = session;
+    const q = game.question;
     return {
       t: 'result',
+      index: game.index,
       ...player.last,
       score: player.score,
       streak: player.streak,
-      players: session.game.players.size,
+      players: game.players.size,
       correctText: q.answers[q.correct],
     };
   }
 
-  // Rimette in pari un giocatore che entra o rientra a partita in corso.
-  function sendSnapshot(key) {
+  function finalMessage() {
+    return { t: 'final', ranking: session.game.ranking().map((p) => [p.id, p.score]) };
+  }
+
+  // Stato attuale per chi entra o rientra a partita in corso.
+  function snapshot(key) {
     const { game } = session;
     const player = game.players.get(key);
     switch (game.state) {
       case 'getready':
-        return send(key, { t: 'getready', index: game.index, total: game.total, ms: remaining() });
+        return { t: 'getready', index: game.index, total: game.total, ms: remaining() };
       case 'question':
-        send(key, questionMessage());
-        if (game.answers.has(key)) send(key, { t: 'answerAck', ok: true });
-        return;
+        return { ...questionMessage(), answered: game.answers.has(key) };
       case 'results':
       case 'scoreboard':
-        return send(key, player.last ? resultMessage(player) : { t: 'wait' });
-      case 'gameover': {
-        const rank = game.ranking().findIndex((p) => p.id === key) + 1;
-        return send(key, { t: 'gameover', rank, score: player.score, players: game.players.size });
-      }
+        return player.last ? resultMessage(player) : { t: 'wait', index: game.index };
+      case 'gameover':
+        return finalMessage();
     }
+    return null;
   }
 
   function submit(key, choice) {
-    const res = session.game.submitAnswer(key, choice);
-    send(key, { t: 'answerAck', ok: !res.error });
-    if (res.error) return false;
-    $('q-count').textContent = session.game.answers.size;
+    const { game } = session;
+    // Il telefono ripete la risposta finché non riceve conferma: i doppioni vanno confermati.
+    if (game.answers.has(key)) return send(key, { t: 'answerAck', ok: true, q: game.index });
+    const res = game.submitAnswer(key, choice);
+    send(key, { t: 'answerAck', ok: !res.error, q: game.index });
+    if (res.error) return;
+    $('q-count').textContent = game.answers.size;
     checkAllAnswered();
-    return true;
   }
 
   function checkAllAnswered() {
@@ -400,12 +395,8 @@
     if (!player || !confirm(`Rimuovere ${player.nickname} dalla partita?`)) return;
     session.banned.add(key);
     session.game.removePlayer(key);
-    const conn = session.conns.get(key);
-    session.conns.delete(key);
-    if (conn?.open) {
-      conn.send({ t: 'kicked' });
-      setTimeout(() => conn.close(), 300);
-    }
+    session.lastSeen.delete(key);
+    send(key, { t: 'kicked' });
     renderPlayers();
     checkAllAnswered();
   }
@@ -523,7 +514,10 @@
     requestAnimationFrame(() => requestAnimationFrame(() => {
       document.querySelectorAll('#r-chart .bar-fill').forEach((b) => (b.style.height = `${b.dataset.h}%`));
     }));
-    for (const player of game.players.values()) send(player.id, resultMessage(player));
+    // Un solo messaggio con i risultati di tutti: meno traffico sui relay.
+    const results = {};
+    for (const player of game.players.values()) if (player.id !== HOST_KEY) results[player.id] = resultMessage(player);
+    broadcast({ t: 'results', index: game.index, results });
   }
 
   function showScoreboard() {
@@ -545,7 +539,6 @@
     const { game } = session;
     clearTimer();
     game.state = 'gameover';
-    const ranking = game.ranking();
     const medals = ['🥇', '🥈', '🥉'];
     $('pod-title').textContent = session.quiz.title;
     $('pod').innerHTML = game.scoreboard(3).map((p, i) => `
@@ -555,17 +548,19 @@
         <span>${p.score} punti</span>
       </div>`).join('');
     show('h-podium');
-    ranking.forEach((p, i) => send(p.id, { t: 'gameover', rank: i + 1, score: p.score, players: ranking.length }));
+    broadcast(finalMessage());
   }
 
   function closeGame() {
     if (session) {
       clearTimer();
+      clearInterval(session.heartbeat);
       if (session.game.state !== 'gameover') broadcast({ t: 'ended' });
-      const { peer } = session;
+      const { bus } = session;
       session = null;
-      setTimeout(() => peer.destroy(), 500);
+      setTimeout(() => bus.close(), 1500); // il tempo di far partire l'ultimo messaggio
     }
+    $('net-warning').classList.add('hidden');
     renderHome();
   }
 

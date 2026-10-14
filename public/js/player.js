@@ -3,23 +3,28 @@
   const screens = ['s-pin', 's-nick', 's-lobby', 's-getready', 's-question', 's-sent', 's-result', 's-gameover', 's-message'];
   const SESSION_KEY = 'quizzone.player';
   const SESSION_MAX_AGE = 3 * 60 * 60 * 1000;
-  const CONNECT_TIMEOUT = 10000;
-  const RECONNECT_WINDOW = 45000;
-  const PING_EVERY = 4000;
-  const PING_DEAD_AFTER = 12000;
+  const HEARTBEAT_MS = 5000;
+  const HOST_SILENT_MS = 20000; // dopo questo silenzio mostriamo «mi ricollego…»
+  const HOST_GONE_MS = 90000; // dopo questo silenzio la partita è considerata chiusa
+  // Messaggi che cambiano schermata: se ne arriva uno più vecchio di quello già mostrato, lo ignoriamo.
+  const STATE_TYPES = new Set(['getready', 'question', 'results', 'result', 'wait', 'final']);
 
   const state = {
+    sk: null, // chiave segreta del telefono: identifica il giocatore presso l'host
     pin: null,
-    key: null,
     nickname: null,
     score: 0,
-    question: null,
-    peer: null,
-    conn: null,
+    bus: null,
+    hostKey: null,
     joined: false,
     finished: false,
-    reconnecting: false,
-    lastPong: 0,
+    question: null,
+    view: { phase: 'lobby', index: -1 },
+    mismatches: 0,
+    lastStateSeq: 0,
+    lastHostMsg: 0,
+    waiting: null,
+    answer: null,
     countdown: null,
     timer: null,
   };
@@ -44,11 +49,14 @@
     el.textContent = message;
     el.classList.remove('hidden');
     clearTimeout(el._t);
-    el._t = setTimeout(() => el.classList.add('hidden'), 5000);
+    el._t = setTimeout(() => el.classList.add('hidden'), 6000);
   }
 
-  function setBusy(form, busy) {
+  function setBusy(form, busy, label) {
     form.querySelectorAll('button, input').forEach((el) => (el.disabled = busy));
+    const btn = form.querySelector('button');
+    btn.dataset.label = btn.dataset.label || btn.textContent;
+    btn.textContent = busy ? label : btn.dataset.label;
   }
 
   function updateBars() {
@@ -63,25 +71,39 @@
     clearInterval(state.timer);
   }
 
-  function message(title, body) {
-    stopTimers();
-    state.finished = true;
-    $('reconnect').classList.add('hidden');
-    $('msg-title').textContent = title;
-    $('msg-body').textContent = body;
-    show('s-message');
+  function setReconnecting(on) {
+    $('reconnect').classList.toggle('hidden', !on);
   }
 
-  // ---- Sessione salvata: permette di rientrare se il telefono ricarica la pagina ----
+  function finish(title, body) {
+    stopTimers();
+    state.finished = true;
+    clearSession();
+    setReconnecting(false);
+    if (state.bus) {
+      const bus = state.bus;
+      state.bus = null;
+      setTimeout(() => bus.close(), 1000);
+    }
+    if (title) {
+      $('msg-title').textContent = title;
+      $('msg-body').textContent = body;
+      show('s-message');
+    }
+  }
+
+  // ---- Sessione salvata: si rientra in partita anche dopo aver ricaricato la pagina ----
   function saveSession() {
     try {
-      localStorage.setItem(SESSION_KEY, JSON.stringify({ pin: state.pin, key: state.key, nickname: state.nickname, at: Date.now() }));
+      localStorage.setItem(SESSION_KEY, JSON.stringify({
+        pin: state.pin, sk: QuizNet.toHex(state.sk), nickname: state.nickname, at: Date.now(),
+      }));
     } catch {}
   }
   function loadSession() {
     try {
       const s = JSON.parse(localStorage.getItem(SESSION_KEY));
-      return s && Date.now() - s.at < SESSION_MAX_AGE ? s : null;
+      return s && s.sk && Date.now() - s.at < SESSION_MAX_AGE ? s : null;
     } catch {
       return null;
     }
@@ -93,120 +115,98 @@
   }
 
   // ---- Rete ----
-  function ensurePeer() {
-    return new Promise((resolve, reject) => {
-      let peer = state.peer;
-      if (peer && !peer.destroyed && peer.open) return resolve(peer);
-      if (peer && !peer.destroyed && peer.disconnected) {
-        peer.reconnect();
-      } else if (!peer || peer.destroyed) {
-        peer = state.peer = new Peer(QuizNet.peerOptions());
-        peer.on('error', (err) => peer._pending?.(err));
-      }
-      const timeout = setTimeout(() => reject(new Error('timeout')), CONNECT_TIMEOUT);
-      peer.once('open', () => {
-        clearTimeout(timeout);
-        resolve(peer);
-      });
-      peer._pending = (err) => {
-        clearTimeout(timeout);
-        reject(err);
-      };
+  function openBus(pin) {
+    if (state.bus) state.bus.close();
+    state.sk = state.sk || QuizNet.newSecretKey();
+    state.pin = pin;
+    state.hostKey = null;
+    state.lastStateSeq = 0;
+    state.bus = new QuizNet.Bus({
+      secretKey: state.sk,
+      listenTag: QuizNet.playersTag(pin),
+      sendTag: QuizNet.hostTag(pin),
+      onMessage,
     });
-  }
-
-  async function connectToHost(pin) {
-    const peer = await ensurePeer();
-    return new Promise((resolve, reject) => {
-      const conn = peer.connect(QuizNet.peerId(pin), { reliable: true, serialization: 'json' });
-      const timeout = setTimeout(() => fail(new Error('timeout')), CONNECT_TIMEOUT);
-      function fail(err) {
-        clearTimeout(timeout);
-        peer._pending = null;
-        conn.close();
-        reject(err);
-      }
-      peer._pending = fail;
-      conn.on('open', () => {
-        clearTimeout(timeout);
-        peer._pending = null;
-        resolve(conn);
-      });
-      conn.on('error', fail);
-    });
-  }
-
-  function useConnection(conn) {
-    const old = state.conn;
-    state.conn = conn;
-    if (old && old !== conn) old.close();
-    state.lastPong = Date.now();
-    conn.on('data', onMessage);
-    conn.on('close', () => {
-      if (state.conn === conn) connectionLost();
-    });
+    return state.bus;
   }
 
   function send(msg) {
-    if (state.conn?.open) state.conn.send(msg);
+    state.bus?.send(msg);
   }
 
-  // Controllo periodico che l'host risponda ancora (sui telefoni le connessioni cadono in silenzio).
-  setInterval(() => {
-    if (!state.joined || state.finished || state.reconnecting) return;
-    if (Date.now() - state.lastPong > PING_DEAD_AFTER) return connectionLost();
-    send({ t: 'ping' });
-  }, PING_EVERY);
+  // Invia un messaggio e lo ripete finché non arriva una delle risposte attese.
+  function request(msg, types, timeoutMs, everyMs) {
+    return new Promise((resolve, reject) => {
+      const attempt = () => send(msg);
+      attempt();
+      const iv = setInterval(attempt, everyMs);
+      const to = setTimeout(() => done(null), timeoutMs);
+      function done(reply) {
+        clearInterval(iv);
+        clearTimeout(to);
+        if (state.waiting?.done === done) state.waiting = null;
+        reply ? resolve(reply) : reject(new Error('timeout'));
+      }
+      state.waiting = { types, done };
+    });
+  }
 
+  // Segnale di vita all'host e controllo che l'host risponda ancora.
+  setInterval(() => {
+    if (!state.joined || state.finished || !state.bus) return;
+    send({ t: 'hb' });
+    const silent = Date.now() - state.lastHostMsg;
+    if (silent > HOST_GONE_MS) return finish('Partita terminata', "L'organizzatore non è più raggiungibile.");
+    if (silent > HOST_SILENT_MS) {
+      setReconnecting(true);
+      send({ t: 'rejoin', nickname: state.nickname });
+    }
+  }, HEARTBEAT_MS);
+
+  // Tornando sull'app dopo averla lasciata in sottofondo chiediamo subito lo stato attuale.
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState !== 'visible' || !state.joined || state.finished) return;
-    if (!state.conn?.open) connectionLost();
-    else send({ t: 'ping' });
+    if (document.visibilityState === 'visible' && state.joined && !state.finished) {
+      send({ t: 'rejoin', nickname: state.nickname });
+    }
   });
 
-  function connectionLost() {
-    if (!state.joined || state.finished || state.reconnecting) return;
-    reconnect();
-  }
+  function onMessage(from, msg) {
+    if (state.finished) return;
+    // Finché non conosciamo l'host accettiamo solo risposte indirizzate a noi.
+    if (state.hostKey ? from !== state.hostKey : msg.to === '*') return;
+    if (!state.hostKey && ['welcome', 'joined'].includes(msg.t)) state.hostKey = from;
 
-  async function reconnect() {
-    state.reconnecting = true;
-    $('reconnect').classList.remove('hidden');
-    const deadline = Date.now() + RECONNECT_WINDOW;
-    while (Date.now() < deadline && !state.finished) {
-      try {
-        const conn = await connectToHost(state.pin);
-        useConnection(conn);
-        send({ t: 'rejoin', key: state.key, nickname: state.nickname });
-        state.reconnecting = false;
-        $('reconnect').classList.add('hidden');
-        return;
-      } catch {
-        await new Promise((r) => setTimeout(r, 2000));
-      }
+    state.lastHostMsg = Date.now();
+    setReconnecting(false);
+
+    if (STATE_TYPES.has(msg.t)) {
+      if (msg.seq < state.lastStateSeq) return;
+      state.lastStateSeq = msg.seq;
     }
-    state.reconnecting = false;
-    if (!state.finished) {
-      clearSession();
-      message('Partita terminata', "L'organizzatore non è più raggiungibile.");
-    }
+    if (state.waiting?.types.includes(msg.t)) state.waiting.done(msg);
+    handlers[msg.t]?.(msg);
   }
 
   // ---- PIN e nickname ----
   async function checkPin(pin) {
     const form = $('pin-form');
-    setBusy(form, true);
+    setBusy(form, true, 'Ricerca…');
     try {
-      const conn = await connectToHost(pin);
-      useConnection(conn);
-      state.pin = pin;
+      const bus = openBus(pin);
+      try {
+        await bus.ready(12000);
+      } catch {
+        throw new Error('network');
+      }
+      await request({ t: 'hello' }, ['welcome'], 10000, 2000);
       show('s-nick');
       $('nick-input').focus();
     } catch (err) {
-      const notFound = err?.type === 'peer-unavailable';
-      showError($('pin-error'), notFound
-        ? 'Non abbiamo trovato nessuna partita con questo PIN. Controlla e riprova.'
-        : 'Connessione non riuscita. Controlla la rete e riprova.');
+      state.bus?.close();
+      state.bus = null;
+      showError($('pin-error'), err.message === 'network'
+        ? 'Connessione non riuscita. Controlla la rete e riprova.'
+        : 'Non abbiamo trovato nessuna partita con questo PIN. Controlla e riprova.');
     } finally {
       setBusy(form, false);
     }
@@ -219,44 +219,42 @@
     checkPin(pin);
   });
 
-  $('nick-form').addEventListener('submit', (e) => {
+  $('nick-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!state.conn?.open) {
-      show('s-pin');
-      return showError($('pin-error'), 'Connessione persa. Inserisci di nuovo il PIN.');
+    const nickname = $('nick-input').value;
+    if (!nickname.trim()) return showError($('nick-error'), 'Inserisci un nickname.');
+    setBusy($('nick-form'), true, 'Entro…');
+    try {
+      await request({ t: 'join', nickname }, ['joined', 'joinError', 'kicked'], 15000, 3000);
+    } catch {
+      showError($('nick-error'), 'Nessuna risposta dalla partita. Riprova.');
+    } finally {
+      setBusy($('nick-form'), false);
     }
-    state.key = state.key || QuizNet.randomKey();
-    setBusy($('nick-form'), true);
-    send({ t: 'join', key: state.key, nickname: $('nick-input').value });
   });
 
   // ---- Messaggi dall'host ----
-  function onMessage(msg) {
-    if (!msg || typeof msg !== 'object') return;
-    state.lastPong = Date.now();
-    const handler = handlers[msg.t];
-    if (handler) handler(msg);
-  }
-
   const handlers = {
-    pong() {},
-
-    joined({ nickname, score }) {
-      setBusy($('nick-form'), false);
+    joined(msg) {
+      const firstTime = !state.joined;
       state.joined = true;
-      state.finished = false;
-      state.nickname = nickname;
-      state.score = score || 0;
+      state.nickname = msg.nickname;
+      state.score = msg.score || 0;
       saveSession();
       QuizNet.keepScreenOn();
       updateBars();
-      $('lobby-title').textContent = 'Eccoti!';
-      $('lobby-sub').textContent = 'Vedi il tuo nickname sullo schermo?';
-      show('s-lobby');
+      if (msg.snapshot) {
+        state.lastStateSeq = Math.max(state.lastStateSeq, msg.seq || 0);
+        handlers[msg.snapshot.t]?.(msg.snapshot);
+      } else if (firstTime || state.view.phase !== 'lobby' || !$('s-lobby').classList.contains('hidden')) {
+        $('lobby-title').textContent = 'Eccoti!';
+        $('lobby-sub').textContent = 'Vedi il tuo nickname sullo schermo?';
+        state.view = { phase: 'lobby', index: -1 };
+        show('s-lobby');
+      }
     },
 
     joinError({ message: text }) {
-      setBusy($('nick-form'), false);
       show('s-nick');
       showError($('nick-error'), text);
     },
@@ -264,17 +262,32 @@
     rejoinFailed({ message: text }) {
       state.joined = false;
       clearSession();
+      setReconnecting(false);
       show('s-nick');
-      showError($('nick-error'), text);
+      showError($('nick-error'), `${text} Scegli un altro nickname.`);
     },
 
-    wait() {
+    // Segnale di vita dell'host: se mostriamo una fase diversa per due volte di fila,
+    // probabilmente abbiamo perso un messaggio e chiediamo di rimetterci in pari.
+    hb({ phase, index }) {
+      if (!state.joined) return;
+      if (phase === state.view.phase && index === state.view.index) {
+        state.mismatches = 0;
+      } else if (++state.mismatches >= 2) {
+        state.mismatches = 0;
+        send({ t: 'rejoin', nickname: state.nickname });
+      }
+    },
+
+    wait({ index }) {
+      state.view = { phase: 'results', index };
       $('lobby-title').textContent = 'Sei dentro!';
       $('lobby-sub').textContent = 'Attendi la prossima domanda.';
       show('s-lobby');
     },
 
     getready({ index, total, ms }) {
+      state.view = { phase: 'getready', index };
       state.question = { index, total };
       updateBars();
       $('gr-title').textContent = `Domanda ${index + 1}`;
@@ -290,9 +303,19 @@
     },
 
     question(q) {
+      const same = state.view.phase === 'question' && state.view.index === q.index;
+      // Già sulla stessa domanda (es. dopo un riallineamento): non ridisegniamo i pulsanti.
+      if (same && !q.answered) return;
+      state.view = { phase: 'question', index: q.index };
+      if (state.answer && state.answer.q !== q.index) {
+        clearInterval(state.answer.timer);
+        state.answer = null;
+      }
       stopTimers();
       state.question = q;
       updateBars();
+      if (q.answered) return showSent();
+
       $('q-text').textContent = q.text;
       let left = Math.max(0, Math.round(q.remaining / 1000));
       $('q-timer').textContent = left;
@@ -310,21 +333,31 @@
         btn.className = `answer-btn c${i}`;
         btn.setAttribute('aria-label', `${SHAPE_NAMES[i]}: ${text}`);
         btn.innerHTML = `${SHAPES[i]}<span class="answer-label">${escapeHtml(text)}</span>`;
-        btn.addEventListener('click', () => answer(i));
+        btn.addEventListener('click', () => answer(q.index, i));
         grid.appendChild(btn);
       });
       show('s-question');
     },
 
-    answerAck({ ok }) {
-      if (!ok) return;
-      clearInterval(state.timer);
-      $('sent-quip').textContent = QUIPS[Math.floor(Math.random() * QUIPS.length)];
-      show('s-sent');
+    answerAck({ q, ok }) {
+      if (state.answer?.q === q) {
+        clearInterval(state.answer.timer);
+        state.answer = null;
+      }
+      if (ok && state.view.phase === 'question' && state.view.index === q) showSent();
+    },
+
+    results({ index, results }) {
+      const mine = results[state.bus?.pubkey];
+      if (mine) handlers.result(mine);
+      else handlers.wait({ index });
     },
 
     result(r) {
       stopTimers();
+      clearInterval(state.answer?.timer);
+      state.answer = null;
+      state.view = { phase: 'results', index: r.index };
       state.score = r.score;
       updateBars();
       show('s-result');
@@ -353,47 +386,77 @@
       else $('res-behind').textContent = `${r.behind.gap <= 300 ? 'A soli' : 'A'} ${r.behind.gap} punti da ${r.behind.nickname}`;
     },
 
-    gameover({ rank, score, players }) {
-      stopTimers();
-      state.finished = true;
+    final({ ranking }) {
+      const pos = ranking.findIndex(([key]) => key === state.bus?.pubkey);
+      const rank = pos + 1;
+      const score = pos >= 0 ? ranking[pos][1] : state.score;
       state.score = score;
-      clearSession();
       updateBars();
+      finish();
       show('s-gameover');
       const medals = ['🥇', '🥈', '🥉'];
-      $('go-title').textContent = rank <= 3 ? 'Fantastico!' : 'Bella partita!';
+      $('go-title').textContent = rank > 0 && rank <= 3 ? 'Fantastico!' : 'Bella partita!';
       $('go-medal').textContent = medals[rank - 1] || '🎉';
-      $('go-rank').textContent = `${rank}° posto su ${players}`;
+      $('go-rank').textContent = rank > 0 ? `${rank}° posto su ${ranking.length}` : 'Partita conclusa';
       $('go-score').textContent = `Punteggio finale: ${score} punti`;
     },
 
     kicked() {
-      clearSession();
-      message('Sei stato rimosso', "L'organizzatore ti ha rimosso dalla partita.");
+      finish('Sei stato rimosso', "L'organizzatore ti ha rimosso dalla partita.");
     },
 
     ended() {
-      clearSession();
-      message('Partita terminata', "L'organizzatore ha chiuso la partita.");
+      finish('Partita terminata', "L'organizzatore ha chiuso la partita.");
     },
   };
 
-  function answer(choice) {
+  function showSent() {
+    clearInterval(state.timer);
+    $('sent-quip').textContent = QUIPS[Math.floor(Math.random() * QUIPS.length)];
+    show('s-sent');
+  }
+
+  // La risposta viene ripetuta finché l'host non conferma di averla ricevuta.
+  function answer(index, choice) {
+    if (state.answer?.q === index) return;
     document.querySelectorAll('#answers .answer-btn').forEach((b, i) => {
       b.disabled = true;
       b.classList.toggle('dim', i !== choice);
     });
-    send({ t: 'answer', choice });
+    const msg = { t: 'answer', q: index, choice };
+    send(msg);
+    let tries = 1;
+    state.answer = {
+      q: index,
+      timer: setInterval(() => {
+        if (++tries > 5) return clearInterval(state.answer.timer);
+        send(msg);
+      }, 2000),
+    };
   }
 
   // ---- Avvio: PIN nell'URL (/?pin=123456) o sessione da riprendere ----
+  async function resume(saved) {
+    state.sk = QuizNet.fromHex(saved.sk);
+    state.nickname = saved.nickname;
+    state.joined = true;
+    state.lastHostMsg = Date.now();
+    openBus(saved.pin);
+    updateBars();
+    $('lobby-title').textContent = 'Bentornato!';
+    $('lobby-sub').textContent = 'Mi ricollego alla partita…';
+    show('s-lobby');
+    try {
+      await request({ t: 'rejoin', nickname: saved.nickname }, ['joined', 'rejoinFailed', 'kicked'], 30000, 3000);
+    } catch {
+      finish('Partita terminata', "L'organizzatore non è più raggiungibile.");
+    }
+  }
+
   const urlPin = (new URLSearchParams(location.search).get('pin') || '').replace(/\D/g, '');
   const saved = loadSession();
   if (saved && (!urlPin || urlPin === saved.pin)) {
-    Object.assign(state, { pin: saved.pin, key: saved.key, nickname: saved.nickname, joined: true });
-    updateBars();
-    show('s-lobby');
-    reconnect();
+    resume(saved);
   } else if (urlPin) {
     $('pin-input').value = urlPin;
     checkPin(urlPin);
