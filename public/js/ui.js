@@ -4,7 +4,6 @@
   'use strict';
 
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-  const reducedMotion = () => root.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
   const SHAPES = [
     '<svg class="shape" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4 L29 27 H3 Z"/></svg>',
@@ -327,8 +326,6 @@
 
   // ---- Coriandoli ----
   function confetti({ count = 140, duration = 2800 } = {}) {
-    // Con «Riduci movimento» meno coriandoli, ma ci sono comunque.
-    if (reducedMotion()) count = Math.round(count * 0.5);
     const canvas = document.createElement('canvas');
     canvas.className = 'confetti';
     document.body.appendChild(canvas);

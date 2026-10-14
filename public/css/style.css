@@ -709,12 +709,6 @@ canvas.confetti { position: fixed; inset: 0; width: 100vw; height: 100vh; pointe
   .setup-bar { margin: 0 -12px -14px; }
 }
 
-/* «Riduci movimento» attivo sul telefono (o risparmio energetico su alcuni Android):
-   le animazioni restano, ma più lente e delicate. */
-@media (prefers-reduced-motion: reduce) {
-  body::before, body::after { animation-duration: 60s; }
-  .error { animation: none; }
-}
 
 /* ---------- Ritocchi di impaginazione su telefono ---------- */
 /* Durante il gioco la pagina occupa esattamente lo schermo: le risposte si adattano allo spazio. */
