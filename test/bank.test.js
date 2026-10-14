@@ -212,3 +212,15 @@ test('numeri romani', () => {
   assert.equal(Bank.toRoman(2026), 'MMXXVI');
   assert.equal(Bank.toRoman(4), 'IV');
 });
+
+test('partite a tema: tutte valide, con le loro opzioni', () => {
+  const { validateQuiz: vq } = require('../public/js/game');
+  assert.ok(Bank.presets.length >= 30);
+  for (const p of Bank.presets) {
+    for (const id of p.categories) assert.ok(Bank.categories.some((c) => c.id === id), `${p.id}: categoria ${id}`);
+    for (const m of p.modes) assert.ok(Bank.modes.some((x) => x.id === m), `${p.id}: gioco ${m}`);
+    const game = Bank.buildGame({ categories: p.categories, modes: p.modes, count: 10, seed: 3, ...p.options });
+    assert.equal(game.error, undefined, p.id);
+    assert.equal(vq(game), null, p.id);
+  }
+});

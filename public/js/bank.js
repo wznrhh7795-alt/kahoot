@@ -1886,6 +1886,166 @@
     eventDuel(events.filter((e) => /pila|dagherrotipo|telefono|automobile|cinematografo|volo a motore|FIAT|televisive|Sputnik|Gagarin|uomo sulla Luna|Apple|Google|Facebook|YouTube|iPhone/.test(e.e))),
   ]);
 
+  // ---------- Categorie «pop»: Disney, Harry Potter, Star Wars… ----------
+  // Ogni file public/data/pop-*.js aggiunge a QZ_DATA.pop una categoria descritta da dati (formato in
+  // public/data/POP-FORMAT.md, controllo con scripts/check-pop.js): da tabelle di personaggi, film,
+  // squadre… nascono in automatico domande per tutti i giochi.
+  const fill = (tpl, name, value) => String(tpl).replaceAll('{name}', name ?? '').replaceAll('{value}', value ?? '');
+  const fmtVal = (v, cfg) => (cfg.format === 'year' ? formatYear(v) : fmtNum(v)) + (cfg.unit ? ` ${cfg.unit}` : '');
+
+  function popTableGens(id, t) {
+    const gens = [];
+    const items = (t.items || []).filter((it) => it && it.name);
+    for (const [field, cfg] of Object.entries(t.fields || {})) {
+      const has = items.filter((it) => typeof it[field] === 'string' && it[field].trim());
+      const values = [...new Set(has.map((it) => it[field]))];
+      if (values.length < 2) continue;
+      const k = `${id}:${t.id}:${field}`;
+      if (cfg.ask && values.length >= 4) {
+        gens.push({
+          mode: 'quiz', count: has.length,
+          make(rng, diff) {
+            const it = pick(rng, byDiff(has, diff));
+            return choice(rng, fill(cfg.ask, it.name, it[field]), it[field], values, { key: `${k}:a:${it.name}` });
+          },
+        });
+      }
+      if (cfg.who) {
+        gens.push({
+          mode: 'quiz', count: values.length,
+          make(rng, diff) {
+            const it = pick(rng, byDiff(has, diff));
+            const others = has.filter((o) => o[field] !== it[field]).map((o) => o.name);
+            return choice(rng, fill(cfg.who, '', it[field]), it.name, others, { key: `${k}:w:${it[field]}` });
+          },
+        });
+      }
+      if (cfg.tf) {
+        gens.push({
+          mode: 'vf', count: has.length * 2,
+          make(rng, diff) {
+            const it = pick(rng, byDiff(has, diff));
+            const truth = rng() < 0.5;
+            const v = truth ? it[field] : pick(rng, values.filter((x) => x !== it[field]));
+            return trueFalse(fill(cfg.tf, it.name, v), truth, { key: `${k}:t:${it.name}`, why: truth ? undefined : fill(cfg.tf, it.name, it[field]) });
+          },
+        });
+      }
+      if (cfg.odd) {
+        gens.push(oddGen(k, has.map((it) => ({ label: it.name, group: it[field], d: it.d })), {
+          text: (g) => fill(cfg.odd, '', g),
+          why: (g, odd) => `${odd.label}: ${odd.group}. Gli altri: ${g}.`,
+        }));
+      }
+      if (cfg.typed && cfg.ask) {
+        gens.push(typedGen(k, has, (it) => (cfg.typed === 'person'
+          ? personQs(fill(cfg.ask, it.name, it[field]), it[field], values, { key: it.name }, it[`${field}Alt`] || [])
+          : typed(fill(cfg.ask, it.name, it[field]), it[field], { key: it.name, accept: it[`${field}Alt`] || [] })), values));
+      }
+    }
+    for (const [field, cfg] of Object.entries(t.numeric || {})) {
+      const has = items.filter((it) => Number.isFinite(it[field]));
+      if (has.length < 2) continue;
+      const k = `${id}:${t.id}:${field}`;
+      const gap = cfg.gap || 1;
+      if (cfg.ask) {
+        gens.push({
+          mode: 'numero', count: has.length,
+          make(rng, diff) {
+            const it = pick(rng, byDiff(has, diff));
+            const step = cfg.step || 1;
+            const { min, max } = range(rng, it[field], cfg.span || 40, { floor: cfg.floor ?? 0, step });
+            return numeric(rng, fill(cfg.ask, it.name), it[field], { min, max, step, tol: cfg.tol || 0, unit: cfg.unit || '', format: cfg.format, key: `${k}:n:${it.name}` });
+          },
+        });
+      }
+      const list = has.map((it) => ({ label: it.name, value: it[field], d: it.d }));
+      if (cfg.duel) {
+        gens.push(duelGen(k, list, {
+          text: cfg.duel, lowerWins: Boolean(cfg.lowerWins),
+          valid: gapAtLeast({ facile: gap * 4, media: gap * 2, difficile: gap, mista: gap * 2 }),
+          why: (w, l) => `${w.label}: ${fmtVal(w.value, cfg)} · ${l.label}: ${fmtVal(l.value, cfg)}`,
+        }));
+      }
+      if (cfg.order && has.length >= 4) {
+        gens.push({
+          mode: 'ordina', count: has.length,
+          make(rng, diff) {
+            for (let attempt = 0; attempt < 30; attempt++) {
+              const four = pickDistinct(rng, byDiff(list, diff), 4).sort((a, b) => (cfg.lowerWins ? a.value - b.value : b.value - a.value));
+              if (four.length < 4 || four.some((x, i) => i && Math.abs(x.value - four[i - 1].value) < gap)) continue;
+              return order(rng, cfg.order, four.map((x) => x.label), {
+                key: `${k}:o:${four.map((x) => x.label).sort().join('|')}`,
+                why: four.map((x) => `${x.label} (${fmtVal(x.value, cfg)})`).join(' → '),
+              });
+            }
+            return null;
+          },
+        });
+      }
+    }
+    return gens;
+  }
+
+  function popGenerators(f) {
+    const id = `pop:${f.id}`;
+    const gens = [];
+    if (f.quiz?.length) gens.push(fromQuiz(id, f.quiz));
+    if (f.tf?.length) gens.push(fromTF(id, f.tf));
+    for (const t of f.tables || []) gens.push(...popTableGens(id, t));
+    const quotesList = f.quotes || [];
+    if (new Set(quotesList.map((q) => q.who)).size >= 4) {
+      gens.push({
+        mode: 'citazione', count: quotesList.length,
+        make(rng, diff) {
+          const q = pick(rng, byDiff(quotesList, diff));
+          return choice(rng, f.quoteText || 'Chi pronuncia questa frase?', q.who, [...(q.wrong || []), ...quotesList.map((x) => x.who)], {
+            key: `${id}:q:${q.text}`, media: quote(q.text), why: q.why || undefined,
+          });
+        },
+      });
+    }
+    const emojiList = f.emojis || [];
+    if (new Set(emojiList.map((e) => e.answer)).size >= 4) {
+      gens.push({
+        mode: 'immagine', count: emojiList.length,
+        make(rng, diff) {
+          const e = pick(rng, byDiff(emojiList, diff));
+          return choice(rng, e.q || f.emojiText || 'Che cosa raccontano queste emoji?', e.answer, [...(e.wrong || []), ...emojiList.map((x) => x.answer)], {
+            key: `${id}:e:${e.answer}`, media: emoji(e.emoji),
+          });
+        },
+      });
+    }
+    if (f.order?.length) {
+      gens.push({
+        mode: 'ordina', count: f.order.length,
+        make(rng, diff) {
+          const it = pick(rng, byDiff(f.order, diff));
+          return order(rng, it.q, subseq(rng, it.items, Math.min(it.items.length, 5)), { key: `${id}:o:${it.q}`, why: it.why || undefined });
+        },
+      });
+    }
+    if (f.numbers?.length) {
+      gens.push({
+        mode: 'numero', count: f.numbers.length,
+        make(rng, diff) {
+          const it = pick(rng, byDiff(f.numbers, diff));
+          const span = it.max - it.min;
+          const step = it.step || (span > 2000 ? 10 : 1);
+          const { min, max } = range(rng, it.v, span, { floor: it.floor ?? (it.min >= 0 ? 0 : -Infinity), step });
+          return numeric(rng, it.q, it.v, { min, max, step, tol: it.tol || 0, unit: it.unit || '', format: it.format, key: `${id}:n:${it.q}`, why: it.why || undefined });
+        },
+      });
+    }
+    if (f.typed?.length) {
+      const answers = f.typed.map((x) => x.a);
+      gens.push(typedGen(`${id}:t`, f.typed, (it) => typed(it.q, it.a, { accept: it.accept || [], hint: it.hint, key: it.q }), answers));
+    }
+    return gens;
+  }
+  for (const f of D.pop || []) cat(f.id, f.name, f.emoji, f.color, f.description, popGenerators(f));
+
   // ---- Modalità di gioco ----
   const MODES = [
     { id: 'quiz', name: 'Quiz', emoji: '❓', description: 'Scegli la risposta giusta tra quattro', time: 20 },
@@ -1978,19 +2138,85 @@
     return { title: title || names, description: `${questions.length} domande · ${difficulty}${bonus ? ' · punti doppi' : ''}`, questions };
   }
 
-  // Partite a tema già pronte
-  const PRESETS = [
-    { id: 'giro', name: 'Il giro del mondo', emoji: '✈️', categories: ['mondo', 'bandiere', 'monumenti', 'cucina'], modes: [] },
-    { id: 'italia', name: 'Viaggio in Italia', emoji: '🇮🇹', categories: ['italia', 'cucina', 'storia', 'arte'], modes: [] },
-    { id: 'cinema', name: 'Serata al cinema', emoji: '🍿', categories: ['cinema', 'citazioni', 'musica'], modes: [] },
-    { id: 'scuola', name: 'Ritorno a scuola', emoji: '🎒', categories: ['matematica', 'lingua', 'inglese', 'storia', 'scienza'], modes: [] },
-    { id: 'natura', name: 'Natura e scienza', emoji: '🌿', categories: ['animali', 'scienza', 'spazio', 'corpo', 'elementi'], modes: [] },
-    { id: 'immagini', name: 'Solo immagini', emoji: '🖼️', categories: [], modes: ['immagine'] },
-    { id: 'parole', name: 'Parole e citazioni', emoji: '✒️', categories: ['citazioni', 'letteratura', 'proverbi', 'lingua'], modes: [] },
-    { id: 'sfida', name: 'Sfida totale', emoji: '🔥', categories: [], modes: [] },
-    { id: 'scrivi', name: 'Scrivi tu!', emoji: '⌨️', categories: [], modes: ['scrivi'] },
-    { id: 'sfide', name: 'Intrusi e duelli', emoji: '⚔️', categories: [], modes: ['intruso', 'duello'] },
+  // Partite a tema già pronte, divise per gruppo. «options» può fissare numero di domande, difficoltà,
+  // tempo o punti doppi; le categorie che mancano vengono ignorate (e il tema sparisce se non ne resta nessuna).
+  const POP = ['disney', 'pixar', 'harrypotter', 'terradimezzo', 'trono', 'starwars', 'marvel', 'dc', 'anime', 'pokemon', 'videogiochi',
+    'cartoni', 'serietv', 'tvitaliana', 'pop', 'sanremo', 'calcio', 'motori', 'fiabe', 'fumetti', 'saghe', 'animazione'];
+  const P = (group, id, name, emoji, categories, modes = [], options = {}) => ({ group, id, name, emoji, categories, modes, options });
+  const ALL_PRESETS = [
+    P('Fantasy e magia', 'hogwarts', 'Notte a Hogwarts', '⚡', ['harrypotter']),
+    P('Fantasy e magia', 'terradimezzo', 'La Terra di Mezzo', '💍', ['terradimezzo']),
+    P('Fantasy e magia', 'trono', 'Il gioco del trono', '🐉', ['trono']),
+    P('Fantasy e magia', 'fantasy', 'Maratona fantasy', '🧙', ['harrypotter', 'terradimezzo', 'trono']),
+    P('Fantasy e magia', 'fiabe', 'C\'era una volta', '🧚', ['fiabe']),
+    P('Fantasy e magia', 'draghi', 'Draghi e incantesimi', '🔮', ['harrypotter', 'terradimezzo', 'trono', 'fiabe'], ['quiz', 'vf', 'intruso']),
+    P('Fantasy e magia', 'leggende', 'Miti e leggende', '🏛️', ['mitologia', 'fiabe']),
+
+    P('Cinema e animazione', 'disney', 'Magia Disney', '🏰', ['disney']),
+    P('Cinema e animazione', 'pixar', 'Mondo Pixar', '🧸', ['pixar']),
+    P('Cinema e animazione', 'disneypixar', 'Disney e Pixar', '🎠', ['disney', 'pixar']),
+    P('Cinema e animazione', 'animazione', 'Animazione dal mondo', '🐲', ['animazione']),
+    P('Cinema e animazione', 'starwars', 'Una galassia lontana lontana', '⭐', ['starwars']),
+    P('Cinema e animazione', 'marvel', 'Supereroi Marvel', '🦸', ['marvel']),
+    P('Cinema e animazione', 'gotham', 'Gotham e dintorni', '🦇', ['dc']),
+    P('Cinema e animazione', 'supereroi', 'Eroi contro cattivi', '💥', ['marvel', 'dc']),
+    P('Cinema e animazione', 'blockbuster', 'Blockbuster', '🎥', ['saghe']),
+    P('Cinema e animazione', 'cinema', 'Serata al cinema', '🍿', ['cinema', 'citazioni', 'musica']),
+    P('Cinema e animazione', 'ciak', 'Ciak, si gira!', '🎬', ['cinema', 'saghe', 'disney', 'pixar', 'animazione'], ['citazione', 'immagine', 'quiz']),
+    P('Cinema e animazione', 'emojifilm', 'Film in emoji', '🎞️', ['cinema', 'disney', 'pixar', 'saghe', 'animazione', 'starwars', 'marvel'], ['immagine']),
+
+    P('Serie TV, anime e videogiochi', 'binge', 'Binge watching', '📺', ['serietv']),
+    P('Serie TV, anime e videogiochi', 'tvitaliana', 'TV made in Italy', '📡', ['tvitaliana']),
+    P('Serie TV, anime e videogiochi', 'divano', 'Divano e telecomando', '🛋️', ['serietv', 'tvitaliana', 'cartoni']),
+    P('Serie TV, anime e videogiochi', 'otaku', 'Notte otaku', '🍥', ['anime']),
+    P('Serie TV, anime e videogiochi', 'pokemon', 'Acchiappali tutti!', '🔴', ['pokemon']),
+    P('Serie TV, anime e videogiochi', 'gameover', 'Game over', '🎮', ['videogiochi']),
+    P('Serie TV, anime e videogiochi', 'nerd', 'Nerd night', '🤓', ['videogiochi', 'anime', 'pokemon', 'starwars', 'marvel', 'terradimezzo']),
+    P('Serie TV, anime e videogiochi', 'infanzia', 'Infanzia a colori', '🧃', ['cartoni', 'anime', 'disney', 'fumetti']),
+
+    P('Musica', 'hit', 'Hit parade', '🎤', ['pop']),
+    P('Musica', 'sanremo', 'Perché Sanremo è Sanremo', '🌺', ['sanremo']),
+    P('Musica', 'notemusica', 'Notte di musica', '🎶', ['pop', 'sanremo', 'musica']),
+    P('Musica', 'melodramma', 'Dall\'opera al rock', '🎻', ['musica', 'pop']),
+
+    P('Sport', 'calcio', 'Fischio d\'inizio', '⚽', ['calcio']),
+    P('Sport', 'motori', 'Bandiera a scacchi', '🏎️', ['motori']),
+    P('Sport', 'domenica', 'Domenica sportiva', '🏆', ['calcio', 'motori', 'sport']),
+    P('Sport', 'olimpiadi', 'Olimpiadi del sapere', '🥇', ['sport', 'storia', 'mondo']),
+
+    P('Viaggi e sapere', 'giro', 'Il giro del mondo', '✈️', ['mondo', 'bandiere', 'monumenti', 'cucina']),
+    P('Viaggi e sapere', 'italia', 'Viaggio in Italia', '🇮🇹', ['italia', 'cucina', 'storia', 'arte']),
+    P('Viaggi e sapere', 'scuola', 'Ritorno a scuola', '🎒', ['matematica', 'lingua', 'inglese', 'storia', 'scienza']),
+    P('Viaggi e sapere', 'natura', 'Natura e scienza', '🌿', ['animali', 'scienza', 'spazio', 'corpo', 'elementi']),
+    P('Viaggi e sapere', 'spazio', 'Spazio profondo', '🚀', ['spazio', 'scienza']),
+    P('Viaggi e sapere', 'bandiere', 'Bandiere del mondo', '🚩', ['bandiere']),
+    P('Viaggi e sapere', 'capitali', 'Capitali e capoluoghi', '🗺️', ['mondo', 'italia'], ['quiz', 'scrivi', 'intruso']),
+    P('Viaggi e sapere', 'storia', 'Storia e leggende', '📜', ['storia', 'mitologia']),
+    P('Viaggi e sapere', 'arte', 'Arte e letteratura', '🖼️', ['arte', 'letteratura', 'fumetti']),
+    P('Viaggi e sapere', 'tavola', 'A tavola!', '🍝', ['cucina']),
+    P('Viaggi e sapere', 'parole', 'Parole e citazioni', '✒️', ['citazioni', 'letteratura', 'proverbi', 'lingua']),
+    P('Viaggi e sapere', 'fumetti', 'Nuvole parlanti', '💬', ['fumetti']),
+    P('Viaggi e sapere', 'mate', 'Matematica lampo', '🧮', ['matematica'], [], { speed: 'veloce' }),
+
+    P('Sfide speciali', 'pop', 'Tutta la cultura pop', '🌟', POP),
+    P('Sfide speciali', 'famiglia', 'Festa in famiglia', '👨‍👩‍👧', ['cultura', 'cucina', 'disney', 'sanremo', 'calcio', 'tvitaliana'], [], { difficulty: 'facile' }),
+    P('Sfide speciali', 'piccoli', 'Per i più piccoli', '🧒', ['disney', 'pixar', 'cartoni', 'animali', 'fiabe', 'pokemon'], [], { difficulty: 'facile' }),
+    P('Sfide speciali', 'esperti', 'Solo per esperti', '🧠', [], [], { difficulty: 'difficile' }),
+    P('Sfide speciali', 'lampo', 'Round lampo', '⚡', [], ['vf', 'duello'], { speed: 'veloce', count: 20 }),
+    P('Sfide speciali', 'maratona', 'Maratona', '🏃', [], [], { count: 50, bonus: true }),
+    P('Sfide speciali', 'crescendo', 'Crescendo', '📈', [], [], { difficulty: 'progressiva' }),
+    P('Sfide speciali', 'immagini', 'Solo immagini', '🖼️', [], ['immagine']),
+    P('Sfide speciali', 'scrivi', 'Scrivi tu!', '⌨️', [], ['scrivi']),
+    P('Sfide speciali', 'sfide', 'Intrusi e duelli', '⚔️', [], ['intruso', 'duello']),
+    P('Sfide speciali', 'numeri', 'Indovina il numero', '🎯', [], ['numero']),
+    P('Sfide speciali', 'ordine', 'Ordine e precisione', '🔢', [], ['ordina']),
+    P('Sfide speciali', 'vf', 'Vero o falso?', '⚖️', [], ['vf'], { speed: 'veloce' }),
+    P('Sfide speciali', 'sfida', 'Sfida totale', '🔥', [], []),
   ];
+  const catIds = new Set(C.map((c) => c.id));
+  const PRESETS = ALL_PRESETS
+    .map((p) => ({ ...p, categories: p.categories.filter((id) => catIds.has(id)) }))
+    .filter((p, i) => p.categories.length || !ALL_PRESETS[i].categories.length);
 
   root.QuizBank = { categories: C, modes: MODES, presets: PRESETS, buildGame, estimateCount, modesOf, makeRng, toRoman };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.QuizBank;

@@ -47,6 +47,10 @@
 
   // ---- Interfaccia ----
   function show(id) {
+    // Musica solo sulle schermate iniziali: in partita la suona lo schermo dell'organizzatore,
+    // così più telefoni nella stessa stanza non si sovrappongono.
+    if (['s-pin', 's-nick'].includes(id)) UI.music?.play('home');
+    else UI.music?.stop();
     for (const s of screens) $(s).classList.toggle('hidden', s !== id);
     const inGame = !['s-pin', 's-nick', 's-message'].includes(id);
     $('bottombar').classList.toggle('hidden', !inGame);

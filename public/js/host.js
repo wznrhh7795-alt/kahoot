@@ -19,7 +19,12 @@
   // Partita in corso: tutta la logica gira qui, nel browser dell'host.
   let session = null;
 
+  // Musica: home e editor → home, attesa → lobby, domanda → un brano diverso ogni volta, podio → finale.
+  const MUSIC_FOR = { 'h-home': 'home', 'h-editor': 'home', 'h-connecting': 'lobby', 'h-lobby': 'lobby', 'h-scoreboard': 'lobby', 'h-podium': 'finale' };
   function show(id) {
+    if (id === 'h-question') UI.music?.next('question');
+    else if (MUSIC_FOR[id]) UI.music?.play(MUSIC_FOR[id]);
+    else UI.music?.stop();
     for (const s of screens) $(s).classList.toggle('hidden', s !== id);
     window.scrollTo(0, 0);
   }
@@ -141,15 +146,25 @@
   function renderPresets() {
     const grid = $('preset-grid');
     grid.innerHTML = '';
+    let group = null;
     for (const p of Bank.presets) {
+      if (p.group !== group) {
+        group = p.group;
+        const h = document.createElement('h3');
+        h.className = 'preset-group';
+        h.textContent = group;
+        grid.appendChild(h);
+      }
       const cats = p.categories.length ? p.categories.map((id) => Bank.categories.find((c) => c.id === id)?.emoji).join(' ') : 'Tutte le categorie';
       const modes = p.modes.length ? p.modes.map((id) => MODE_BY_ID[id].name).join(', ') : 'Tutti i giochi';
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'preset-card';
-      b.innerHTML = `<span class="p-emoji">${p.emoji}</span><span class="p-name">${esc(p.name)}</span><span class="p-desc">${esc(cats)} · ${esc(modes)}</span>`;
+      const o = p.options || {};
+      const extra = [o.count && `${o.count} domande`, o.difficulty, o.speed, o.bonus && '⚡ punti doppi'].filter(Boolean).join(' · ');
+      b.innerHTML = `<span class="p-emoji">${p.emoji}</span><span class="p-name">${esc(p.name)}</span><span class="p-desc">${esc(cats)} · ${esc(modes)}${extra ? ` · ${esc(extra)}` : ''}</span>`;
       b.addEventListener('click', () => {
-        const quiz = generate({ categories: p.categories, modes: p.modes, title: p.name });
+        const quiz = generate({ categories: p.categories, modes: p.modes, title: p.name, ...p.options });
         if (quiz) hostGame(quiz);
       });
       grid.appendChild(b);

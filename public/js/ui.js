@@ -381,10 +381,15 @@
 
   // ---- Suoni sintetizzati (nessun file audio) ----
   let audio = null;
-  let muted = false;
+  // Audio: 'all' (musica ed effetti), 'sfx' (solo effetti), 'none' (tutto spento).
+  const AUDIO_MODES = ['all', 'sfx', 'none'];
+  const AUDIO_LABELS = { all: ['🔊', 'Musica ed effetti'], sfx: ['🔉', 'Solo effetti, musica spenta'], none: ['🔇', 'Audio spento'] };
+  let audioMode = 'all';
   try {
-    muted = localStorage.getItem('quizzone.muted') === '1';
+    const saved = localStorage.getItem('quizzone.audio');
+    audioMode = AUDIO_MODES.includes(saved) ? saved : localStorage.getItem('quizzone.muted') === '1' ? 'none' : 'all';
   } catch {}
+  const audioListeners = [];
   function ctx() {
     if (!audio) {
       const AC = root.AudioContext || root.webkitAudioContext;
@@ -422,29 +427,50 @@
     podium: () => [523, 659, 784, 1046, 784, 1046, 1319].forEach((f, i) => tone(f, i * 0.12, 0.3, { gain: 0.1 })),
   };
   function sound(name) {
-    if (muted) return;
+    if (audioMode === 'none') return;
     try {
       SOUNDS[name]?.();
     } catch {}
   }
-  function setMuted(value) {
-    muted = value;
+  function setAudioMode(mode, announce = false) {
+    audioMode = AUDIO_MODES.includes(mode) ? mode : 'all';
     try {
-      localStorage.setItem('quizzone.muted', value ? '1' : '0');
+      localStorage.setItem('quizzone.audio', audioMode);
     } catch {}
+    const [icon, label] = AUDIO_LABELS[audioMode];
     document.querySelectorAll('.mute-btn').forEach((b) => {
-      b.textContent = muted ? '🔇' : '🔊';
-      b.setAttribute('aria-label', muted ? 'Attiva i suoni' : 'Disattiva i suoni');
+      b.textContent = icon;
+      b.setAttribute('aria-label', `${label}. Tocca per cambiare`);
+      b.title = label;
     });
+    if (announce) toast(`${icon} ${label}`);
+    audioListeners.forEach((fn) => fn(audioMode));
   }
-  // Pulsante audio fisso + sblocco dell'audio al primo tocco (richiesto dai browser mobili).
+  let toastTimer;
+  function toast(text) {
+    let el = document.querySelector('.audio-toast');
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'audio-toast';
+      el.setAttribute('role', 'status');
+      document.body.appendChild(el);
+    }
+    el.textContent = text;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 1600);
+  }
+  // Pulsante audio fisso (musica ed effetti → solo effetti → spento) + sblocco dell'audio al primo tocco.
   function installSoundToggle() {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'mute-btn';
-    btn.addEventListener('click', () => setMuted(!muted));
+    btn.addEventListener('click', () => {
+      ctx();
+      setAudioMode(AUDIO_MODES[(AUDIO_MODES.indexOf(audioMode) + 1) % AUDIO_MODES.length], true);
+    });
     document.body.appendChild(btn);
-    setMuted(muted);
+    setAudioMode(audioMode);
     document.addEventListener('pointerdown', () => ctx(), { once: true });
   }
 
@@ -457,6 +483,7 @@
   root.UI = {
     esc, safeSrc, SHAPES, SHAPE_NAMES, AVATARS, THEMES, applyTheme, formatNumber, renderMedia, renderCredit, preload, renderAnswerInput,
     timer, confetti, sound, installSoundToggle, vibrate,
+    audioContext: ctx, audioMode: () => audioMode, setAudioMode, onAudioMode: (fn) => audioListeners.push(fn),
   };
   // Compatibilità con il codice esistente
   root.SHAPES = SHAPES;

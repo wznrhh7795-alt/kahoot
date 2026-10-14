@@ -105,7 +105,12 @@
   })();
 
   // ---- Schermate ----
+  // Musica: impostazioni → home, domanda → un brano diverso ogni volta, fine → finale.
   function show(id) {
+    if (id === 's-question') UI.music?.next('question');
+    else if (id === 's-setup') UI.music?.play('home');
+    else if (id === 's-end') UI.music?.play('finale');
+    else UI.music?.stop();
     for (const s of SCREENS) $(s).classList.toggle('hidden', s !== id);
     const inGame = IN_GAME.has(id);
     $('topbar').classList.toggle('hidden', !inGame);

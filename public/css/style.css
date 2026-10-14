@@ -819,3 +819,13 @@ body.host .setup-bar { padding-left: 66px; }
 /* Focus visibile da tastiera */
 :focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 .answer-btn:focus-visible, .host-tile:focus-visible { outline: 4px solid #fff; outline-offset: -6px; }
+
+/* Avviso del pulsante audio (musica ed effetti / solo effetti / spento) */
+.audio-toast {
+  position: fixed; left: 50%; top: calc(56px + var(--safe-top)); z-index: 40;
+  transform: translate(-50%, -8px); opacity: 0; pointer-events: none;
+  background: rgba(15, 4, 40, 0.85); color: #fff; font-weight: 800; font-size: 0.95rem;
+  padding: 8px 14px; border-radius: 999px; transition: opacity .2s, transform .2s; white-space: nowrap;
+}
+.audio-toast.show { opacity: 1; transform: translate(-50%, 0); }
+.preset-group { grid-column: 1 / -1; margin: 10px 0 0; font-family: var(--font-head); font-weight: 600; font-size: 1.15rem; text-align: left; }
