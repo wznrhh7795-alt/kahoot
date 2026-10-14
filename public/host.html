@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quizzone! – Organizza una partita</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Scelta del quiz -->
+  <main id="h-home" class="screen bg-pattern" style="justify-content: flex-start;">
+    <div class="host-wrap" style="display:flex; flex-direction:column; gap:20px; align-items:center;">
+      <h1 class="logo">Quizzone!</h1>
+      <p>Scegli un quiz da proiettare. I giocatori entrano da <b id="join-host"></b> con il PIN.</p>
+      <button id="btn-new" class="btn green">+ Crea un nuovo quiz</button>
+      <div id="quiz-list" class="quiz-list"></div>
+    </div>
+  </main>
+
+  <!-- Editor -->
+  <main id="h-editor" class="screen hidden" style="justify-content: flex-start;">
+    <div class="editor">
+      <div class="editor-row" style="justify-content: space-between;">
+        <h2>Editor del quiz</h2>
+        <div class="editor-row">
+          <button id="ed-cancel" class="btn light small">Annulla</button>
+          <button id="ed-save" class="btn green small">Salva</button>
+        </div>
+      </div>
+      <div id="ed-error" class="error hidden" role="alert"></div>
+      <div class="card">
+        <label for="ed-title">Titolo</label>
+        <input id="ed-title" class="input" placeholder="Es. Storia romana" maxlength="80">
+        <label for="ed-desc">Descrizione</label>
+        <input id="ed-desc" class="input" placeholder="Facoltativa" maxlength="140">
+      </div>
+      <div id="ed-questions" style="display:flex; flex-direction:column; gap:14px;"></div>
+      <div class="editor-row">
+        <button id="ed-add-quiz" class="btn purple">+ Domanda a scelta multipla</button>
+        <button id="ed-add-tf" class="btn purple">+ Domanda vero/falso</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Sala d'attesa -->
+  <main id="h-lobby" class="screen hidden" style="justify-content: flex-start;">
+    <div class="pin-banner">
+      <div>
+        <div class="pin-label">Vai su <b id="join-url"></b></div>
+        <div class="pin-label">e inserisci il PIN del gioco:</div>
+      </div>
+      <div><div class="pin-value" id="lobby-pin"></div></div>
+    </div>
+    <h2 id="lobby-title"></h2>
+    <div class="editor-row" style="justify-content:center">
+      <span class="score-pill" id="lobby-count">0 giocatori</span>
+      <button id="btn-start" class="btn light" disabled>Inizia</button>
+    </div>
+    <p id="lobby-wait" class="big">In attesa dei giocatori…</p>
+    <div id="lobby-players" class="players"></div>
+    <p class="footer-note">Clicca su un nickname per rimuovere il giocatore.</p>
+  </main>
+
+  <!-- Preparati -->
+  <main id="h-getready" class="screen hidden">
+    <p id="gr-num" class="big"></p>
+    <div id="gr-text" class="question-banner"></div>
+    <div class="progress"><div id="gr-bar"></div></div>
+  </main>
+
+  <!-- Domanda -->
+  <main id="h-question" class="screen hidden" style="justify-content: space-between;">
+    <div id="q-text" class="question-banner"></div>
+    <div class="question-mid">
+      <div id="q-timer" class="timer-circle">20</div>
+      <div class="answer-counter"><b id="q-count">0</b>risposte</div>
+      <button id="btn-skip" class="btn light">Salta</button>
+    </div>
+    <div id="q-answers" class="answer-grid"></div>
+  </main>
+
+  <!-- Risultati della domanda -->
+  <main id="h-results" class="screen hidden" style="justify-content: space-between;">
+    <div class="editor-row" style="width:100%; justify-content: space-between;">
+      <div id="r-text" class="question-banner" style="flex:1"></div>
+      <button id="btn-to-score" class="btn light">Avanti</button>
+    </div>
+    <div id="r-chart" class="chart"></div>
+    <div id="r-answers" class="answer-grid"></div>
+  </main>
+
+  <!-- Classifica -->
+  <main id="h-scoreboard" class="screen hidden" style="justify-content: flex-start;">
+    <div class="editor-row" style="width: min(700px, 100%); justify-content: space-between;">
+      <h2 class="big">Classifica</h2>
+      <button id="btn-next" class="btn light">Avanti</button>
+    </div>
+    <div id="sb-list" class="scoreboard"></div>
+  </main>
+
+  <!-- Podio -->
+  <main id="h-podium" class="screen bg-pattern hidden">
+    <h2 id="pod-title" class="big"></h2>
+    <div id="pod" class="podium"></div>
+    <button id="btn-home" class="btn light">Torna ai quiz</button>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/shapes.js"></script>
+  <script src="/js/host.js"></script>
+</body>
+</html>

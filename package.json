@@ -1,0 +1,32 @@
+{
+  "name": "quizzone",
+  "version": "1.0.0",
+  "description": "Clone italiano di un gioco a quiz multigiocatore in tempo reale",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wznrhh7795-alt/kahoot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wznrhh7795-alt/kahoot/issues"
+  },
+  "homepage": "https://github.com/wznrhh7795-alt/kahoot#readme",
+  "dependencies": {
+    "express": "^4.22.3",
+    "socket.io": "^4.8.4"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.8.4"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  }
+}
