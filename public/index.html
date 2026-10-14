@@ -2,8 +2,11 @@
 <html lang="it">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#46178f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Quizzone! – Entra in partita</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
@@ -19,18 +22,19 @@
   <main id="s-pin" class="screen bg-pattern">
     <h1 class="logo">Quizzone!</h1>
     <form id="pin-form" class="card" autocomplete="off">
-      <input id="pin-input" class="input" inputmode="numeric" placeholder="PIN del gioco" aria-label="PIN del gioco" maxlength="7">
+      <input id="pin-input" class="input" inputmode="numeric" pattern="[0-9 ]*" placeholder="PIN del gioco" aria-label="PIN del gioco" maxlength="7">
       <button class="btn" type="submit">Entra</button>
     </form>
     <div id="pin-error" class="error hidden" role="alert"></div>
-    <p class="footer-note">Vuoi organizzare una partita? <a href="/host">Crea il tuo quiz qui</a></p>
+    <a class="btn light" href="/host">Organizza una partita</a>
+    <p class="footer-note">Chi organizza crea la partita dal proprio telefono e condivide il PIN.</p>
   </main>
 
   <!-- 2. Nickname -->
   <main id="s-nick" class="screen bg-pattern hidden">
     <h1 class="logo">Quizzone!</h1>
     <form id="nick-form" class="card" autocomplete="off">
-      <input id="nick-input" class="input" placeholder="Nickname" aria-label="Nickname" maxlength="15">
+      <input id="nick-input" class="input" placeholder="Nickname" aria-label="Nickname" maxlength="15" autocapitalize="words">
       <button class="btn" type="submit">OK, via!</button>
     </form>
     <div id="nick-error" class="error hidden" role="alert"></div>
@@ -38,8 +42,8 @@
 
   <!-- 3. Istruzioni / sala d'attesa -->
   <main id="s-lobby" class="screen hidden">
-    <h2 class="big">Eccoti!</h2>
-    <p>Vedi il tuo nickname sullo schermo?</p>
+    <h2 id="lobby-title" class="big">Eccoti!</h2>
+    <p id="lobby-sub">Vedi il tuo nickname sullo schermo?</p>
     <div class="spinner"></div>
   </main>
 
@@ -50,8 +54,12 @@
     <p class="big">Preparati!</p>
   </main>
 
-  <!-- 5. Domanda -->
-  <main id="s-question" class="screen hidden" style="justify-content: stretch; padding: 8px;">
+  <!-- 5. Domanda: testo e risposte anche sul telefono, così non serve uno schermo grande -->
+  <main id="s-question" class="screen player-question hidden">
+    <div class="player-q-head">
+      <div id="q-text" class="player-q-text"></div>
+      <div id="q-timer" class="timer-circle small">20</div>
+    </div>
     <div id="answers" class="answer-grid player-answers"></div>
   </main>
 
@@ -68,6 +76,7 @@
     <div id="res-icon" class="result-icon"></div>
     <div id="res-streak" class="streak hidden"></div>
     <div id="res-points" class="points-box"></div>
+    <p id="res-answer"></p>
     <p id="res-rank" class="big" style="font-size: 1.3rem"></p>
     <p id="res-behind"></p>
   </main>
@@ -81,7 +90,7 @@
     <a class="btn light" href="/">Gioca ancora</a>
   </main>
 
-  <!-- Messaggi (espulso, host uscito...) -->
+  <!-- Messaggi (espulso, partita chiusa...) -->
   <main id="s-message" class="screen bg-pattern hidden">
     <h2 id="msg-title" class="big"></h2>
     <p id="msg-body"></p>
@@ -93,7 +102,13 @@
     <span id="bb-score" class="score-pill">0</span>
   </footer>
 
-  <script src="/socket.io/socket.io.js"></script>
+  <div id="reconnect" class="reconnect hidden" role="status">
+    <div class="spinner small"></div>
+    <span>Connessione persa, mi ricollego…</span>
+  </div>
+
+  <script src="/vendor/peerjs.min.js"></script>
+  <script src="/js/net.js"></script>
   <script src="/js/shapes.js"></script>
   <script src="/js/player.js"></script>
 </body>

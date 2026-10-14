@@ -1,3 +1,4 @@
+(function (root) {
 'use strict';
 
 const VF = ['Vero', 'Falso'];
@@ -10,7 +11,7 @@ const q = (text, answers, correct, time = 20) => ({
   type: answers === VF ? 'vero_falso' : 'quiz',
 });
 
-module.exports = [
+const quizzes = [
   {
     id: 'geografia-italia',
     title: "Geografia d'Italia",
@@ -53,3 +54,7 @@ module.exports = [
     ],
   },
 ];
+
+if (typeof module !== 'undefined' && module.exports) module.exports = quizzes;
+else root.SAMPLE_QUIZZES = quizzes;
+})(typeof window !== 'undefined' ? window : globalThis);

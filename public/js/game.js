@@ -1,7 +1,7 @@
+// Logica di gioco pura: nessuna rete e nessun timer qui dentro, così è testabile.
+// Gira nel browser dell'host (host.js), che collega PeerJS e i timer a questa classe.
+(function (root) {
 'use strict';
-
-// Logica di gioco pura: nessun socket e nessun timer qui dentro, così è testabile.
-// Il server (server.js) collega gli eventi Socket.IO e i timer a questa classe.
 
 const MAX_NICKNAME = 15;
 const BASE_POINTS = 1000;
@@ -64,8 +64,9 @@ class Game {
     return this.quiz.questions.length;
   }
 
+  // Si può entrare anche a partita iniziata, ma non dopo la fine.
   addPlayer(id, rawNickname) {
-    if (this.state !== 'lobby') return { error: 'La partita è già iniziata.' };
+    if (this.state === 'gameover') return { error: 'La partita è terminata.' };
     const nickname = String(rawNickname ?? '').trim().replace(/\s+/g, ' ');
     if (!nickname) return { error: 'Inserisci un nickname.' };
     if (nickname.length > MAX_NICKNAME) {
@@ -165,4 +166,7 @@ class Game {
   }
 }
 
-module.exports = { Game, validateQuiz, scoreFor, streakBonus, MAX_NICKNAME };
+const api = { Game, validateQuiz, scoreFor, streakBonus, MAX_NICKNAME };
+if (typeof module !== 'undefined' && module.exports) module.exports = api;
+else root.QuizGame = api;
+})(typeof window !== 'undefined' ? window : globalThis);

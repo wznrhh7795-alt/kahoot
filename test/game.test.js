@@ -2,8 +2,8 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { Game, validateQuiz, scoreFor, streakBonus } = require('../src/game');
-const sampleQuizzes = require('../src/quizzes');
+const { Game, validateQuiz, scoreFor, streakBonus } = require('../public/js/game');
+const sampleQuizzes = require('../public/js/quizzes');
 
 const quiz = {
   title: 'Prova',

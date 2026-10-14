@@ -2,7 +2,9 @@
 <html lang="it">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#46178f">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <title>Quizzone! – Organizza una partita</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
@@ -13,7 +15,8 @@
   <main id="h-home" class="screen bg-pattern" style="justify-content: flex-start;">
     <div class="host-wrap" style="display:flex; flex-direction:column; gap:20px; align-items:center;">
       <h1 class="logo">Quizzone!</h1>
-      <p>Scegli un quiz da proiettare. I giocatori entrano da <b id="join-host"></b> con il PIN.</p>
+      <p>Scegli un quiz e ospita la partita: puoi farlo anche da telefono.<br>
+        Gli altri entrano con il PIN o con il link che condividi. <a href="/" style="color:#fff">Hai un PIN? Entra qui</a></p>
       <button id="btn-new" class="btn green">+ Crea un nuovo quiz</button>
       <div id="quiz-list" class="quiz-list"></div>
     </div>
@@ -44,6 +47,12 @@
     </div>
   </main>
 
+  <!-- Connessione -->
+  <main id="h-connecting" class="screen hidden">
+    <div class="spinner"></div>
+    <p class="big">Creazione della partita…</p>
+  </main>
+
   <!-- Sala d'attesa -->
   <main id="h-lobby" class="screen hidden" style="justify-content: flex-start;">
     <div class="pin-banner">
@@ -53,14 +62,24 @@
       </div>
       <div><div class="pin-value" id="lobby-pin"></div></div>
     </div>
+    <div class="editor-row" style="justify-content:center">
+      <button id="share-native" class="btn green">Condividi link</button>
+      <button id="share-copy" class="btn light">Copia link</button>
+    </div>
     <h2 id="lobby-title"></h2>
     <div class="editor-row" style="justify-content:center">
       <span class="score-pill" id="lobby-count">0 giocatori</span>
       <button id="btn-start" class="btn light" disabled>Inizia</button>
+      <button id="btn-cancel" class="btn red small">Annulla</button>
     </div>
+    <form id="host-play-form" class="host-play" autocomplete="off">
+      <input id="host-nick" class="input" placeholder="Il tuo nickname" aria-label="Il tuo nickname" maxlength="15">
+      <button class="btn purple" type="submit">Gioca anche tu</button>
+    </form>
+    <p id="host-play-on" class="footer-note hidden"></p>
     <p id="lobby-wait" class="big">In attesa dei giocatori…</p>
     <div id="lobby-players" class="players"></div>
-    <p class="footer-note">Clicca su un nickname per rimuovere il giocatore.</p>
+    <p class="footer-note">Tocca un nickname per rimuovere il giocatore. Tieni aperta questa pagina fino alla fine della partita.</p>
   </main>
 
   <!-- Preparati -->
@@ -87,6 +106,7 @@
       <div id="r-text" class="question-banner" style="flex:1"></div>
       <button id="btn-to-score" class="btn light">Avanti</button>
     </div>
+    <div id="r-mine" class="my-result hidden"></div>
     <div id="r-chart" class="chart"></div>
     <div id="r-answers" class="answer-grid"></div>
   </main>
@@ -107,7 +127,10 @@
     <button id="btn-home" class="btn light">Torna ai quiz</button>
   </main>
 
-  <script src="/socket.io/socket.io.js"></script>
+  <script src="/vendor/peerjs.min.js"></script>
+  <script src="/js/net.js"></script>
+  <script src="/js/game.js"></script>
+  <script src="/js/quizzes.js"></script>
   <script src="/js/shapes.js"></script>
   <script src="/js/host.js"></script>
 </body>
