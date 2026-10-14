@@ -26,10 +26,16 @@
 
   // ---- Impostazioni della partita rapida (ricordate nel browser) ----
   const setup = (() => {
-    const defaults = { categories: Bank.categories.map((c) => c.id), modes: Bank.modes.map((m) => m.id), count: 15, difficulty: 'mista', speed: 'normale' };
+    const allModes = Bank.modes.map((m) => m.id);
+    const defaults = { categories: Bank.categories.map((c) => c.id), modes: allModes, knownModes: allModes, count: 15, difficulty: 'mista', speed: 'normale', bonus: 'off', theme: 'classico' };
     try {
       const saved = JSON.parse(localStorage.getItem(SETUP_KEY));
-      if (saved) return { ...defaults, ...saved };
+      if (saved) {
+        // Le modalità uscite dopo l'ultimo salvataggio vengono attivate in automatico.
+        const known = saved.knownModes || ['quiz', 'vf', 'immagine', 'citazione', 'ordina', 'numero'];
+        const modes = [...(saved.modes || []), ...allModes.filter((m) => !known.includes(m))];
+        return { ...defaults, ...saved, modes, knownModes: allModes };
+      }
     } catch {}
     return defaults;
   })();
@@ -38,6 +44,8 @@
       localStorage.setItem(SETUP_KEY, JSON.stringify(setup));
     } catch {}
   }
+
+  setup.theme = UI.applyTheme(setup.theme);
 
   // ---- Home ----
   const total = Bank.estimateCount();
@@ -99,10 +107,14 @@
     $('setup-summary').textContent = `${setup.count} domande · ${nc} ${nc === 1 ? 'categoria' : 'categorie'} · ${nm} ${nm === 1 ? 'gioco' : 'giochi'}`;
     $('btn-quick').disabled = nc === 0 || nm === 0;
   }
+  $('theme-grid').innerHTML = UI.THEMES.map((t) => `
+    <button data-v="${t.id}" class="theme-swatch" style="--s1:${t.swatch[0]};--s2:${t.swatch[1]};--s3:${t.swatch[2]}">
+      <span class="dot" aria-hidden="true"></span>${esc(t.name)}</button>`).join('');
   document.querySelectorAll('[data-seg]').forEach((seg) => {
     seg.querySelectorAll('button').forEach((b) => {
       b.addEventListener('click', () => {
         setup[seg.dataset.seg] = seg.dataset.seg === 'count' ? Number(b.dataset.v) : b.dataset.v;
+        if (seg.dataset.seg === 'theme') UI.applyTheme(setup.theme);
         saveSetup();
         renderSetup();
       });
@@ -113,7 +125,7 @@
   $('mode-all').onclick = () => { setup.modes = Bank.modes.map((m) => m.id); saveSetup(); renderSetup(); };
 
   function generate(params) {
-    const game = Bank.buildGame({ count: setup.count, difficulty: setup.difficulty, speed: setup.speed, ...params });
+    const game = Bank.buildGame({ count: setup.count, difficulty: setup.difficulty, speed: setup.speed, bonus: setup.bonus === 'on', ...params });
     if (game.error) {
       alert(game.error);
       return null;
@@ -201,11 +213,11 @@
   }
 
   // ---- Editor ----
-  const TYPE_NAMES = { quiz: 'Scelta multipla', vero_falso: 'Vero/Falso', ordina: 'Metti in ordine', numero: 'Indovina il numero' };
+  const TYPE_NAMES = { quiz: 'Scelta multipla', vero_falso: 'Vero/Falso', ordina: 'Metti in ordine', numero: 'Indovina il numero', scrivi: 'Scrivi la risposta' };
   const blankQuestion = (type) => ({
     type,
     text: '',
-    time: { quiz: 20, vero_falso: 10, ordina: 30, numero: 30 }[type],
+    time: { quiz: 20, vero_falso: 10, ordina: 30, numero: 30, scrivi: 30 }[type],
     answers: type === 'vero_falso' ? ['Vero', 'Falso'] : ['', '', '', ''],
     correct: 0,
     orderItems: ['', '', '', ''],
@@ -214,6 +226,8 @@
     max: 100,
     tol: 0,
     unit: '',
+    typedAnswer: '',
+    acceptText: '',
     mediaText: '',
   });
 
@@ -226,6 +240,10 @@
       while (d.orderItems.length < 4) d.orderItems.push('');
     }
     d.mediaText = q.media ? (q.media.kind === 'image' ? q.media.src : q.media.value || '') : '';
+    if (d.type === 'scrivi') {
+      d.typedAnswer = q.answer;
+      d.acceptText = (q.accept || []).join(', ');
+    }
     return d;
   }
 
@@ -267,6 +285,12 @@
           <div class="editor-items">${q.orderItems.map((it, i) => `
             <div class="editor-item"><span class="n">${i + 1}</span><input type="text" data-o="${i}" value="${esc(it)}" maxlength="60" placeholder="Elemento ${i + 1}${i >= 3 ? ' (facoltativo)' : ''}"></div>`).join('')}
           </div>`;
+      } else if (q.type === 'scrivi') {
+        body = `
+          <input class="input" data-f="typedAnswer" placeholder="Risposta esatta (es. Roma)" value="${esc(q.typedAnswer)}" maxlength="40">
+          <input class="input" data-f="acceptText" placeholder="Altre risposte accettate, separate da virgola — facoltativo" value="${esc(q.acceptText)}" maxlength="200">
+          <span class="small" style="color:var(--muted)">Maiuscole, accenti, articoli e un piccolo errore di battitura vengono perdonati.</span>
+          <input class="input" data-f="mediaText" placeholder="Immagine (link https://…) o emoji — facoltativo" value="${esc(q.mediaText || '')}" maxlength="400">`;
       } else {
         body = `
           <div class="editor-row">
@@ -297,6 +321,8 @@
       };
       el.querySelector('[data-f=mediaText]')?.addEventListener('input', (e) => (q.mediaText = e.target.value));
       el.querySelector('[data-f=unit]')?.addEventListener('input', (e) => (q.unit = e.target.value));
+      el.querySelector('[data-f=typedAnswer]')?.addEventListener('input', (e) => (q.typedAnswer = e.target.value));
+      el.querySelector('[data-f=acceptText]')?.addEventListener('input', (e) => (q.acceptText = e.target.value));
       el.querySelectorAll('[data-a]').forEach((input) => (input.oninput = (e) => (q.answers[Number(input.dataset.a)] = e.target.value)));
       el.querySelectorAll('[data-c]').forEach((radio) => (radio.onchange = () => (q.correct = Number(radio.dataset.c))));
       el.querySelectorAll('[data-o]').forEach((input) => (input.oninput = (e) => (q.orderItems[Number(input.dataset.o)] = e.target.value)));
@@ -329,6 +355,11 @@
         for (let i = 0; i < 5 && shuffled.every((x, k) => x === inOrder[k]); i++) shuffled = inOrder.slice().sort(() => rng() - 0.5);
         return { ...base, items: shuffled, correct: inOrder.map((x) => shuffled.indexOf(x)) };
       }
+      if (q.type === 'scrivi') {
+        const media = mediaFrom(q.mediaText);
+        const accept = (q.acceptText || '').split(',').map((x) => x.trim()).filter(Boolean).slice(0, 10);
+        return { ...base, answer: (q.typedAnswer || '').trim(), ...(accept.length ? { accept } : {}), ...(media ? { media } : {}) };
+      }
       return { ...base, answer: q.answer, min: q.min, max: q.max, tol: Math.max(0, q.tol || 0), step: 1, unit: (q.unit || '').trim() };
     });
     return { id: draft.id || `quiz-${Date.now()}`, title: $('ed-title').value.trim(), description: $('ed-desc').value.trim(), questions };
@@ -341,6 +372,7 @@
       if (!q.text) return `Scrivi il testo della domanda ${n}.`;
       if (q.answers?.some((a) => !a)) return `Completa le risposte della domanda ${n}.`;
       if (q.correct === -1) return `La risposta corretta della domanda ${n} è vuota.`;
+      if (q.type === 'scrivi' && !q.answer) return `Scrivi la risposta esatta della domanda ${n}.`;
       if (q.type === 'ordina' && q.items.length < 3) return `La domanda ${n} deve avere almeno 3 elementi da ordinare.`;
       if (q.type === 'ordina' && new Set(q.items).size !== q.items.length) return `Gli elementi della domanda ${n} devono essere diversi.`;
     }
@@ -395,6 +427,8 @@
       hostPlays: false,
       hostAvatar: UI.AVATARS[Math.floor(Math.random() * UI.AVATARS.length)],
       hostAnswered: false,
+      theme: setup.theme,
+      prevRanks: new Map(),
       seq: 0,
     };
     s.bus = new QuizNet.Bus({
@@ -449,7 +483,7 @@
     if (game.players.has(from)) session.lastSeen.set(from, Date.now());
     switch (msg.t) {
       case 'hello':
-        return send(from, { t: 'welcome', title: session.quiz.title });
+        return send(from, { t: 'welcome', title: session.quiz.title, theme: session.theme });
       case 'join':
       case 'rejoin': {
         if (session.banned.has(from)) return send(from, { t: 'kicked' });
@@ -460,7 +494,7 @@
         }
         session.lastSeen.set(from, Date.now());
         const player = game.players.get(from);
-        send(from, { t: 'joined', nickname: player.nickname, avatar: player.avatar, score: player.score, title: session.quiz.title, snapshot: snapshot(from) });
+        send(from, { t: 'joined', nickname: player.nickname, avatar: player.avatar, score: player.score, title: session.quiz.title, theme: session.theme, snapshot: snapshot(from) });
         return renderPlayers();
       }
       case 'answer':
@@ -503,7 +537,10 @@
   function getreadyMessage(ms) {
     const { game } = session;
     const q = game.question;
-    return { t: 'getready', index: game.index, total: game.total, ms, mode: q.mode || q.type, next: q.media?.kind === 'image' ? { kind: 'image', src: q.media.src } : null };
+    return {
+      t: 'getready', index: game.index, total: game.total, ms, mode: q.mode || q.type, double: Boolean(q.double), theme: session.theme,
+      next: q.media?.kind === 'image' ? { kind: 'image', src: q.media.src } : null,
+    };
   }
 
   // Stato attuale per chi entra o rientra a partita in corso.
@@ -634,6 +671,8 @@
     if (game.index === 0) UI.sound('start');
     session.phaseEndsAt = Date.now() + GET_READY_MS;
     $('gr-mode').textContent = modeLabel(q);
+    $('gr-double').classList.toggle('hidden', !q.double);
+    if (q.double) UI.sound('join');
     $('gr-num').textContent = `Domanda ${game.index + 1} di ${game.total}`;
     $('gr-text').textContent = q.text;
     UI.preload(q.media);
@@ -667,6 +706,7 @@
     session.hostAnswered = false;
     $('q-cat').textContent = `${q.categoryEmoji || '✏️'} ${q.category || session.quiz.title}`;
     $('q-mode').textContent = modeLabel(q);
+    $('q-double').classList.toggle('hidden', !q.double);
     $('q-text').textContent = q.text;
     $('q-count').textContent = '0';
     UI.renderMedia($('q-media'), q.media);
@@ -682,6 +722,9 @@
     } else if (session.hostPlays) {
       input.classList.remove('hidden');
       UI.renderAnswerInput(input, q, (choice) => hostAnswer(choice));
+    } else if (q.type === 'scrivi') {
+      tiles.className = '';
+      tiles.innerHTML = `<p class="host-number-hint">⌨️ Scrivi la risposta sul telefono · ${esc(q.hint)}</p>`;
     } else if (q.type === 'ordina') {
       tiles.className = 'host-items';
       tiles.innerHTML = q.items.map((it, i) => `<div class="host-item c${i % 6}"><span class="n">?</span>${esc(it)}</div>`).join('');
@@ -736,6 +779,14 @@
         <p class="ratio">${right} su ${answered} ${right === 1 ? 'ha' : 'hanno'} trovato l'ordine giusto</p>
         <div class="host-items">${reveal.correct.map((idx, pos) => `
           <div class="host-item c${idx % 6}" style="animation-delay:${pos * 0.12}s"><span class="n">${pos + 1}</span>${esc(q.items[idx])}</div>`).join('')}</div>`;
+    } else if (reveal.type === 'scrivi') {
+      const right = summary.distribution[0];
+      body.innerHTML = `
+        <p class="ratio">La risposta era</p>
+        <div class="big-answer">${esc(reveal.text)}</div>
+        <p class="ratio">${right} su ${answered} ${right === 1 ? 'l\'ha scritta' : 'l\'hanno scritta'}</p>
+        ${summary.typed.length ? `<div class="typed-cloud">${summary.typed.map((w, i) => `
+          <span class="typed-word ${w.correct ? 'ok' : 'ko'}" style="animation-delay:${i * 0.08}s">${esc(w.text)}${w.count > 1 ? ` <b>×${w.count}</b>` : ''}</span>`).join('')}</div>` : ''}`;
     } else {
       body.innerHTML = `
         <p class="ratio">La risposta era</p>
@@ -753,7 +804,7 @@
     if (me) {
       const l = me.last;
       $('r-mine').className = `my-result ${l.correct ? 'ok' : 'ko'}`;
-      $('r-mine').textContent = `${l.correct ? `Corretto! +${l.points}` : l.close ? 'C\'eri quasi!' : l.answered ? 'Sbagliato' : 'Tempo scaduto'} · ${l.rank}° posto · ${me.score} punti`;
+      $('r-mine').textContent = `${l.correct ? `Corretto${l.typo ? ' (con un piccolo errore)' : ''}! +${l.points}${q.double ? ' ⚡' : ''}` : l.close ? 'C\'eri quasi!' : l.answered ? 'Sbagliato' : 'Tempo scaduto'} · ${l.rank}° posto · ${me.score} punti`;
       if (l.correct) UI.confetti({ count: 80, duration: 1800 });
       UI.sound(l.correct ? 'correct' : 'wrong');
     } else {
@@ -770,17 +821,47 @@
   function showScoreboard() {
     const { game } = session;
     game.state = 'scoreboard';
-    const top = game.scoreboard(8);
+    const ranking = game.ranking();
+    const top = ranking.slice(0, 8);
+    const best = Math.max(1, ...top.map((p) => p.score));
+    const prev = session.prevRanks;
     const last = game.index + 1 >= game.total;
     $('btn-next').textContent = last ? '🏆 Vai al podio' : 'Prossima domanda ▶';
     $('sb-list').innerHTML = top.length
-      ? top.map((p, i) => `
-        <div class="score-row" style="animation-delay:${i * 0.08}s">
+      ? top.map((p, i) => {
+        const gained = p.last?.points || 0;
+        const before = prev.get(p.id);
+        const move = before ? before - (i + 1) : 0;
+        return `
+        <div class="score-row" style="animation-delay:${i * 0.08}s; --w:${Math.round((p.score / best) * 100)}%">
           <span class="pos">${i + 1}</span><span class="avatar">${esc(p.avatar)}</span>
-          <span class="name">${esc(p.nickname)}</span><span>${p.score.toLocaleString('it-IT')}</span>
-        </div>`).join('')
+          <span class="name">${esc(p.nickname)}</span>
+          ${move ? `<span class="move ${move > 0 ? 'up' : 'down'}" aria-label="${move > 0 ? 'sale' : 'scende'} di ${Math.abs(move)}">${move > 0 ? '▲' : '▼'}${Math.abs(move)}</span>` : ''}
+          ${gained ? `<span class="gain">+${gained.toLocaleString('it-IT')}</span>` : ''}
+          <span class="pts" data-from="${p.score - gained}" data-to="${p.score}">${(p.score - gained).toLocaleString('it-IT')}</span>
+        </div>`;
+      }).join('')
       : '<p>Nessun giocatore rimasto.</p>';
+    session.prevRanks = new Map(ranking.map((p, i) => [p.id, i + 1]));
     show('h-scoreboard');
+    countUp($('sb-list').querySelectorAll('.pts'));
+  }
+
+  // I punteggi salgono fino al nuovo totale.
+  function countUp(els, ms = 900) {
+    const t0 = performance.now();
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const frame = (t) => {
+      const k = reduce ? 1 : Math.min(1, (t - t0) / ms);
+      const ease = 1 - (1 - k) ** 3;
+      els.forEach((el) => {
+        const from = Number(el.dataset.from);
+        const to = Number(el.dataset.to);
+        el.textContent = Math.round(from + (to - from) * ease).toLocaleString('it-IT');
+      });
+      if (k < 1) requestAnimationFrame(frame);
+    };
+    setTimeout(() => requestAnimationFrame(frame), 350);
   }
 
   function endGame() {
@@ -813,7 +894,7 @@
     for (const p of old.game.players.values()) {
       if (p.id === HOST_KEY || isConnected(p.id)) game.addPlayer(p.id, p.nickname, p.avatar);
     }
-    Object.assign(old, { quiz, game, phaseEndsAt: 0, hostAnswered: false });
+    Object.assign(old, { quiz, game, phaseEndsAt: 0, hostAnswered: false, prevRanks: new Map() });
     broadcast({ t: 'restart', title: quiz.title });
     openLobby();
   }

@@ -18,7 +18,7 @@ smartphone, gli altri entrano con il PIN o con il link condiviso.
   Geografia del mondo, Bandiere, Italia, Monumenti e luoghi, Storia, Mitologia, Arte, Letteratura, Citazioni,
   Cinema, Musica, Scienza, Elementi chimici, Spazio, Corpo umano, Animali, Sport, Cucina, Lingua italiana,
   Inglese, Proverbi e modi di dire, Matematica, Invenzioni e tecnologia, Cultura generale.
-- **6 giochi diversi**, mescolabili nella stessa partita:
+- **9 giochi diversi**, mescolabili nella stessa partita:
   - ❓ **Quiz**: quattro risposte, una giusta.
   - ⚖️ **Vero o falso**, con la spiegazione quando è falso.
   - 🖼️ **Indovina dall'immagine**: 195 bandiere, oltre 180 foto di monumenti, opere d'arte e animali, film e
@@ -28,11 +28,23 @@ smartphone, gli altri entrano con il PIN o con il link condiviso.
     se l'ordine è tutto giusto.
   - 🎯 **Indovina il numero**: anni, misure e stime con un cursore; punti pieni se esatto, che calano entro la
     tolleranza.
+  - ⌨️ **Scrivi la risposta**: si digita la risposta sul telefono; maiuscole, accenti, articoli e un piccolo
+    errore di battitura vengono perdonati. Sullo schermo dell'host compaiono le risposte date.
+  - 🕵️ **Trova l'intruso**: tre elementi hanno qualcosa in comune, uno no.
+  - ⚔️ **Testa a testa**: due opzioni, chi vince il confronto (più antico, più lungo, più alto…).
 - **Partita rapida**: scegli categorie, giochi, numero di domande (5–50), difficoltà (facile, media, difficile,
-  mista) e tempo (veloce, normale, rilassato). Le domande non si ripetono nella stessa partita.
+  mista o **progressiva**, da facile a difficile) e tempo (veloce, normale, rilassato). Le domande non si
+  ripetono nella stessa partita.
+- **Punti doppi a sorpresa** ⚡: alcune domande, e sempre l'ultima, valgono il doppio.
+- **6 temi di colore** (Classico, Galassia, Oceano, Tramonto, Foresta, Ora d'oro): li sceglie l'host e cambiano
+  anche sui telefoni dei giocatori.
+- 🎯 **Allenati da solo** (`/solo`): una partita sul proprio telefono senza PIN né organizzatore, con i record
+  personali.
+- **Si installa come un'app**: «Aggiungi alla schermata Home» su iPhone e Android, con icona e schermo intero.
 - **Partite a tema** già pronte (Il giro del mondo, Viaggio in Italia, Serata al cinema, Ritorno a scuola…).
 - **Editor** per creare i propri quiz con tutti i tipi di domanda (anche con immagine o emoji).
-- Avatar per i giocatori, combo di risposte giuste, classifica, podio con coriandoli, suoni (disattivabili),
+- Avatar per i giocatori, combo di risposte giuste, classifica animata (posizioni guadagnate e punti che salgono),
+  podio con coriandoli, suoni (disattivabili),
   vibrazione sul telefono e **«Rigioca con nuove domande»** con gli stessi giocatori e lo stesso PIN.
 
 ## Come si gioca
@@ -81,14 +93,18 @@ Per provare dal telefono apri `http://<ip-del-computer>:3000` (serve comunque in
 ```
 public/index.html      App del giocatore                     public/js/player.js
 public/host.html       App dell'organizzatore + editor        public/js/host.js
+public/solo.html       Allenamento in solitaria               public/js/solo.js
 public/js/game.js      Motore di gioco: tipi di domanda, punteggi, classifica
-public/js/bank.js      Banca delle domande: 24 categorie, generatori per i 6 giochi, partite casuali
-public/js/ui.js        Componenti grafici condivisi: risposte, timer, coriandoli, suoni
+public/js/bank.js      Banca delle domande: 24 categorie, generatori per i 9 giochi, partite casuali
+public/js/ui.js        Componenti grafici condivisi: risposte, timer, temi, coriandoli, suoni
 public/js/net.js       Rete di gioco via relay Nostr
 public/data/*.js       Dati: geografia, scienza, storia, cultura, lingua, varie, immagini
 public/flags/          Bandiere (flag-icons)
 scripts/build-images.mjs  Rigenera public/data/images.js da Wikipedia/Wikimedia Commons
 test/                  Test del motore e della banca delle domande
+public/manifest.webmanifest, public/icons/   Installazione come app
+.claude/skills/        Skill di Claude Code usate per sviluppare il gioco (vedi .claude/skills/README.md)
+CLAUDE.md              Guida rapida al progetto per Claude Code
 ```
 
 La soluzione non viene mai inviata ai giocatori prima della chiusura della domanda.

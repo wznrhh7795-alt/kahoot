@@ -89,12 +89,63 @@
 
   // ---- Controlli di risposta ----
   // Restituisce { lock(choice) } e chiama onSubmit(choice) quando il giocatore conferma.
+  // ---- Temi di colore (scelti dall'host, applicati anche ai telefoni) ----
+  const THEMES = [
+    { id: 'classico', name: 'Classico', color: '#3c1180', swatch: ['#1d0646', '#6d28d9', '#ff3d7f'] },
+    { id: 'galassia', name: 'Galassia', color: '#1a1650', swatch: ['#070b24', '#3b2a8a', '#22d3ee'] },
+    { id: 'oceano', name: 'Oceano', color: '#04395e', swatch: ['#02182b', '#0a7ea4', '#10b981'] },
+    { id: 'tramonto', name: 'Tramonto', color: '#7a1236', swatch: ['#2a0614', '#e0533d', '#ffb347'] },
+    { id: 'foresta', name: 'Foresta', color: '#0d4228', swatch: ['#04170f', '#2c7a43', '#a3e635'] },
+    { id: 'oro', name: 'Ora d\'oro', color: '#7c3d06', swatch: ['#2b1203', '#d18a12', '#ffd166'] },
+  ];
+  function applyTheme(id) {
+    const theme = THEMES.find((t) => t.id === id) || THEMES[0];
+    if (theme.id === 'classico') delete document.documentElement.dataset.theme;
+    else document.documentElement.dataset.theme = theme.id;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme.color);
+    return theme.id;
+  }
+
   function renderAnswerInput(container, q, onSubmit) {
     container.innerHTML = '';
     container.className = `answer-input input-${q.type}`;
     if (q.type === 'ordina') return orderInput(container, q, onSubmit);
     if (q.type === 'numero') return numberInput(container, q, onSubmit);
+    if (q.type === 'scrivi') return textInput(container, q, onSubmit);
     return choiceInput(container, q, onSubmit);
+  }
+
+  // Scrivi la risposta: accenti, maiuscole e piccoli errori vengono perdonati dal motore.
+  function textInput(container, q, onSubmit) {
+    const max = Number(q.maxLength) || 40;
+    container.innerHTML = `
+      <form class="text-answer" autocomplete="off">
+        <p class="input-hint">⌨️ ${esc(q.hint || 'Scrivi la risposta')}</p>
+        <input type="text" class="input text-answer-field" maxlength="${max}" enterkeyhint="send"
+          autocapitalize="sentences" autocorrect="off" spellcheck="false" placeholder="Scrivi qui…" aria-label="La tua risposta">
+        <div class="input-actions"><button type="submit" class="btn primary" disabled>Invia</button></div>
+      </form>`;
+    const form = container.querySelector('form');
+    const field = form.querySelector('input');
+    const ok = form.querySelector('button');
+    field.addEventListener('input', () => (ok.disabled = !field.value.trim()));
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = field.value.trim();
+      if (!text) return;
+      lock(text);
+      field.blur();
+      onSubmit(text);
+    });
+    // Sui telefoni la tastiera si apre solo dopo un tocco: il focus automatico vale per i computer.
+    if (matchMedia('(pointer: fine)').matches) setTimeout(() => field.focus(), 50);
+    function lock(choice) {
+      if (typeof choice === 'string') field.value = choice;
+      field.disabled = true;
+      ok.disabled = true;
+      form.classList.add('sent');
+    }
+    return { lock };
   }
 
   function choiceInput(container, q, onSubmit) {
@@ -402,7 +453,7 @@
   }
 
   root.UI = {
-    esc, safeSrc, SHAPES, SHAPE_NAMES, AVATARS, formatNumber, renderMedia, renderCredit, preload, renderAnswerInput,
+    esc, safeSrc, SHAPES, SHAPE_NAMES, AVATARS, THEMES, applyTheme, formatNumber, renderMedia, renderCredit, preload, renderAnswerInput,
     timer, confetti, sound, installSoundToggle, vibrate,
   };
   // Compatibilità con il codice esistente

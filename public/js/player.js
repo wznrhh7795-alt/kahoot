@@ -12,6 +12,7 @@
   const MODE_LABELS = {
     quiz: '❓ Quiz', vf: '⚖️ Vero o falso', immagine: '🖼️ Indovina dall\'immagine',
     citazione: '💬 Chi l\'ha detto?', ordina: '🔢 Metti in ordine', numero: '🎯 Indovina il numero',
+    scrivi: '⌨️ Scrivi la risposta', intruso: '🕵️ Trova l\'intruso', duello: '⚔️ Testa a testa',
     quiz_custom: '❓ Quiz', vero_falso: '⚖️ Vero o falso',
   };
 
@@ -236,6 +237,7 @@
       if (msg.seq < state.lastStateSeq) return;
       state.lastStateSeq = msg.seq;
     }
+    if (msg.theme) UI.applyTheme(msg.theme);
     if (state.waiting?.types.includes(msg.t)) state.waiting.done(msg);
     handlers[msg.t]?.(msg);
   }
@@ -344,12 +346,13 @@
       show('s-lobby');
     },
 
-    getready({ index, total, ms, mode, next }) {
+    getready({ index, total, ms, mode, next, double }) {
       state.view = { phase: 'getready', index };
       state.question = { index, total };
       updateBars();
       UI.preload(next);
       $('gr-mode').textContent = MODE_LABELS[mode] || MODE_LABELS.quiz;
+      $('gr-double').classList.toggle('hidden', !double);
       $('gr-title').textContent = `Domanda ${index + 1}`;
       let left = Math.max(1, Math.round(ms / 1000));
       $('gr-count').textContent = left;
@@ -379,6 +382,7 @@
 
       $('q-cat').textContent = `${q.categoryEmoji || ''} ${q.category || MODE_LABELS[q.mode] || ''}`.trim();
       $('q-cat').classList.toggle('hidden', !q.category);
+      $('q-double').classList.toggle('hidden', !q.double);
       $('q-text').textContent = q.text;
       state.timer = UI.timer($('q-timer'), Math.max(0, Math.round(q.remaining / 1000)), {
         onTick: (s) => s <= 3 && s > 0 && UI.sound('tick'),
@@ -419,7 +423,8 @@
         ? pick(['Corretto!', 'Esatto!', 'Grande!', 'Bravissimo!'])
         : r.close ? 'C\'eri quasi!' : r.answered ? 'Sbagliato' : 'Tempo scaduto';
       $('res-icon').textContent = r.correct ? '✓' : r.close ? '≈' : '✗';
-      $('res-points').textContent = r.correct ? `+ ${r.points.toLocaleString('it-IT')}` : 'Nessun punto';
+      const double = state.question?.double && state.question.index === r.index;
+      $('res-points').textContent = r.correct ? `+ ${r.points.toLocaleString('it-IT')}${double ? ' ⚡ ×2' : ''}` : 'Nessun punto';
 
       // Soluzione
       const sol = $('res-solution');
@@ -428,6 +433,10 @@
         html = `<small>La risposta</small>${UI.esc(reveal.text)}${r.answered ? `<br><small>Tu hai detto ${UI.esc(UI.formatNumber(r.guess, state.question?.format))}</small>` : ''}`;
       } else if (reveal.type === 'ordina') {
         html = `<small>L'ordine giusto</small>${UI.esc(reveal.text)}${r.answered && !r.correct ? `<br><small>Posizioni giuste: ${r.positionsRight} su ${reveal.correct.length}</small>` : ''}`;
+      } else if (reveal.type === 'scrivi') {
+        const typed = state.typed?.q === r.index ? state.typed.text : null;
+        html = r.correct && !r.typo ? '' : `<small>La risposta giusta</small>${UI.esc(reveal.text)}`;
+        if (typed && !(r.correct && !r.typo)) html += `<br><small>${r.typo ? 'Accettata anche con un piccolo errore: ' : 'Tu hai scritto: '}«${UI.esc(typed)}»</small>`;
       } else if (!r.correct && reveal.text) {
         html = `<small>La risposta giusta</small>${UI.esc(reveal.text)}`;
       }
@@ -525,6 +534,7 @@
     if (state.answer?.q === index) return;
     UI.sound('sent');
     UI.vibrate(25);
+    if (typeof choice === 'string') state.typed = { q: index, text: choice };
     const msg = { t: 'answer', q: index, choice };
     send(msg);
     let tries = 1;

@@ -5,6 +5,8 @@
 //   quiz / vero_falso  answers[] + correct (indice)
 //   ordina             items[] (mostrati mescolati) + correct (indici di items nell'ordine giusto)
 //   numero             answer, min, max, step, tol (tolleranza), unit
+//   scrivi             answer (testo) + accept[] (varianti accettate) + hint facoltativo
+// Ogni domanda può avere double: true (punti doppi).
 (function (root) {
 'use strict';
 
@@ -13,6 +15,53 @@ const BASE_POINTS = 1000;
 const STREAK_BONUS = 100;
 const MAX_STREAK_BONUS = 500;
 const CHOICE_TYPES = new Set(['quiz', 'vero_falso']);
+const MAX_TYPED = 40;
+
+// Testo confrontabile: minuscole, senza accenti, punteggiatura e articoli iniziali.
+function normalizeText(s) {
+  return String(s ?? '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[’`´]/g, "'")
+    .replace(/^(il|lo|la|i|gli|le|un|uno|una|the|a|an)\s+|^(l|un|dell|nell|all)'\s*/, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+function levenshtein(a, b) {
+  if (a === b) return 0;
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++) {
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    }
+    prev = cur;
+  }
+  return prev[b.length];
+}
+
+// Errori di battitura tollerati: nessuno per parole brevi o numeri, uno o due per quelle lunghe.
+function typoAllowance(target) {
+  if (/^[0-9 ]+$/.test(target)) return 0;
+  return target.length <= 4 ? 0 : target.length <= 8 ? 1 : 2;
+}
+
+function matchTyped(q, text) {
+  const guess = normalizeText(text);
+  if (!guess) return { correct: false, typo: false };
+  const targets = [q.answer, ...(q.accept || [])].map(normalizeText).filter(Boolean);
+  if (targets.includes(guess)) return { correct: true, typo: false };
+  const typo = targets.some((t) => levenshtein(guess, t) <= typoAllowance(t));
+  return { correct: typo, typo };
+}
+
+// Suggerimento sulla lunghezza: «5 lettere» oppure «4 + 5 lettere».
+function typedHint(answer) {
+  const words = String(answer).trim().split(/\s+/).map((w) => w.replace(/[^\p{L}\p{N}]/gu, '').length).filter(Boolean);
+  if (words.length === 1 && /^\d+$/.test(String(answer).trim())) return 'Un numero';
+  return `${words.join(' + ')} ${words.length === 1 && words[0] === 1 ? 'lettera' : 'lettere'}`;
+}
 
 const isPermutation = (arr, n) =>
   Array.isArray(arr) && arr.length === n && arr.every((x) => Number.isInteger(x) && x >= 0 && x < n) && new Set(arr).size === n;
@@ -38,6 +87,12 @@ function validateQuestion(q, n) {
     if (!nums.every(Number.isFinite)) return `La domanda ${n} ha valori numerici non validi.`;
     if (!(q.min < q.max) || q.answer < q.min || q.answer > q.max) return `La risposta della domanda ${n} deve stare tra minimo e massimo.`;
     if ((q.tol ?? 0) < 0 || (q.step ?? 1) <= 0) return `La domanda ${n} ha tolleranza o passo non validi.`;
+    return null;
+  }
+  if (type === 'scrivi') {
+    if (typeof q.answer !== 'string' || !normalizeText(q.answer)) return `La domanda ${n} non ha una risposta da scrivere.`;
+    if (q.answer.length > MAX_TYPED) return `La risposta della domanda ${n} è troppo lunga (massimo ${MAX_TYPED} caratteri).`;
+    if (q.accept !== undefined && (!Array.isArray(q.accept) || q.accept.some((a) => typeof a !== 'string'))) return `La domanda ${n} ha varianti non valide.`;
     return null;
   }
   return `La domanda ${n} ha un tipo sconosciuto.`;
@@ -71,6 +126,10 @@ function evaluate(q, choice) {
     const right = choice.filter((x, i) => x === q.correct[i]).length;
     const correct = right === q.correct.length;
     return { correct, quality: 1, close: !correct && right >= q.correct.length - 2 && right > 0, extra: { positionsRight: right } };
+  }
+  if (type === 'scrivi') {
+    const { correct, typo } = matchTyped(q, choice);
+    return { correct, quality: 1, close: false, extra: { typo } };
   }
   // numero: punti pieni se esatto, che scendono fino a metà al limite della tolleranza.
   const tol = q.tol ?? 0;
@@ -157,6 +216,10 @@ class Game {
     const type = q.type || 'quiz';
     if (CHOICE_TYPES.has(type)) return Number.isInteger(choice) && choice >= 0 && choice < q.answers.length ? choice : null;
     if (type === 'ordina') return isPermutation(choice, q.items.length) ? choice.slice() : null;
+    if (type === 'scrivi') {
+      const text = typeof choice === 'string' ? choice.trim().replace(/\s+/g, ' ') : '';
+      return text && text.length <= MAX_TYPED ? text : null;
+    }
     const n = Number(choice);
     return Number.isFinite(n) && n >= q.min && n <= q.max ? n : null;
   }
@@ -177,8 +240,10 @@ class Game {
     const q = this.question;
     const type = q.type || 'quiz';
     const limit = q.time * 1000;
-    const distribution = CHOICE_TYPES.has(type) ? q.answers.map(() => 0) : [0, 0]; // ordina/numero: [giusti, sbagliati]
+    const distribution = CHOICE_TYPES.has(type) ? q.answers.map(() => 0) : [0, 0]; // ordina/numero/scrivi: [giusti, sbagliati]
     const guesses = [];
+    const typed = new Map(); // testo normalizzato -> { text, count, correct }
+    const multiplier = q.double ? 2 : 1;
 
     for (const player of this.players.values()) {
       const answer = this.answers.get(player.id);
@@ -188,13 +253,19 @@ class Game {
         if (CHOICE_TYPES.has(type)) distribution[answer.choice] += 1;
         else distribution[result.correct ? 0 : 1] += 1;
         if (type === 'numero') guesses.push({ nickname: player.nickname, avatar: player.avatar, guess: answer.choice, distance: result.extra.distance });
+        if (type === 'scrivi') {
+          const key = normalizeText(answer.choice) || answer.choice.toLowerCase();
+          const entry = typed.get(key) || { text: answer.choice, count: 0, correct: result.correct };
+          entry.count += 1;
+          typed.set(key, entry);
+        }
       }
       let points = 0;
       const prevStreak = player.streak;
       if (result.correct) {
         player.streak += 1;
         player.correctCount += 1;
-        points = Math.round(scoreFor(answer.elapsed, limit) * result.quality) + streakBonus(player.streak);
+        points = (Math.round(scoreFor(answer.elapsed, limit) * result.quality) + streakBonus(player.streak)) * multiplier;
       } else {
         player.streak = 0;
       }
@@ -217,7 +288,8 @@ class Game {
     });
 
     guesses.sort((a, b) => a.distance - b.distance);
-    return { correct: q.correct, distribution, answered: this.answers.size, closest: guesses.slice(0, 3), reveal: this.reveal() };
+    const typedTop = [...typed.values()].sort((a, b) => b.count - a.count || Number(b.correct) - Number(a.correct)).slice(0, 6);
+    return { correct: q.correct, distribution, answered: this.answers.size, closest: guesses.slice(0, 3), typed: typedTop, double: Boolean(q.double), reveal: this.reveal() };
   }
 
   // Soluzione da mostrare dopo la chiusura della domanda.
@@ -227,6 +299,7 @@ class Game {
     let text;
     if (CHOICE_TYPES.has(type)) text = q.answers[q.correct];
     else if (type === 'ordina') text = q.correct.map((i) => q.items[i]).join(' → ');
+    else if (type === 'scrivi') text = q.answer;
     else text = `${formatNumber(q.answer, q.format)}${q.unit ? ` ${q.unit}` : ''}`;
     const m = q.media;
     const credit = m && m.kind === 'image' && m.author ? { author: m.author, license: m.license || '', link: m.link || '' } : null;
@@ -247,11 +320,12 @@ class Game {
     const type = q.type || 'quiz';
     const out = {
       index: this.index, total: this.total, type, mode: q.mode || type, text: q.text, time: q.time,
-      category: q.category, categoryEmoji: q.categoryEmoji, media: publicMedia(q.media),
+      category: q.category, categoryEmoji: q.categoryEmoji, media: publicMedia(q.media), double: Boolean(q.double),
     };
     if (CHOICE_TYPES.has(type)) Object.assign(out, { answers: q.answers, answerMedia: q.answerMedia || null });
     if (type === 'ordina') out.items = q.items;
     if (type === 'numero') Object.assign(out, { min: q.min, max: q.max, step: q.step ?? 1, tol: q.tol ?? 0, unit: q.unit || '', format: q.format || null });
+    if (type === 'scrivi') Object.assign(out, { hint: q.hint || typedHint(q.answer), maxLength: MAX_TYPED });
     return out;
   }
 }
@@ -268,7 +342,7 @@ function formatNumber(n, format) {
   return Number(n).toLocaleString('it-IT');
 }
 
-const api = { Game, publicMedia, validateQuiz, validateQuestion, scoreFor, streakBonus, evaluate, formatNumber, MAX_NICKNAME };
+const api = { Game, publicMedia, validateQuiz, validateQuestion, scoreFor, streakBonus, evaluate, formatNumber, normalizeText, matchTyped, typedHint, MAX_NICKNAME, MAX_TYPED };
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 else root.QuizGame = api;
 })(typeof window !== 'undefined' ? window : globalThis);

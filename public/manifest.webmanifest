@@ -1,0 +1,22 @@
+{
+  "name": "Quizzone!",
+  "short_name": "Quizzone",
+  "description": "Il quiz da giocare insieme, ognuno col suo telefono: migliaia di domande in italiano.",
+  "lang": "it",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1d0646",
+  "theme_color": "#3c1180",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "shortcuts": [
+    { "name": "Organizza una partita", "url": "/host" },
+    { "name": "Allenati da solo", "url": "/solo" }
+  ]
+}

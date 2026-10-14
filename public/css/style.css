@@ -29,7 +29,18 @@
   --font-body: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --glow-1: rgba(255, 61, 127, 0.35);
+  --glow-2: rgba(59, 140, 255, 0.35);
+  --glow-3: rgba(34, 199, 184, 0.25);
+  --blob-1: #ff3d7f;
+  --blob-2: #3b8cff;
 }
+/* Temi: cambiano solo lo sfondo, le forme e i colori delle risposte restano riconoscibili. */
+:root[data-theme="galassia"] { --bg-1: #070b24; --bg-2: #1a1650; --bg-3: #3b2a8a; --glow-1: rgba(124, 92, 255, 0.4); --glow-2: rgba(34, 211, 238, 0.28); --glow-3: rgba(236, 72, 153, 0.2); --blob-1: #7c5cff; --blob-2: #22d3ee; }
+:root[data-theme="oceano"] { --bg-1: #02182b; --bg-2: #04395e; --bg-3: #0a7ea4; --glow-1: rgba(34, 211, 238, 0.35); --glow-2: rgba(16, 185, 129, 0.28); --glow-3: rgba(59, 130, 246, 0.3); --blob-1: #22d3ee; --blob-2: #10b981; }
+:root[data-theme="tramonto"] { --bg-1: #2a0614; --bg-2: #7a1236; --bg-3: #e0533d; --glow-1: rgba(255, 179, 71, 0.4); --glow-2: rgba(255, 61, 127, 0.35); --glow-3: rgba(255, 122, 89, 0.25); --blob-1: #ffb347; --blob-2: #ff3d7f; }
+:root[data-theme="foresta"] { --bg-1: #04170f; --bg-2: #0d4228; --bg-3: #2c7a43; --glow-1: rgba(163, 230, 53, 0.3); --glow-2: rgba(34, 199, 184, 0.3); --glow-3: rgba(250, 204, 21, 0.18); --blob-1: #a3e635; --blob-2: #22c7b8; }
+:root[data-theme="oro"] { --bg-1: #2b1203; --bg-2: #7c3d06; --bg-3: #d18a12; --glow-1: rgba(255, 209, 102, 0.4); --glow-2: rgba(255, 120, 73, 0.3); --glow-3: rgba(255, 255, 255, 0.12); --blob-1: #ffd166; --blob-2: #ff7849; }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; min-height: 100%; }
@@ -38,9 +49,9 @@ body {
   color: #fff;
   background: var(--bg-2);
   background-image:
-    radial-gradient(1200px 700px at 10% -10%, rgba(255, 61, 127, 0.35), transparent 60%),
-    radial-gradient(900px 600px at 110% 20%, rgba(59, 140, 255, 0.35), transparent 60%),
-    radial-gradient(900px 700px at 50% 120%, rgba(34, 199, 184, 0.25), transparent 60%),
+    radial-gradient(1200px 700px at 10% -10%, var(--glow-1), transparent 60%),
+    radial-gradient(900px 600px at 110% 20%, var(--glow-2), transparent 60%),
+    radial-gradient(900px 700px at 50% 120%, var(--glow-3), transparent 60%),
     linear-gradient(160deg, var(--bg-1), var(--bg-2) 45%, var(--bg-3));
   background-attachment: fixed;
   min-height: 100vh;
@@ -64,8 +75,8 @@ body::before, body::after {
   animation: drift 22s ease-in-out infinite alternate;
   pointer-events: none;
 }
-body::before { background: #ff3d7f; top: -18vmax; left: -14vmax; }
-body::after { background: #3b8cff; bottom: -20vmax; right: -16vmax; animation-delay: -11s; }
+body::before { background: var(--blob-1); top: -18vmax; left: -14vmax; }
+body::after { background: var(--blob-2); bottom: -20vmax; right: -16vmax; animation-delay: -11s; }
 @keyframes drift { to { transform: translate(8vmax, 6vmax) rotate(40deg) scale(1.15); } }
 
 h1, h2, h3, .head { font-family: var(--font-head); margin: 0; letter-spacing: 0.2px; }
@@ -755,3 +766,57 @@ body.host .setup-bar { padding-left: 66px; }
   .player-question.with-media .media-image img { max-height: 21vh; max-height: 21dvh; }
   .player-question .answer-label { font-size: 1rem; }
 }
+
+/* ---- Scrivi la risposta ---- */
+.text-answer { width: min(560px, 100%); margin: 0 auto; display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
+.text-answer .input-hint { text-align: center; }
+.text-answer-field { font-size: 1.5rem; text-align: center; font-weight: 800; padding: 16px; }
+.text-answer.sent .text-answer-field { opacity: 0.85; border-color: var(--green, #26890c); }
+.player-question .answer-input.input-scrivi { justify-content: center; }
+
+/* ---- Punti doppi ---- */
+.double-badge {
+  background: linear-gradient(90deg, #ffd166, #ff9f1c); color: #3b1d00; border-color: transparent;
+  font-weight: 900; box-shadow: 0 0 0 0 rgba(255, 209, 102, 0.7); animation: double-glow 1.4s ease-in-out infinite;
+}
+@keyframes double-glow { 50% { box-shadow: 0 0 0 10px rgba(255, 209, 102, 0); transform: scale(1.06); } }
+
+/* ---- Scelta del tema ---- */
+.theme-swatches { gap: 6px; }
+.seg-buttons .theme-swatch { display: inline-flex; align-items: center; gap: 7px; }
+.theme-swatch .dot {
+  width: 18px; height: 18px; border-radius: 50%; flex: none;
+  background: conic-gradient(var(--s1) 0 33%, var(--s2) 0 66%, var(--s3) 0);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.7);
+}
+
+/* ---- Risposte scritte (schermo dell'host) ---- */
+.typed-cloud { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; width: min(720px, 100%); }
+.typed-word {
+  padding: 8px 14px; border-radius: 999px; font-weight: 800; font-size: 1.1rem; max-width: 100%;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; animation: chip-in .4s backwards;
+}
+.typed-word.ok { background: var(--ok); color: #053014; }
+.typed-word.ko { background: rgba(255, 255, 255, 0.16); text-decoration: line-through; text-decoration-color: rgba(255, 255, 255, 0.5); }
+
+/* ---- Classifica: barra proporzionale, posizioni guadagnate e punti appena presi ---- */
+.score-row { position: relative; overflow: hidden; isolation: isolate; }
+.score-row::before {
+  content: ''; position: absolute; inset: 0 auto 0 0; z-index: -1; width: var(--w, 0%);
+  background: linear-gradient(90deg, rgba(109, 40, 217, 0.14), rgba(255, 61, 127, 0.14));
+  transform-origin: left; animation: bar-grow 1s .3s backwards cubic-bezier(.2, .8, .2, 1);
+}
+.score-row:first-child::before { background: rgba(255, 255, 255, 0.35); }
+@keyframes bar-grow { from { transform: scaleX(0); } }
+.score-row .move { font-size: 0.8em; font-weight: 900; padding: 2px 8px; border-radius: 999px; }
+.score-row .move.up { color: #0f7a35; background: #d7f8e2; }
+.score-row .move.down { color: #a3122c; background: #ffe0e6; }
+.score-row .gain { font-size: 0.75em; color: var(--muted); font-weight: 800; }
+.score-row .pts { min-width: 4.5ch; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ---- Home del giocatore ---- */
+.home-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+/* Focus visibile da tastiera */
+:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.answer-btn:focus-visible, .host-tile:focus-visible { outline: 4px solid #fff; outline-offset: -6px; }

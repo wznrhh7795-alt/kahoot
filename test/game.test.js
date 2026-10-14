@@ -167,3 +167,40 @@ test('immagini: l\'autore non viene inviato con la domanda ma solo con la soluzi
   const { reveal } = g.closeQuestion();
   assert.deepEqual(reveal.credit, { author: 'Leonardo da Vinci', license: 'Public domain', link: media.link });
 });
+
+test('scrivi la risposta: maiuscole, accenti, articoli e piccoli errori', () => {
+  let t = 0;
+  const q = { type: 'scrivi', text: 'Capitale d\'Italia?', answer: 'Roma', time: 20 };
+  const q2 = { type: 'scrivi', text: 'Film?', answer: 'Il re leone', accept: ['The Lion King'], time: 20, double: true };
+  assert.equal(validateQuiz({ title: 'x', questions: [q, q2] }), null);
+  assert.match(validateQuiz({ title: 'x', questions: [{ type: 'scrivi', text: 'x', answer: '  ', time: 20 }] }), /risposta da scrivere/);
+  const g = new Game('1', { title: 'x', questions: [q, q2] }, () => t);
+  for (const [id, n] of [['a', 'Anna'], ['b', 'Bruno'], ['c', 'Carla']]) g.addPlayer(id, n);
+  g.nextQuestion();
+  const pub = g.publicQuestion();
+  assert.equal(pub.hint, '4 lettere');
+  assert.equal('answer' in pub, false);
+  g.openQuestion();
+  assert.match(g.submitAnswer('a', '   ').error, /non valida/);
+  g.submitAnswer('a', '  ROMA ');
+  g.submitAnswer('b', 'Milano');
+  g.submitAnswer('c', 'roma');
+  const s1 = g.closeQuestion();
+  assert.deepEqual(s1.distribution, [2, 1]);
+  assert.deepEqual(s1.typed.map((x) => [x.count, x.correct]), [[2, true], [1, false]]);
+  assert.equal(s1.reveal.text, 'Roma');
+  assert.equal(g.players.get('a').score, 1000);
+
+  g.nextQuestion();
+  assert.equal(g.publicQuestion().double, true);
+  g.openQuestion();
+  g.submitAnswer('a', 're leone'); // senza articolo
+  g.submitAnswer('b', 'the lion king'); // variante
+  g.submitAnswer('c', 'Il re lone'); // un errore di battitura
+  g.closeQuestion();
+  assert.equal(g.players.get('a').last.correct, true);
+  assert.equal(g.players.get('a').last.points, (1000 + 100) * 2); // punti doppi, combo compresa
+  assert.equal(g.players.get('b').last.correct, true);
+  assert.equal(g.players.get('c').last.typo, true);
+  assert.equal(g.players.get('c').last.correct, true);
+});

@@ -11,6 +11,11 @@
   <meta name="description" content="Quizzone! Il quiz multigiocatore in italiano da giocare con il telefono.">
   <title>Quizzone! – Entra in partita</title>
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Quizzone">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -34,7 +39,10 @@
       <button class="btn primary big" type="submit">Entra</button>
     </form>
     <div id="pin-error" class="error hidden" role="alert"></div>
-    <a class="btn ghost" href="/host">🎮 Organizza una partita</a>
+    <div class="home-actions">
+      <a class="btn ghost" href="/host">🎮 Organizza una partita</a>
+      <a class="btn ghost" href="/solo">🎯 Allenati da solo</a>
+    </div>
     <p class="footer-note">Funziona con qualsiasi connessione: Wi-Fi, 4G o 5G.</p>
   </main>
 
@@ -62,6 +70,7 @@
   <!-- 4. Preparati -->
   <main id="s-getready" class="screen hidden">
     <span id="gr-mode" class="chip mode-badge"></span>
+    <span id="gr-double" class="chip double-badge hidden">⚡ Punti doppi ×2</span>
     <h2 id="gr-title" class="big-title">Domanda 1</h2>
     <div id="gr-count" class="countdown-ring">5</div>
     <p class="big-title" style="font-size:1.6rem">Preparati!</p>
@@ -69,7 +78,7 @@
 
   <!-- 5. Domanda -->
   <main id="s-question" class="screen player-question hidden">
-    <div class="q-meta"><span id="q-cat" class="chip"></span></div>
+    <div class="q-meta"><span id="q-cat" class="chip"></span><span id="q-double" class="chip double-badge hidden">⚡ ×2</span></div>
     <div class="q-head">
       <div id="q-text" class="q-text"></div>
       <div id="q-timer"></div>
@@ -87,7 +96,7 @@
 
   <!-- 7. Risultato -->
   <main id="s-result" class="screen hidden">
-    <h2 id="res-title" class="big-title"></h2>
+    <h2 id="res-title" class="big-title" aria-live="polite"></h2>
     <div id="res-icon" class="result-icon"></div>
     <div id="res-streak" class="streak hidden"></div>
     <div id="res-points" class="points-box"></div>

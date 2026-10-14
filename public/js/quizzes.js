@@ -53,6 +53,18 @@ const quizzes = [
       q('In quale regione si trova la città di Parma?', ['Emilia-Romagna', 'Toscana', 'Piemonte', 'Veneto'], 0),
     ],
   },
+  {
+    id: 'scrivi-tu',
+    title: 'Scrivi tu!',
+    description: 'Niente opzioni: la risposta si scrive sul telefono',
+    questions: [
+      { type: 'scrivi', text: 'Qual è la capitale della Spagna?', answer: 'Madrid', time: 25 },
+      { type: 'scrivi', text: 'Chi ha scritto «I promessi sposi»?', answer: 'Alessandro Manzoni', accept: ['Manzoni'], time: 30 },
+      { type: 'scrivi', text: 'Quanto fa 7 × 8?', answer: '56', time: 20 },
+      { type: 'scrivi', text: 'Come si dice «gatto» in inglese?', answer: 'cat', time: 20 },
+      { type: 'scrivi', text: 'Qual è il pianeta più grande del Sistema solare?', answer: 'Giove', time: 25, double: true },
+    ],
+  },
 ];
 
 if (typeof module !== 'undefined' && module.exports) module.exports = quizzes;
