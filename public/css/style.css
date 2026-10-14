@@ -797,7 +797,9 @@ body.host .setup-bar { padding-left: 66px; }
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap; animation: chip-in .4s backwards;
 }
 .typed-word.ok { background: var(--ok); color: #053014; }
-.typed-word.ko { background: rgba(255, 255, 255, 0.16); text-decoration: line-through; text-decoration-color: rgba(255, 255, 255, 0.5); }
+.typed-word.ko { background: rgba(15, 4, 40, 0.45); color: #fff; border: 2px solid rgba(255, 255, 255, 0.35); }
+.typed-word.ko::before { content: '✗ '; color: var(--ko); }
+.typed-word.ok::before { content: '✓ '; }
 
 /* ---- Classifica: barra proporzionale, posizioni guadagnate e punti appena presi ---- */
 .score-row { position: relative; overflow: hidden; isolation: isolate; }

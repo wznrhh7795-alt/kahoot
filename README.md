@@ -14,7 +14,7 @@ smartphone, gli altri entrano con il PIN o con il link condiviso.
 
 ## Cosa c'è dentro
 
-- **Oltre 7.500 domande diverse** (più infinite domande di matematica generate al volo) in **24 categorie**:
+- **Oltre 9.500 domande diverse** (più infinite domande di matematica e migliaia di combinazioni per intrusi e duelli) in **24 categorie**:
   Geografia del mondo, Bandiere, Italia, Monumenti e luoghi, Storia, Mitologia, Arte, Letteratura, Citazioni,
   Cinema, Musica, Scienza, Elementi chimici, Spazio, Corpo umano, Animali, Sport, Cucina, Lingua italiana,
   Inglese, Proverbi e modi di dire, Matematica, Invenzioni e tecnologia, Cultura generale.

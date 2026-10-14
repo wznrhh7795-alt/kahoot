@@ -19,12 +19,12 @@ Lo sposalizio della Vergine|Raffaello|3|Sposalizio della Vergine (Raffaello)
 La notte stellata|Vincent van Gogh|1|Notte stellata
 Notte stellata sul Rodano|Vincent van Gogh|3|Notte stellata sul Rodano
 Terrazza del caffè la sera|Vincent van Gogh|2|Terrazza del caffè la sera, Place du Forum, Arles
-La camera di Vincent ad Arles|Vincent van Gogh|2|La camera di Vincent ad Arles
+La camera da letto ad Arles|Vincent van Gogh|2|La camera di Vincent ad Arles
 L'urlo|Edvard Munch|1|L'urlo
 Ragazza col turbante (con l'orecchino di perla)|Jan Vermeer|1|Ragazza col turbante
 La ronda di notte|Rembrandt|2|La ronda di notte
-Il bacio (Klimt)|Gustav Klimt|1|Il bacio (Klimt)
-Il bacio (Hayez)|Francesco Hayez|2|Il bacio (Hayez)
+Il bacio (1907-08)|Gustav Klimt|1|Il bacio (Klimt)
+Il bacio (1859)|Francesco Hayez|2|Il bacio (Hayez)
 Impressione, levar del sole|Claude Monet|2|Impressione, levar del sole
 La grande onda di Kanagawa|Katsushika Hokusai|1|La grande onda di Kanagawa
 Las Meninas|Diego Velázquez|2|Las Meninas (Velázquez)
