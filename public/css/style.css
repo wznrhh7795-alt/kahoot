@@ -241,7 +241,7 @@ button:disabled { cursor: default; }
   backdrop-filter: blur(8px);
   font-size: 1.1rem;
 }
-body.has-topbar .mute-btn { top: calc(58px + var(--safe-top)); }
+body.has-topbar .mute-btn { top: calc(7px + var(--safe-top)); left: 50%; right: auto; transform: translateX(-50%); width: 36px; height: 36px; font-size: 1rem; }
 
 /* ---------- Forme e colori ---------- */
 .c0 { --a: var(--c0); --ad: var(--c0d); }
@@ -735,3 +735,23 @@ body.host .setup-bar { padding-left: 66px; }
 /* Crediti delle immagini nei risultati */
 .credit-line { font-size: 0.8rem; opacity: 0.8; max-width: 560px; }
 .credit-line a { color: inherit; }
+
+/* Domande con immagine: foto e pulsanti si dividono lo schermo senza uscire dai bordi. */
+.player-question.with-media .media-image img { max-height: 24vh; max-height: 24dvh; }
+.player-question.with-media .media-flag img { max-height: 17vh; max-height: 17dvh; }
+.player-question.with-media .emoji-puzzle { font-size: clamp(2.2rem, 11vw, 4rem); padding: 6px 14px; }
+.player-question.with-media .media-quote blockquote { font-size: clamp(1rem, 3.8vw, 1.35rem); padding: 14px 16px 14px 44px; }
+.player-question.with-media .answer-grid { min-height: 132px !important; gap: 8px; }
+.player-question.with-media .answer-btn { gap: 4px; padding: 8px; }
+.player-question.with-media .answer-btn .shape { width: 30px; height: 30px; }
+.player-question.with-media .media-credit { font-size: 0.68rem; }
+/* Schermi bassi (iPhone con le barre di Safari, iPhone SE…) */
+@media (max-height: 740px) {
+  .player-question { gap: 8px; padding: 8px 10px; }
+  .player-question .q-meta { display: none; }
+  .player-question .q-text { font-size: 1rem; padding: 10px 12px; }
+  .player-question .timer { width: 52px; height: 52px; }
+  .player-question .timer .timer-num { font-size: 1.2rem; }
+  .player-question.with-media .media-image img { max-height: 21vh; max-height: 21dvh; }
+  .player-question .answer-label { font-size: 1rem; }
+}

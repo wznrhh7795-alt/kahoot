@@ -384,6 +384,7 @@
         onTick: (s) => s <= 3 && s > 0 && UI.sound('tick'),
       });
       UI.renderMedia($('q-media'), q.media);
+      $('s-question').classList.toggle('with-media', Boolean(q.media));
       UI.renderAnswerInput($('answers'), q, (choice) => answer(q.index, choice));
       show('s-question');
     },
