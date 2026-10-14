@@ -327,7 +327,8 @@
 
   // ---- Coriandoli ----
   function confetti({ count = 140, duration = 2800 } = {}) {
-    if (reducedMotion()) return;
+    // Con «Riduci movimento» meno coriandoli, ma ci sono comunque.
+    if (reducedMotion()) count = Math.round(count * 0.5);
     const canvas = document.createElement('canvas');
     canvas.className = 'confetti';
     document.body.appendChild(canvas);
@@ -348,15 +349,19 @@
       shape: Math.random() < 0.3 ? 'circle' : 'rect',
     }));
     const start = performance.now();
+    let prev = start;
     function frame(t) {
       const elapsed = t - start;
+      // Movimento legato al tempo, non ai fotogrammi: stessa velocità a 30, 60 o 120 Hz.
+      const k = Math.min(Math.max((t - prev) / 16.7, 0), 3);
+      prev = t;
       ctx.clearRect(0, 0, W, H);
       for (const p of parts) {
-        p.vy += 0.45 * dpr;
-        p.vx *= 0.99;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.rot += p.vr;
+        p.vy += 0.45 * dpr * k;
+        p.vx *= 0.99 ** k;
+        p.x += p.vx * k;
+        p.y += p.vy * k;
+        p.rot += p.vr * k;
         ctx.save();
         ctx.globalAlpha = Math.max(0, 1 - elapsed / duration);
         ctx.translate(p.x, p.y);

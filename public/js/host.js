@@ -850,9 +850,8 @@
   // I punteggi salgono fino al nuovo totale.
   function countUp(els, ms = 900) {
     const t0 = performance.now();
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const frame = (t) => {
-      const k = reduce ? 1 : Math.min(1, (t - t0) / ms);
+      const k = Math.min(1, (t - t0) / ms);
       const ease = 1 - (1 - k) ** 3;
       els.forEach((el) => {
         const from = Number(el.dataset.from);

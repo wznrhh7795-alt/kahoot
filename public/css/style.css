@@ -123,10 +123,10 @@ button:disabled { cursor: default; }
 .logo-shapes { display: flex; gap: 10px; justify-content: center; }
 .logo-shapes span { width: 22px; height: 22px; border-radius: 6px; animation: bob 2.4s ease-in-out infinite; }
 .logo-shapes span:nth-child(1) { background: var(--c0); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
-.logo-shapes span:nth-child(2) { background: var(--c1); transform: rotate(45deg); animation-delay: .2s; }
+.logo-shapes span:nth-child(2) { background: var(--c1); --rot: 45deg; transform: rotate(45deg); animation-delay: .2s; }
 .logo-shapes span:nth-child(3) { background: var(--c2); border-radius: 50%; animation-delay: .4s; }
 .logo-shapes span:nth-child(4) { background: var(--c3); animation-delay: .6s; }
-@keyframes bob { 50% { translate: 0 -6px; } }
+@keyframes bob { 0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); } 50% { transform: translateY(-6px) rotate(var(--rot, 0deg)); } }
 
 /* ---------- Card ---------- */
 .card {
@@ -709,8 +709,11 @@ canvas.confetti { position: fixed; inset: 0; width: 100vw; height: 100vh; pointe
   .setup-bar { margin: 0 -12px -14px; }
 }
 
+/* «Riduci movimento» attivo sul telefono (o risparmio energetico su alcuni Android):
+   le animazioni restano, ma più lente e delicate. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  body::before, body::after { animation-duration: 60s; }
+  .error { animation: none; }
 }
 
 /* ---------- Ritocchi di impaginazione su telefono ---------- */
