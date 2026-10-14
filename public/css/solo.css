@@ -1,0 +1,130 @@
+/* =========================================================================
+   Quizzone! — Allenati da solo (solo le regole nuove: il resto viene da style.css)
+   ========================================================================= */
+
+/* ---------- Impostazioni ---------- */
+.solo-wrap { width: min(760px, 100%); gap: 14px; }
+.solo-hero { gap: 6px; padding-top: 0; }
+.solo-hero .logo { font-size: clamp(2.4rem, 11vw, 3.6rem); }
+.solo-kicker {
+  font-family: var(--font-head); font-weight: 700; font-size: 1.35rem;
+  background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 4px 16px; border-radius: 999px;
+}
+.solo-hero .tagline { font-size: 0.95rem; }
+
+.solo-settings { padding: 14px; display: flex; flex-direction: column; gap: 14px; }
+.solo-settings .seg-buttons button { flex: 1 1 auto; min-height: 40px; }
+
+/* Interruttore «Punti doppi» */
+.solo-toggle {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  width: 100%; border: 0; border-radius: 14px; padding: 10px 12px;
+  background: rgba(15, 4, 40, 0.35); color: #fff; text-align: left;
+}
+.solo-toggle-text { display: flex; flex-direction: column; gap: 2px; }
+.solo-toggle-text b { font-family: var(--font-head); font-weight: 600; font-size: 1.05rem; }
+.solo-toggle-text small { font-size: 0.85rem; opacity: 0.8; font-weight: 700; }
+.solo-switch {
+  position: relative; flex: none; width: 54px; height: 32px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22); transition: background .2s;
+}
+.solo-switch::after {
+  content: ''; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px; border-radius: 50%;
+  background: #fff; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); transition: transform .2s;
+}
+.solo-toggle.on .solo-switch { background: var(--gold); }
+.solo-toggle.on .solo-switch::after { transform: translateX(22px); }
+
+.solo-best-line { font-weight: 800; font-size: 0.95rem; opacity: 0.95; }
+#setup-error { align-self: center; }
+.solo-pin-link { margin: 0 auto; }
+.solo-bar { align-self: stretch; display: grid; grid-template-columns: 1fr; gap: 8px; }
+.solo-bar .setup-summary { text-align: center; font-size: 0.9rem; display: flex; flex-direction: column; gap: 2px; }
+.solo-bar-best { color: var(--gold); font-size: 0.85rem; }
+.solo-bar #btn-start { justify-self: center; width: min(460px, 100% - 108px); }
+
+/* Pulsante audio: in basso a sinistra nelle impostazioni, lontano da «Tutte» e «Nessuna». */
+body.solo-on-setup .mute-btn { top: auto; bottom: calc(22px + var(--safe-bottom)); left: 14px; right: auto; }
+
+/* ---------- Barre in partita ---------- */
+.solo-exit { color: #fff; font-family: inherit; cursor: pointer; }
+.solo-exit:active { transform: scale(0.96); }
+.solo-streak { padding: 2px 9px; font-size: 0.85rem; animation: pop-in .3s; }
+.bottombar .me { min-width: 0; }
+
+/* ---------- Schermate centrate che scorrono senza tagliare l'inizio ---------- */
+body.solo #s-getready, body.solo #s-result, body.solo #s-end { justify-content: flex-start; }
+.solo-stack { margin-block: auto; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+
+/* ---------- Preparati ---------- */
+.solo-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.solo-double {
+  background: linear-gradient(180deg, #34205f, #1c0f38); color: var(--gold); border: 2px solid var(--gold);
+  font-family: var(--font-head); font-weight: 700; letter-spacing: 0.3px;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25); animation: pop-in .4s cubic-bezier(.2,1.6,.4,1);
+}
+#gr-double { font-size: 1.05rem; animation: pop-in .4s cubic-bezier(.2,1.6,.4,1), pulse 1.2s .4s ease-in-out infinite; }
+.solo-ready { font-size: 1.6rem; }
+
+/* ---------- Domanda ---------- */
+.solo-meta .chip { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.solo-meta #q-cat { min-width: 0; flex: 0 1 auto; }
+.solo-meta-right { display: flex; gap: 6px; flex: none; }
+/* Su schermi bassi style.css nasconde la riga: qui la teniamo, più compatta. */
+@media (max-height: 740px) {
+  .player-question .q-meta.solo-meta { display: flex; }
+  .solo-meta .chip { padding: 2px 9px; font-size: 0.78rem; }
+}
+
+/* ---------- Risultato ---------- */
+.solo-note { background: rgba(0, 0, 0, 0.2); padding: 6px 14px; border-radius: 999px; font-weight: 800; font-size: 0.95rem; }
+.solo-you { margin-top: 4px; }
+.solo-total { font-weight: 800; font-size: 1.05rem; }
+.solo-total b { font-family: var(--font-head); font-size: 1.25rem; }
+.solo-next { min-width: min(260px, 100%); margin-top: 4px; position: sticky; bottom: 4px; z-index: 2; }
+body.result-correct .solo-next { color: var(--ok-dark); }
+body.result-wrong .solo-next { color: var(--ko-dark); }
+body.result-close .solo-next { color: #b45309; }
+
+/* ---------- Fine ---------- */
+.solo-medal { font-size: 4.4rem; line-height: 1; animation: pop-in .5s cubic-bezier(.2,1.6,.4,1); }
+.solo-record {
+  font-family: var(--font-head); font-weight: 700; font-size: 1.4rem; color: var(--ink);
+  background: linear-gradient(180deg, #ffe08a, var(--gold)); padding: 6px 18px; border-radius: 999px;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25); animation: pop-in .5s .2s backwards, pulse 1.6s 1s ease-in-out 3;
+}
+.solo-score { display: flex; flex-direction: column; align-items: center; }
+.solo-score small { font-weight: 800; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.6px; font-size: 0.8rem; }
+.solo-score b { font-family: var(--font-head); font-size: clamp(2.6rem, 13vw, 3.6rem); line-height: 1.05; text-shadow: 0 4px 0 rgba(0, 0, 0, 0.18); }
+.solo-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: min(440px, 100%); }
+.solo-stats > div {
+  background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius-sm);
+  padding: 10px 6px; display: flex; flex-direction: column; gap: 2px; align-items: center;
+}
+.solo-stats b { font-family: var(--font-head); font-size: 1.5rem; line-height: 1.1; }
+.solo-stats small { font-size: 0.78rem; font-weight: 800; opacity: 0.85; }
+.solo-end-actions { display: flex; flex-direction: column; gap: 12px; width: min(360px, 100%); margin-top: 4px; }
+.solo-end-actions .btn { width: 100%; }
+.solo-end-actions .btn.big { font-size: 1.15rem; }
+
+/* ---------- Telefono ---------- */
+@media (max-width: 640px) {
+  .solo-cats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .solo-cats .cat-card { min-height: 76px; padding: 9px 8px 8px; gap: 3px; border-radius: 14px; }
+  .solo-cats .cat-card .cat-emoji { font-size: 1.45rem; }
+  .solo-cats .cat-card .cat-name { font-size: 0.84rem; overflow-wrap: anywhere; hyphens: auto; }
+  .solo-cats .cat-card.sel::after { top: 6px; right: 6px; width: 18px; height: 18px; font-size: 0.7rem; }
+  .solo-modes { gap: 8px; }
+  .solo-modes .mode-card { padding: 10px; align-items: center; }
+  .solo-modes .mode-card .m-name { font-size: 0.92rem; line-height: 1.15; }
+  .solo-bar .btn.big { padding: 14px 22px; }
+}
+@media (max-height: 700px) {
+  .solo-stack { gap: 10px; }
+  #s-getready .countdown-ring { width: 120px; height: 120px; font-size: 3.6rem; }
+  #s-result .result-icon { width: 84px; height: 84px; font-size: 2.8rem; border-width: 5px; }
+  #s-result .big-title { font-size: 2rem; }
+  #s-result .points-box { font-size: 1.6rem; padding: 6px 22px; }
+  .solo-medal { font-size: 3.4rem; }
+}

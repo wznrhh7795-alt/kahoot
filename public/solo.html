@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <!-- Nasconde il badge «Powered by Netlify»: stessa scelta che salva il suo pulsante «Hide this badge». -->
+  <script>try { localStorage.setItem('nl-hud:public:v1', 'hidden'); } catch (e) {}</script>
+  <style>#nl-badge-frame, #nl-hud-frame { display: none !important; }</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#3c1180">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="description" content="Quizzone! Allenati da solo: migliaia di domande in italiano, senza PIN e senza organizzatore.">
+  <title>Quizzone! – Allenati da solo</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/solo.css">
+</head>
+<body class="solo">
+  <header id="topbar" class="topbar hidden">
+    <button id="btn-exit" class="chip solo-exit" type="button">✕ Esci</button>
+    <span id="top-progress" class="chip"></span>
+  </header>
+
+  <!-- 1. Impostazioni -->
+  <main id="s-setup" class="screen top">
+    <div class="wrap solo-wrap">
+      <div class="hero solo-hero">
+        <h1 class="logo">Quizzone<span class="bang">!</span></h1>
+        <p class="solo-kicker">🎯 Allenati da solo</p>
+        <p class="tagline">Nessun PIN, nessun organizzatore: scegli e gioca.</p>
+      </div>
+
+      <div class="section-title"><span>1. Categorie</span>
+        <span class="actions"><button type="button" class="btn ghost small" id="cat-all">Tutte</button><button type="button" class="btn ghost small" id="cat-none">Nessuna</button></span>
+      </div>
+      <div id="cat-grid" class="cat-grid solo-cats"></div>
+
+      <div class="section-title"><span>2. Giochi</span>
+        <span class="actions"><button type="button" class="btn ghost small" id="mode-all">Tutti</button><button type="button" class="btn ghost small" id="mode-none">Nessuno</button></span>
+      </div>
+      <div id="mode-grid" class="mode-grid solo-modes"></div>
+
+      <div class="section-title"><span>3. Impostazioni</span></div>
+      <div class="glass solo-settings">
+        <div class="seg"><span class="seg-label">Domande</span><div class="seg-buttons" data-seg="count">
+          <button type="button" data-v="5">5</button><button type="button" data-v="10">10</button><button type="button" data-v="15">15</button><button type="button" data-v="20">20</button>
+        </div></div>
+        <div class="seg"><span class="seg-label">Difficoltà</span><div class="seg-buttons" data-seg="difficulty" id="seg-difficulty">
+          <button type="button" data-v="facile">Facile</button><button type="button" data-v="media">Media</button><button type="button" data-v="difficile">Difficile</button><button type="button" data-v="mista">Mista</button><button type="button" data-v="progressiva" class="hidden">Progressiva</button>
+        </div></div>
+        <div class="seg"><span class="seg-label">Tempo</span><div class="seg-buttons" data-seg="speed">
+          <button type="button" data-v="veloce">Veloce</button><button type="button" data-v="normale">Normale</button><button type="button" data-v="rilassato">Rilassato</button>
+        </div></div>
+        <button type="button" id="bonus-toggle" class="solo-toggle" role="switch" aria-checked="false">
+          <span class="solo-toggle-text"><b>⚡ Punti doppi</b><small>Alcune domande valgono il doppio</small></span>
+          <span class="solo-switch" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <div id="setup-error" class="error hidden" role="alert"></div>
+      <p class="footer-note solo-pin-link">Hai un PIN? <a href="/">Entra in una partita</a></p>
+    </div>
+    <div class="setup-bar solo-bar">
+      <span class="setup-summary"><span id="setup-summary"></span><span id="setup-best" class="solo-bar-best hidden"></span></span>
+      <button id="btn-start" type="button" class="btn primary big">Inizia ▶</button>
+    </div>
+  </main>
+
+  <!-- 2. Preparati -->
+  <main id="s-getready" class="screen hidden">
+    <div class="solo-stack">
+      <div class="solo-badges">
+        <span id="gr-mode" class="chip mode-badge"></span>
+        <span id="gr-double" class="chip solo-double hidden">⚡ PUNTI DOPPI ×2</span>
+      </div>
+      <h2 id="gr-title" class="big-title">Domanda 1</h2>
+      <div id="gr-count" class="countdown-ring">3</div>
+      <p class="big-title solo-ready">Preparati!</p>
+    </div>
+  </main>
+
+  <!-- 3. Domanda -->
+  <main id="s-question" class="screen player-question hidden">
+    <div class="q-meta solo-meta">
+      <span id="q-cat" class="chip"></span>
+      <span class="solo-meta-right"><span id="q-double" class="chip solo-double hidden">⚡ ×2</span><span id="q-mode" class="chip"></span></span>
+    </div>
+    <div class="q-head">
+      <div id="q-text" class="q-text"></div>
+      <div id="q-timer"></div>
+    </div>
+    <div id="q-media" class="media hidden"></div>
+    <div id="answers" class="answer-input"></div>
+  </main>
+
+  <!-- 4. Risultato -->
+  <main id="s-result" class="screen hidden">
+    <div class="solo-stack">
+      <h2 id="res-title" class="big-title"></h2>
+      <div id="res-icon" class="result-icon"></div>
+      <div id="res-streak" class="streak hidden"></div>
+      <div id="res-points" class="points-box"></div>
+      <span id="res-double" class="chip solo-double hidden">⚡ Punti doppi ×2</span>
+      <p id="res-typo" class="solo-note hidden">✍️ Accettata anche con un piccolo errore</p>
+      <div id="res-solution" class="solution hidden"></div>
+      <p id="res-why" class="why hidden"></p>
+      <p id="res-credit" class="credit-line hidden"></p>
+      <p id="res-total" class="solo-total"></p>
+      <button id="btn-next" type="button" class="btn light big solo-next">Avanti ▶</button>
+    </div>
+  </main>
+
+  <!-- 5. Fine -->
+  <main id="s-end" class="screen hidden">
+    <div class="solo-stack">
+      <div id="end-medal" class="solo-medal" aria-hidden="true"></div>
+      <h2 id="end-title" class="big-title"></h2>
+      <p id="end-record" class="solo-record hidden">🏆 Nuovo record!</p>
+      <div class="solo-score">
+        <small>Punteggio</small>
+        <b id="end-score">0</b>
+      </div>
+      <div class="solo-stats">
+        <div><b id="end-correct"></b><small>Risposte giuste</small></div>
+        <div><b id="end-accuracy"></b><small>Precisione</small></div>
+        <div><b id="end-streak"></b><small>Combo migliore</small></div>
+      </div>
+      <p id="end-best" class="solo-best-line"></p>
+      <div class="solo-end-actions">
+        <button id="btn-again" type="button" class="btn primary big">🔁 Rigioca con nuove domande</button>
+        <button id="btn-setup" type="button" class="btn light">⚙️ Cambia impostazioni</button>
+        <a class="btn ghost" href="/">🏠 Home</a>
+      </div>
+    </div>
+  </main>
+
+  <footer id="bottombar" class="bottombar hidden">
+    <span class="me"><span id="bb-avatar" class="avatar">🎯</span><span>Allenamento</span><span id="bb-streak" class="chip solo-streak hidden"></span></span>
+    <span id="bb-score" class="score-pill">0</span>
+  </footer>
+
+  <script src="/js/game.js"></script>
+  <script src="/data/geo.js"></script>
+  <script src="/data/scienza.js"></script>
+  <script src="/data/storia.js"></script>
+  <script src="/data/cultura.js"></script>
+  <script src="/data/lingua.js"></script>
+  <script src="/data/varie.js"></script>
+  <script src="/data/images.js"></script>
+  <script src="/js/bank.js"></script>
+  <script src="/js/ui.js"></script>
+  <script src="/js/solo.js"></script>
+</body>
+</html>
