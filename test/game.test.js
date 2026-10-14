@@ -74,11 +74,82 @@ test('flusso completo con punteggi, combo e classifica', () => {
 
   assert.equal(g.nextQuestion(), false);
   assert.equal(g.state, 'gameover');
-  assert.deepEqual(g.scoreboard(), [{ nickname: 'Anna', score: 2100 }, { nickname: 'Bruno', score: 0 }]);
+  assert.deepEqual(g.scoreboard().map(({ nickname, score, correctCount }) => ({ nickname, score, correctCount })), [
+    { nickname: 'Anna', score: 2100, correctCount: 2 },
+    { nickname: 'Bruno', score: 0, correctCount: 0 },
+  ]);
 });
 
 test('publicQuestion non rivela la risposta corretta', () => {
   const g = new Game('1', quiz);
   g.nextQuestion();
   assert.equal('correct' in g.publicQuestion(), false);
+});
+
+test('metti in ordine: punti solo con l\'ordine esatto', () => {
+  let t = 0;
+  const q = { type: 'ordina', text: 'Ordina', items: ['C', 'A', 'B'], correct: [1, 2, 0], time: 30 };
+  assert.equal(validateQuiz({ title: 'x', questions: [q] }), null);
+  const g = new Game('1', { title: 'x', questions: [q] }, () => t);
+  g.addPlayer('a', 'Anna');
+  g.addPlayer('b', 'Bruno');
+  g.nextQuestion();
+  g.openQuestion();
+  assert.match(g.submitAnswer('a', [1, 1, 0]).error, /non valida/);
+  assert.equal(g.submitAnswer('a', [1, 2, 0]).ok, true);
+  g.submitAnswer('b', [1, 0, 2]);
+  const summary = g.closeQuestion();
+  assert.equal(g.players.get('a').last.correct, true);
+  assert.equal(g.players.get('a').score, 1000);
+  assert.equal(g.players.get('b').last.correct, false);
+  assert.equal(g.players.get('b').last.positionsRight, 1);
+  assert.deepEqual(summary.distribution, [1, 1]);
+  assert.equal(summary.reveal.text, 'A → B → C');
+});
+
+test('indovina il numero: tolleranza e punti decrescenti', () => {
+  let t = 0;
+  const q = { type: 'numero', text: 'Anno?', answer: 1492, min: 1400, max: 1600, tol: 10, time: 25 };
+  const g = new Game('1', { title: 'x', questions: [q] }, () => t);
+  for (const [id, n] of [['a', 'Esatto'], ['b', 'Vicino'], ['c', 'Lontano']]) g.addPlayer(id, n);
+  g.nextQuestion();
+  g.openQuestion();
+  assert.match(g.submitAnswer('a', 1700).error, /non valida/);
+  g.submitAnswer('a', 1492);
+  g.submitAnswer('b', 1502);
+  g.submitAnswer('c', 1520);
+  const summary = g.closeQuestion();
+  assert.equal(g.players.get('a').score, 1000);
+  assert.equal(g.players.get('b').score, 500); // al limite della tolleranza: metà punti
+  assert.equal(g.players.get('c').score, 0);
+  assert.equal(g.players.get('c').last.close, true);
+  assert.deepEqual(summary.closest.map((x) => x.nickname), ['Esatto', 'Vicino', 'Lontano']);
+  assert.equal(summary.reveal.text, '1492');
+});
+
+test('validateQuiz controlla i nuovi tipi', () => {
+  assert.match(validateQuiz({ title: 'x', questions: [{ type: 'ordina', text: 'o', items: ['a', 'b'], correct: [0, 0], time: 20 }] }), /ordine/);
+  assert.match(validateQuiz({ title: 'x', questions: [{ type: 'numero', text: 'n', answer: 50, min: 60, max: 70, time: 20 }] }), /minimo e massimo/);
+  assert.match(validateQuiz({ title: 'x', questions: [{ type: 'boh', text: 'n', time: 20 }] }), /tipo sconosciuto/);
+});
+
+test('avatar: emoji scelta o predefinita', () => {
+  const g = new Game('1', quiz);
+  assert.equal(g.addPlayer('a', 'Anna', '🦊').player.avatar, '🦊');
+  assert.equal(g.addPlayer('b', 'Bruno', '<script>alert(1)</script>').player.avatar, '🙂');
+});
+
+test('publicQuestion non rivela soluzioni di nessun tipo', () => {
+  const qs = [
+    { type: 'ordina', text: 'o', items: ['a', 'b'], correct: [1, 0], time: 20, why: 'segreto' },
+    { type: 'numero', text: 'n', answer: 5, min: 0, max: 10, tol: 1, time: 20 },
+  ];
+  const g = new Game('1', { title: 'x', questions: qs });
+  for (let i = 0; i < qs.length; i++) {
+    g.nextQuestion();
+    const pub = g.publicQuestion();
+    assert.equal('correct' in pub, false);
+    assert.equal('answer' in pub, false);
+    assert.equal('why' in pub, false);
+  }
 });

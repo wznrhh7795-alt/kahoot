@@ -2,17 +2,24 @@
   const $ = (id) => document.getElementById(id);
   const screens = ['s-pin', 's-nick', 's-lobby', 's-getready', 's-question', 's-sent', 's-result', 's-gameover', 's-message'];
   const SESSION_KEY = 'quizzone.player';
+  const AVATAR_KEY = 'quizzone.avatar';
   const SESSION_MAX_AGE = 3 * 60 * 60 * 1000;
   const HEARTBEAT_MS = 5000;
   const HOST_SILENT_MS = 20000; // dopo questo silenzio mostriamo «mi ricollego…»
   const HOST_GONE_MS = 90000; // dopo questo silenzio la partita è considerata chiusa
   // Messaggi che cambiano schermata: se ne arriva uno più vecchio di quello già mostrato, lo ignoriamo.
   const STATE_TYPES = new Set(['getready', 'question', 'results', 'result', 'wait', 'final']);
+  const MODE_LABELS = {
+    quiz: '❓ Quiz', vf: '⚖️ Vero o falso', immagine: '🖼️ Indovina dall\'immagine',
+    citazione: '💬 Chi l\'ha detto?', ordina: '🔢 Metti in ordine', numero: '🎯 Indovina il numero',
+    quiz_custom: '❓ Quiz', vero_falso: '⚖️ Vero o falso',
+  };
 
   const state = {
     sk: null, // chiave segreta del telefono: identifica il giocatore presso l'host
     pin: null,
     nickname: null,
+    avatar: null,
     score: 0,
     bus: null,
     hostKey: null,
@@ -34,6 +41,7 @@
     'Incrociamo le dita…',
     'Chissà se hai indovinato!',
     'Vediamo cosa hanno risposto gli altri…',
+    'Suspense…',
   ];
 
   // ---- Interfaccia ----
@@ -42,7 +50,9 @@
     const inGame = !['s-pin', 's-nick', 's-message'].includes(id);
     $('bottombar').classList.toggle('hidden', !inGame);
     $('topbar').classList.toggle('hidden', !inGame);
-    document.body.className = '';
+    document.body.classList.remove('result-correct', 'result-wrong', 'result-close');
+    document.body.classList.toggle('has-topbar', inGame);
+    window.scrollTo(0, 0);
   }
 
   function showError(el, message) {
@@ -54,21 +64,28 @@
 
   function setBusy(form, busy, label) {
     form.querySelectorAll('button, input').forEach((el) => (el.disabled = busy));
-    const btn = form.querySelector('button');
+    const btn = form.querySelector('button[type=submit]');
     btn.dataset.label = btn.dataset.label || btn.textContent;
     btn.textContent = busy ? label : btn.dataset.label;
   }
 
-  function updateBars() {
-    $('top-pin').textContent = `PIN: ${state.pin}`;
-    $('top-progress').textContent = state.question ? `${state.question.index + 1} di ${state.question.total}` : '';
+  function updateBars(bump) {
+    $('top-pin').textContent = `PIN ${state.pin}`;
+    $('top-progress').textContent = state.question ? `${state.question.index + 1} / ${state.question.total}` : 'In attesa';
     $('bb-nick').textContent = state.nickname;
-    $('bb-score').textContent = state.score;
+    $('bb-avatar').textContent = state.avatar || '';
+    $('bb-score').textContent = state.score.toLocaleString('it-IT');
+    if (bump) {
+      $('bb-score').classList.remove('bump');
+      void $('bb-score').offsetWidth;
+      $('bb-score').classList.add('bump');
+    }
   }
 
   function stopTimers() {
     clearInterval(state.countdown);
-    clearInterval(state.timer);
+    state.timer?.stop();
+    state.timer = null;
   }
 
   function setReconnecting(on) {
@@ -92,11 +109,45 @@
     }
   }
 
+  // ---- Avatar ----
+  function loadAvatar() {
+    try {
+      const saved = localStorage.getItem(AVATAR_KEY);
+      if (saved && UI.AVATARS.includes(saved)) return saved;
+    } catch {}
+    return UI.AVATARS[Math.floor(Math.random() * UI.AVATARS.length)];
+  }
+  function setAvatar(avatar) {
+    state.avatar = avatar;
+    $('avatar-current').textContent = avatar;
+    document.querySelectorAll('.avatar-opt').forEach((b) => {
+      b.classList.toggle('sel', b.dataset.a === avatar);
+      b.setAttribute('aria-checked', b.dataset.a === avatar);
+    });
+    try {
+      localStorage.setItem(AVATAR_KEY, avatar);
+    } catch {}
+  }
+  for (const a of UI.AVATARS) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'avatar-opt';
+    b.dataset.a = a;
+    b.textContent = a;
+    b.setAttribute('role', 'radio');
+    b.addEventListener('click', () => {
+      setAvatar(a);
+      UI.sound('tap');
+    });
+    $('avatar-picker').appendChild(b);
+  }
+  setAvatar(loadAvatar());
+
   // ---- Sessione salvata: si rientra in partita anche dopo aver ricaricato la pagina ----
   function saveSession() {
     try {
       localStorage.setItem(SESSION_KEY, JSON.stringify({
-        pin: state.pin, sk: QuizNet.toHex(state.sk), nickname: state.nickname, at: Date.now(),
+        pin: state.pin, sk: QuizNet.toHex(state.sk), nickname: state.nickname, avatar: state.avatar, at: Date.now(),
       }));
     } catch {}
   }
@@ -151,23 +202,25 @@
     });
   }
 
+  const rejoinMsg = () => ({ t: 'rejoin', nickname: state.nickname, avatar: state.avatar });
+
   // Segnale di vita all'host e controllo che l'host risponda ancora.
   setInterval(() => {
     if (!state.joined || state.finished || !state.bus) return;
     send({ t: 'hb' });
     const silent = Date.now() - state.lastHostMsg;
-    if (silent > HOST_GONE_MS) return finish('Partita terminata', "L'organizzatore non è più raggiungibile.");
+    if (silent > HOST_GONE_MS) {
+      return state.view.phase === 'gameover' ? finish() : finish('Partita terminata', "L'organizzatore non è più raggiungibile.");
+    }
     if (silent > HOST_SILENT_MS) {
       setReconnecting(true);
-      send({ t: 'rejoin', nickname: state.nickname });
+      send(rejoinMsg());
     }
   }, HEARTBEAT_MS);
 
   // Tornando sull'app dopo averla lasciata in sottofondo chiediamo subito lo stato attuale.
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible' && state.joined && !state.finished) {
-      send({ t: 'rejoin', nickname: state.nickname });
-    }
+    if (document.visibilityState === 'visible' && state.joined && !state.finished) send(rejoinMsg());
   });
 
   function onMessage(from, msg) {
@@ -199,6 +252,7 @@
         throw new Error('network');
       }
       await request({ t: 'hello' }, ['welcome'], 10000, 2000);
+      UI.sound('join');
       show('s-nick');
       $('nick-input').focus();
     } catch (err) {
@@ -225,7 +279,7 @@
     if (!nickname.trim()) return showError($('nick-error'), 'Inserisci un nickname.');
     setBusy($('nick-form'), true, 'Entro…');
     try {
-      await request({ t: 'join', nickname }, ['joined', 'joinError', 'kicked'], 15000, 3000);
+      await request({ t: 'join', nickname, avatar: state.avatar }, ['joined', 'joinError', 'kicked'], 15000, 3000);
     } catch {
       showError($('nick-error'), 'Nessuna risposta dalla partita. Riprova.');
     } finally {
@@ -239,6 +293,7 @@
       const firstTime = !state.joined;
       state.joined = true;
       state.nickname = msg.nickname;
+      if (msg.avatar) state.avatar = msg.avatar;
       state.score = msg.score || 0;
       saveSession();
       QuizNet.keepScreenOn();
@@ -247,10 +302,12 @@
         state.lastStateSeq = Math.max(state.lastStateSeq, msg.seq || 0);
         handlers[msg.snapshot.t]?.(msg.snapshot);
       } else if (firstTime || state.view.phase !== 'lobby' || !$('s-lobby').classList.contains('hidden')) {
+        $('lobby-avatar').textContent = state.avatar;
         $('lobby-title').textContent = 'Eccoti!';
-        $('lobby-sub').textContent = 'Vedi il tuo nickname sullo schermo?';
+        $('lobby-sub').textContent = 'Vedi il tuo nickname sullo schermo? Aspetta che la partita cominci.';
         state.view = { phase: 'lobby', index: -1 };
         show('s-lobby');
+        if (firstTime) UI.vibrate(40);
       }
     },
 
@@ -275,21 +332,24 @@
         state.mismatches = 0;
       } else if (++state.mismatches >= 2) {
         state.mismatches = 0;
-        send({ t: 'rejoin', nickname: state.nickname });
+        send(rejoinMsg());
       }
     },
 
     wait({ index }) {
       state.view = { phase: 'results', index };
+      $('lobby-avatar').textContent = state.avatar;
       $('lobby-title').textContent = 'Sei dentro!';
       $('lobby-sub').textContent = 'Attendi la prossima domanda.';
       show('s-lobby');
     },
 
-    getready({ index, total, ms }) {
+    getready({ index, total, ms, mode, next }) {
       state.view = { phase: 'getready', index };
       state.question = { index, total };
       updateBars();
+      UI.preload(next);
+      $('gr-mode').textContent = MODE_LABELS[mode] || MODE_LABELS.quiz;
       $('gr-title').textContent = `Domanda ${index + 1}`;
       let left = Math.max(1, Math.round(ms / 1000));
       $('gr-count').textContent = left;
@@ -297,6 +357,7 @@
       state.countdown = setInterval(() => {
         left -= 1;
         if (left <= 0) clearInterval(state.countdown);
+        else UI.sound('tick');
         $('gr-count').textContent = Math.max(left, 0);
       }, 1000);
       show('s-getready');
@@ -316,26 +377,14 @@
       updateBars();
       if (q.answered) return showSent();
 
+      $('q-cat').textContent = `${q.categoryEmoji || ''} ${q.category || MODE_LABELS[q.mode] || ''}`.trim();
+      $('q-cat').classList.toggle('hidden', !q.category);
       $('q-text').textContent = q.text;
-      let left = Math.max(0, Math.round(q.remaining / 1000));
-      $('q-timer').textContent = left;
-      state.timer = setInterval(() => {
-        left -= 1;
-        $('q-timer').textContent = Math.max(left, 0);
-        if (left <= 0) clearInterval(state.timer);
-      }, 1000);
-
-      const grid = $('answers');
-      grid.classList.toggle('two', q.answers.length === 2);
-      grid.innerHTML = '';
-      q.answers.forEach((text, i) => {
-        const btn = document.createElement('button');
-        btn.className = `answer-btn c${i}`;
-        btn.setAttribute('aria-label', `${SHAPE_NAMES[i]}: ${text}`);
-        btn.innerHTML = `${SHAPES[i]}<span class="answer-label">${escapeHtml(text)}</span>`;
-        btn.addEventListener('click', () => answer(q.index, i));
-        grid.appendChild(btn);
+      state.timer = UI.timer($('q-timer'), Math.max(0, Math.round(q.remaining / 1000)), {
+        onTick: (s) => s <= 3 && s > 0 && UI.sound('tick'),
       });
+      UI.renderMedia($('q-media'), q.media);
+      UI.renderAnswerInput($('answers'), q, (choice) => answer(q.index, choice));
       show('s-question');
     },
 
@@ -344,12 +393,12 @@
         clearInterval(state.answer.timer);
         state.answer = null;
       }
-      if (ok && state.view.phase === 'question' && state.view.index === q) showSent();
+      if (ok && state.view.phase === 'question' && state.view.index === q && $('s-sent').classList.contains('hidden')) showSent();
     },
 
-    results({ index, results }) {
+    results({ index, results, reveal }) {
       const mine = results[state.bus?.pubkey];
-      if (mine) handlers.result(mine);
+      if (mine) handlers.result({ ...mine, reveal });
       else handlers.wait({ index });
     },
 
@@ -358,21 +407,40 @@
       clearInterval(state.answer?.timer);
       state.answer = null;
       state.view = { phase: 'results', index: r.index };
+      const gained = r.score > state.score;
       state.score = r.score;
-      updateBars();
+      updateBars(gained);
       show('s-result');
-      document.body.className = r.correct ? 'result-correct' : 'result-wrong';
-      $('res-title').textContent = r.correct ? 'Corretto' : r.answered ? 'Sbagliato' : 'Tempo scaduto';
-      $('res-icon').textContent = r.correct ? '✓' : '✗';
-      $('res-points').textContent = r.correct ? `+ ${r.points}` : 'Nessun punto';
-      $('res-answer').textContent = r.correct ? '' : `Risposta giusta: ${r.correctText}`;
+      const reveal = r.reveal || {};
+      const kind = r.correct ? 'correct' : r.close ? 'close' : 'wrong';
+      document.body.classList.add(`result-${kind}`);
+      $('res-title').textContent = r.correct
+        ? pick(['Corretto!', 'Esatto!', 'Grande!', 'Bravissimo!'])
+        : r.close ? 'C\'eri quasi!' : r.answered ? 'Sbagliato' : 'Tempo scaduto';
+      $('res-icon').textContent = r.correct ? '✓' : r.close ? '≈' : '✗';
+      $('res-points').textContent = r.correct ? `+ ${r.points.toLocaleString('it-IT')}` : 'Nessun punto';
+
+      // Soluzione
+      const sol = $('res-solution');
+      let html = '';
+      if (reveal.type === 'numero') {
+        html = `<small>La risposta</small>${UI.esc(reveal.text)}${r.answered ? `<br><small>Tu hai detto ${UI.esc(UI.formatNumber(r.guess, state.question?.format))}</small>` : ''}`;
+      } else if (reveal.type === 'ordina') {
+        html = `<small>L'ordine giusto</small>${UI.esc(reveal.text)}${r.answered && !r.correct ? `<br><small>Posizioni giuste: ${r.positionsRight} su ${reveal.correct.length}</small>` : ''}`;
+      } else if (!r.correct && reveal.text) {
+        html = `<small>La risposta giusta</small>${UI.esc(reveal.text)}`;
+      }
+      sol.innerHTML = html;
+      sol.classList.toggle('hidden', !html);
+      $('res-why').textContent = reveal.why || '';
+      $('res-why').classList.toggle('hidden', !reveal.why);
 
       const streak = $('res-streak');
       if (r.correct && r.streak >= 2) {
-        streak.textContent = `🔥 Combo di risposte: ${r.streak}`;
+        streak.textContent = `🔥 Combo di ${r.streak} risposte giuste`;
         streak.classList.remove('hidden');
-      } else if (!r.correct && r.answered) {
-        streak.textContent = 'Combo persa';
+      } else if (r.lostStreak) {
+        streak.textContent = '💔 Combo persa';
         streak.classList.remove('hidden');
       } else {
         streak.classList.add('hidden');
@@ -383,22 +451,53 @@
       $('res-rank').textContent = podium ? `Sei sul podio! (${r.rank}° posto)` : `Sei al ${r.rank}° posto`;
       if (!r.behind) $('res-behind').textContent = r.score > 0 ? 'Sei in testa! Continua così.' : '';
       else if (r.behind.gap === 0) $('res-behind').textContent = `Pari con ${r.behind.nickname}`;
-      else $('res-behind').textContent = `${r.behind.gap <= 300 ? 'A soli' : 'A'} ${r.behind.gap} punti da ${r.behind.nickname}`;
+      else $('res-behind').textContent = `${r.behind.gap <= 300 ? 'A soli' : 'A'} ${r.behind.gap.toLocaleString('it-IT')} punti da ${r.behind.nickname}`;
+
+      if (r.correct) {
+        UI.sound('correct');
+        UI.vibrate(60);
+        UI.confetti({ count: 90, duration: 2000 });
+      } else {
+        UI.sound(r.close ? 'close' : 'wrong');
+        UI.vibrate([80, 60, 80]);
+      }
     },
 
+    // Fine partita: restiamo collegati, l'organizzatore potrebbe avviarne un'altra.
     final({ ranking }) {
       const pos = ranking.findIndex(([key]) => key === state.bus?.pubkey);
       const rank = pos + 1;
       const score = pos >= 0 ? ranking[pos][1] : state.score;
+      const already = state.view.phase === 'gameover';
+      stopTimers();
+      state.view = { phase: 'gameover', index: state.view.index };
       state.score = score;
       updateBars();
-      finish();
       show('s-gameover');
+      if (already) return;
       const medals = ['🥇', '🥈', '🥉'];
       $('go-title').textContent = rank > 0 && rank <= 3 ? 'Fantastico!' : 'Bella partita!';
-      $('go-medal').textContent = medals[rank - 1] || '🎉';
+      $('go-medal').textContent = medals[rank - 1] || state.avatar || '🎉';
       $('go-rank').textContent = rank > 0 ? `${rank}° posto su ${ranking.length}` : 'Partita conclusa';
-      $('go-score').textContent = `Punteggio finale: ${score} punti`;
+      $('go-score').textContent = `Punteggio finale: ${score.toLocaleString('it-IT')} punti`;
+      if (rank > 0 && rank <= 3) {
+        UI.sound('podium');
+        UI.confetti({ count: 200, duration: 4000 });
+      }
+    },
+
+    // L'organizzatore ha avviato una nuova partita con lo stesso PIN.
+    restart({ title }) {
+      stopTimers();
+      state.score = 0;
+      state.question = null;
+      state.view = { phase: 'lobby', index: -1 };
+      updateBars();
+      $('lobby-avatar').textContent = state.avatar;
+      $('lobby-title').textContent = 'Nuova partita!';
+      $('lobby-sub').textContent = title ? `«${title}» sta per cominciare.` : 'Sta per cominciare.';
+      show('s-lobby');
+      UI.sound('join');
     },
 
     kicked() {
@@ -406,23 +505,24 @@
     },
 
     ended() {
-      finish('Partita terminata', "L'organizzatore ha chiuso la partita.");
+      if (state.view.phase === 'gameover') finish();
+      else finish('Partita terminata', "L'organizzatore ha chiuso la partita.");
     },
   };
 
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
   function showSent() {
-    clearInterval(state.timer);
-    $('sent-quip').textContent = QUIPS[Math.floor(Math.random() * QUIPS.length)];
+    stopTimers();
+    $('sent-quip').textContent = pick(QUIPS);
     show('s-sent');
   }
 
   // La risposta viene ripetuta finché l'host non conferma di averla ricevuta.
   function answer(index, choice) {
     if (state.answer?.q === index) return;
-    document.querySelectorAll('#answers .answer-btn').forEach((b, i) => {
-      b.disabled = true;
-      b.classList.toggle('dim', i !== choice);
-    });
+    UI.sound('sent');
+    UI.vibrate(25);
     const msg = { t: 'answer', q: index, choice };
     send(msg);
     let tries = 1;
@@ -433,26 +533,32 @@
         send(msg);
       }, 2000),
     };
+    setTimeout(() => {
+      if (state.view.phase === 'question' && state.view.index === index) showSent();
+    }, 350);
   }
 
   // ---- Avvio: PIN nell'URL (/?pin=123456) o sessione da riprendere ----
   async function resume(saved) {
     state.sk = QuizNet.fromHex(saved.sk);
     state.nickname = saved.nickname;
+    if (saved.avatar) state.avatar = saved.avatar;
     state.joined = true;
     state.lastHostMsg = Date.now();
     openBus(saved.pin);
     updateBars();
+    $('lobby-avatar').textContent = state.avatar;
     $('lobby-title').textContent = 'Bentornato!';
     $('lobby-sub').textContent = 'Mi ricollego alla partita…';
     show('s-lobby');
     try {
-      await request({ t: 'rejoin', nickname: saved.nickname }, ['joined', 'rejoinFailed', 'kicked'], 30000, 3000);
+      await request(rejoinMsg(), ['joined', 'rejoinFailed', 'kicked'], 30000, 3000);
     } catch {
       finish('Partita terminata', "L'organizzatore non è più raggiungibile.");
     }
   }
 
+  UI.installSoundToggle();
   const urlPin = (new URLSearchParams(location.search).get('pin') || '').replace(/\D/g, '');
   const saved = loadSession();
   if (saved && (!urlPin || urlPin === saved.pin)) {

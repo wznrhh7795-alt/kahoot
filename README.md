@@ -1,23 +1,46 @@
 # Quizzone!
 
 Gioco a quiz multigiocatore in tempo reale, in italiano, ispirato al flusso di gioco di [kahoot.it](https://kahoot.it).
-**Si gioca interamente da telefono**: chi organizza crea la partita dal proprio smartphone, gli altri
-entrano con il PIN (o con il link condiviso) e rispondono toccando le forme colorate. Domanda e risposte
-compaiono su ogni telefono, quindi non serve uno schermo grande.
+**Si gioca interamente da telefono**, anche con connessioni diverse: chi organizza crea la partita dal proprio
+smartphone, gli altri entrano con il PIN o con il link condiviso.
 
 **Gioca subito: <https://quizzone-it.netlify.app>** (organizzatore: <https://quizzone-it.netlify.app/host>)
 
-| Organizzatore | Giocatore | Giocatore |
-| --- | --- | --- |
-| ![Sala d'attesa](docs/phone-host-lobby.png) | ![Domanda sul telefono](docs/phone-player-question.png) | ![Risultato](docs/phone-player-result.png) |
-| ![Domanda dell'organizzatore](docs/phone-host-question.png) | ![Risultati](docs/phone-host-results.png) | ![Podio](docs/phone-host-podium.png) |
+| Home | Indovina dall'immagine | Metti in ordine | Indovina il numero |
+| --- | --- | --- | --- |
+| ![Home](docs/home.jpg) | ![Domanda con immagine](docs/immagine.jpg) | ![Metti in ordine](docs/ordina.jpg) | ![Indovina il numero](docs/numero.jpg) |
+| **Chi l'ha detto?** | **Risultato** | **Sala d'attesa** | **Podio** |
+| ![Citazione](docs/citazione.jpg) | ![Risultato](docs/risultato.jpg) | ![Sala d'attesa](docs/lobby.jpg) | ![Podio](docs/podio.jpg) |
+
+## Cosa c'è dentro
+
+- **Oltre 7.500 domande diverse** (più infinite domande di matematica generate al volo) in **24 categorie**:
+  Geografia del mondo, Bandiere, Italia, Monumenti e luoghi, Storia, Mitologia, Arte, Letteratura, Citazioni,
+  Cinema, Musica, Scienza, Elementi chimici, Spazio, Corpo umano, Animali, Sport, Cucina, Lingua italiana,
+  Inglese, Proverbi e modi di dire, Matematica, Invenzioni e tecnologia, Cultura generale.
+- **6 giochi diversi**, mescolabili nella stessa partita:
+  - ❓ **Quiz**: quattro risposte, una giusta.
+  - ⚖️ **Vero o falso**, con la spiegazione quando è falso.
+  - 🖼️ **Indovina dall'immagine**: 195 bandiere, oltre 180 foto di monumenti, opere d'arte e animali, film e
+    proverbi raccontati con le emoji.
+  - 💬 **Chi l'ha detto?**: citazioni celebri, versi, battute di film, incipit, «completa la citazione» e i proverbi.
+  - 🔢 **Metti in ordine**: eventi storici, film, classifiche (fiumi, montagne, Paesi…), sequenze. Punti solo
+    se l'ordine è tutto giusto.
+  - 🎯 **Indovina il numero**: anni, misure e stime con un cursore; punti pieni se esatto, che calano entro la
+    tolleranza.
+- **Partita rapida**: scegli categorie, giochi, numero di domande (5–50), difficoltà (facile, media, difficile,
+  mista) e tempo (veloce, normale, rilassato). Le domande non si ripetono nella stessa partita.
+- **Partite a tema** già pronte (Il giro del mondo, Viaggio in Italia, Serata al cinema, Ritorno a scuola…).
+- **Editor** per creare i propri quiz con tutti i tipi di domanda (anche con immagine o emoji).
+- Avatar per i giocatori, combo di risposte giuste, classifica, podio con coriandoli, suoni (disattivabili),
+  vibrazione sul telefono e **«Rigioca con nuove domande»** con gli stessi giocatori e lo stesso PIN.
 
 ## Come si gioca
 
-1. **Organizzatore:** apre il sito, tocca **Organizza una partita**, sceglie un quiz e tocca **Ospita**.
-   Con **Condividi link** manda l'invito (WhatsApp, Telegram…); con **Gioca anche tu** partecipa a sua volta.
-2. **Giocatori:** aprono il link ricevuto, oppure il sito e inseriscono il PIN, poi scelgono un nickname.
-3. L'organizzatore tocca **Inizia**: per ogni domanda tutti vedono testo, risposte e tempo sul proprio telefono.
+1. **Organizzatore:** apre il sito, tocca **Organizza una partita**, sceglie categorie e giochi (o una partita a
+   tema) e tocca **Crea partita**. Con **Condividi link** manda l'invito; con **Gioca anche tu** partecipa a sua volta.
+2. **Giocatori:** aprono il link, oppure il sito e inseriscono il PIN, poi scelgono nickname e avatar.
+3. L'organizzatore tocca **Inizia**: per ogni domanda tutti vedono testo, immagini e risposte sul proprio telefono.
 
 Consigli: l'organizzatore deve tenere aperta la pagina fino alla fine (dopo aver condiviso il link,
 torna subito su Quizzone!). Se un giocatore perde la connessione o ricarica la pagina, rientra da solo
@@ -53,34 +76,32 @@ npm test
 
 Per provare dal telefono apri `http://<ip-del-computer>:3000` (serve comunque internet per i relay).
 
-## Funzionalità
-
-- PIN di 6 cifre, link d'invito condivisibile, sala d'attesa (tocca un nome per rimuovere il giocatore).
-- L'organizzatore può giocare anche lui; ci si può unire anche a partita iniziata.
-- Domande a scelta multipla (2–4 risposte) e vero/falso, con tempo limite configurabile.
-- Schermate del giocatore: PIN → nickname → «Eccoti!» → «Preparati!» → domanda → «Risposta inviata»
-  → «Corretto / Sbagliato / Tempo scaduto» (con la risposta giusta) → posizione finale.
-- Schermate dell'organizzatore: sala d'attesa → domanda con timer e contatore (pulsante «Salta»)
-  → grafico delle risposte → classifica (top 5) → podio.
-- Riconnessione automatica dei giocatori; lo schermo resta acceso durante la partita (dove supportato).
-- Punteggio: fino a 1000 punti per risposta corretta (metà dipende dalla velocità) più un bonus combo
-  di 100 punti per ogni risposta corretta consecutiva, fino a 500.
-- Tre quiz di esempio (Geografia d'Italia, Cultura generale, Cucina italiana) e un editor per crearne di nuovi.
-
 ## Struttura
 
 ```
-public/index.html   App del giocatore             public/js/player.js
-public/host.html    App dell'organizzatore + editor  public/js/host.js
-public/js/game.js   Logica di gioco (giocatori, risposte, punteggi, classifica)
-public/js/net.js    Rete di gioco via relay Nostr e blocco dello spegnimento schermo
-public/js/quizzes.js  Quiz di esempio
-netlify.toml        Pubblicazione statica della cartella public/
-server.js           Server statico solo per lo sviluppo locale
-test/               Test della logica di gioco
+public/index.html      App del giocatore                     public/js/player.js
+public/host.html       App dell'organizzatore + editor        public/js/host.js
+public/js/game.js      Motore di gioco: tipi di domanda, punteggi, classifica
+public/js/bank.js      Banca delle domande: 24 categorie, generatori per i 6 giochi, partite casuali
+public/js/ui.js        Componenti grafici condivisi: risposte, timer, coriandoli, suoni
+public/js/net.js       Rete di gioco via relay Nostr
+public/data/*.js       Dati: geografia, scienza, storia, cultura, lingua, varie, immagini
+public/flags/          Bandiere (flag-icons)
+scripts/build-images.mjs  Rigenera public/data/images.js da Wikipedia/Wikimedia Commons
+test/                  Test del motore e della banca delle domande
 ```
 
-La risposta corretta non viene inviata ai giocatori prima della chiusura della domanda.
+La soluzione non viene mai inviata ai giocatori prima della chiusura della domanda.
+
+## Fonti e licenze
+
+- **Domande**: scritte per questo progetto o generate da elenchi di dati (Paesi e capitali, elementi chimici,
+  eventi storici, opere, film…). Se trovi un errore, segnalalo!
+- **Foto** di monumenti, opere d'arte e animali: [Wikimedia Commons](https://commons.wikimedia.org), solo con
+  licenze libere (pubblico dominio, CC0, CC BY, CC BY-SA). Autore e licenza di ogni immagine sono indicati sotto la
+  foto durante il gioco, con il collegamento alla pagina originale. Elenco in `public/data/images.js`.
+- **Bandiere**: [flag-icons](https://github.com/lipis/flag-icons) 7.5.0 (licenza MIT, `public/flags/LICENSE`).
+- **Rete**: [nostr-tools](https://github.com/nbd-wtf/nostr-tools) 2.25.2 (pubblico dominio).
 
 ## Come è stato ricostruito (analisi con REA)
 
@@ -106,9 +127,11 @@ Evidence: `ev_2976fa3cc771f0379a076df171a0793ab73ad211dd4c5fdc7c495100ec1cff7c`
 **Scelte di progettazione (non osservate)**
 
 - Relay pubblici Nostr al posto di CometD: nessun server di gioco da gestire, nessun account.
+- I tipi di domanda «quiz», «vero/falso», «metti in ordine» (jumble) e «indovina il numero» (slider) seguono
+  quelli osservati nei bundle; immagini, citazioni e la banca di domande sono contenuti originali di questo progetto.
 - Domanda e risposte mostrate anche sui telefoni dei giocatori, così si gioca senza schermo condiviso.
 - Formula del punteggio e del bonus combo: modello semplificato, non letto dal codice originale.
-- Implementati solo i tipi `quiz` e vero/falso; gli altri tipi osservati restano fuori.
+- Implementati 6 giochi: quiz, vero/falso, immagine, citazioni, metti in ordine e indovina il numero; gli altri tipi osservati (sondaggi, nuvole di parole, puntatore su immagine…) restano fuori.
 - Nome, logo e testi sono originali: il progetto non usa marchi né risorse di Kahoot!.
 
 **Limiti**: l'analisi è statica; il comportamento lato server di Kahoot (punteggi, temporizzazioni)

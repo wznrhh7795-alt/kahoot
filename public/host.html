@@ -3,27 +3,83 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#46178f">
-  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#3c1180">
+  <meta name="description" content="Organizza una partita di Quizzone!: migliaia di domande, 24 categorie, 6 giochi.">
   <title>Quizzone! – Organizza una partita</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-  <!-- Scelta del quiz -->
-  <main id="h-home" class="screen bg-pattern" style="justify-content: flex-start;">
-    <div class="host-wrap" style="display:flex; flex-direction:column; gap:20px; align-items:center;">
-      <h1 class="logo">Quizzone!</h1>
-      <p>Scegli un quiz e ospita la partita: puoi farlo anche da telefono.<br>
-        Gli altri entrano con il PIN o con il link che condividi. <a href="/" style="color:#fff">Hai un PIN? Entra qui</a></p>
-      <button id="btn-new" class="btn green">+ Crea un nuovo quiz</button>
-      <div id="quiz-list" class="quiz-list"></div>
+<body class="host">
+  <!-- Home -->
+  <main id="h-home" class="screen top">
+    <div class="wrap">
+      <div class="hero">
+        <div class="logo-shapes" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        <h1 class="logo">Quizzone<span class="bang">!</span></h1>
+        <p class="tagline" id="home-stats"></p>
+      </div>
+
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-tab="rapida" role="tab">⚡ Rapida</button>
+        <button class="tab" data-tab="tema" role="tab">🎁 A tema</button>
+        <button class="tab" data-tab="miei" role="tab">✏️ I miei quiz</button>
+      </nav>
+
+      <!-- Partita rapida -->
+      <section id="tab-rapida" class="wrap">
+        <div class="section-title"><span>1. Categorie</span>
+          <span class="actions"><button class="btn ghost small" id="cat-all">Tutte</button><button class="btn ghost small" id="cat-none">Nessuna</button></span>
+        </div>
+        <div id="cat-grid" class="cat-grid"></div>
+
+        <div class="section-title"><span>2. Giochi</span>
+          <span class="actions"><button class="btn ghost small" id="mode-all">Tutti</button></span>
+        </div>
+        <div id="mode-grid" class="mode-grid"></div>
+
+        <div class="section-title"><span>3. Impostazioni</span></div>
+        <div class="setup-row glass" style="padding:14px">
+          <div class="seg"><span class="seg-label">Domande</span><div class="seg-buttons" data-seg="count">
+            <button data-v="5">5</button><button data-v="10">10</button><button data-v="15">15</button><button data-v="20">20</button><button data-v="30">30</button><button data-v="50">50</button>
+          </div></div>
+          <div class="seg"><span class="seg-label">Difficoltà</span><div class="seg-buttons" data-seg="difficulty">
+            <button data-v="facile">Facile</button><button data-v="media">Media</button><button data-v="difficile">Difficile</button><button data-v="mista">Mista</button>
+          </div></div>
+          <div class="seg"><span class="seg-label">Tempo</span><div class="seg-buttons" data-seg="speed">
+            <button data-v="veloce">Veloce</button><button data-v="normale">Normale</button><button data-v="rilassato">Rilassato</button>
+          </div></div>
+        </div>
+
+        <div class="setup-bar">
+          <span id="setup-summary" class="setup-summary"></span>
+          <button id="btn-quick" class="btn primary big">Crea partita ▶</button>
+        </div>
+      </section>
+
+      <!-- A tema -->
+      <section id="tab-tema" class="wrap hidden">
+        <p class="footer-note" style="margin:0 auto">Partite già pronte. Usano il numero di domande, la difficoltà e il tempo scelti in «Partita rapida».</p>
+        <div id="preset-grid" class="preset-grid"></div>
+      </section>
+
+      <!-- I miei quiz -->
+      <section id="tab-miei" class="wrap hidden">
+        <div><button id="btn-new" class="btn green">+ Crea un nuovo quiz</button></div>
+        <div class="section-title"><span>I miei quiz</span></div>
+        <div id="my-list" class="quiz-list"></div>
+        <div class="section-title"><span>Quiz di esempio</span></div>
+        <div id="sample-list" class="quiz-list"></div>
+      </section>
+
+      <p class="footer-note" style="margin:8px auto 0">Hai un PIN? <a href="/">Entra come giocatore</a></p>
     </div>
   </main>
 
   <!-- Editor -->
-  <main id="h-editor" class="screen hidden" style="justify-content: flex-start;">
+  <main id="h-editor" class="screen top hidden">
     <div class="editor">
       <div class="editor-row" style="justify-content: space-between;">
         <h2>Editor del quiz</h2>
@@ -41,8 +97,10 @@
       </div>
       <div id="ed-questions" style="display:flex; flex-direction:column; gap:14px;"></div>
       <div class="editor-row">
-        <button id="ed-add-quiz" class="btn purple">+ Domanda a scelta multipla</button>
-        <button id="ed-add-tf" class="btn purple">+ Domanda vero/falso</button>
+        <button class="btn purple small" data-add="quiz">+ Scelta multipla</button>
+        <button class="btn purple small" data-add="vero_falso">+ Vero/Falso</button>
+        <button class="btn purple small" data-add="ordina">+ Metti in ordine</button>
+        <button class="btn purple small" data-add="numero">+ Indovina il numero</button>
       </div>
     </div>
   </main>
@@ -50,81 +108,86 @@
   <!-- Connessione -->
   <main id="h-connecting" class="screen hidden">
     <div class="spinner"></div>
-    <p class="big">Creazione della partita…</p>
+    <p class="big-title" style="font-size:1.6rem">Creazione della partita…</p>
   </main>
 
   <!-- Sala d'attesa -->
-  <main id="h-lobby" class="screen hidden" style="justify-content: flex-start;">
+  <main id="h-lobby" class="screen top hidden">
     <div class="pin-banner">
-      <div>
-        <div class="pin-label">Vai su <b id="join-url"></b></div>
-        <div class="pin-label">e inserisci il PIN del gioco:</div>
-      </div>
-      <div><div class="pin-value" id="lobby-pin"></div></div>
+      <div class="card"><span class="pin-label">Vai su</span><span class="join-url" id="join-url"></span></div>
+      <div class="card"><span class="pin-label">PIN del gioco</span><span class="pin-value" id="lobby-pin"></span></div>
     </div>
-    <div class="editor-row" style="justify-content:center">
-      <button id="share-native" class="btn green">Condividi link</button>
-      <button id="share-copy" class="btn light">Copia link</button>
+    <div class="lobby-bar">
+      <button id="share-native" class="btn green">📤 Condividi link</button>
+      <button id="share-copy" class="btn light">🔗 Copia link</button>
     </div>
-    <h2 id="lobby-title"></h2>
-    <div class="editor-row" style="justify-content:center">
-      <span class="score-pill" id="lobby-count">0 giocatori</span>
-      <button id="btn-start" class="btn light" disabled>Inizia</button>
-      <button id="btn-cancel" class="btn red small">Annulla</button>
+    <h2 id="lobby-title" class="big-title" style="font-size:1.6rem"></h2>
+    <p id="lobby-desc" class="muted small"></p>
+    <div class="lobby-bar">
+      <span class="chip" id="lobby-count">0 giocatori</span>
+      <button id="btn-start" class="btn primary big" disabled>Inizia ▶</button>
+      <button id="btn-cancel" class="btn ghost small">Annulla</button>
     </div>
     <form id="host-play-form" class="host-play" autocomplete="off">
       <input id="host-nick" class="input" placeholder="Il tuo nickname" aria-label="Il tuo nickname" maxlength="15">
-      <button class="btn purple" type="submit">Gioca anche tu</button>
+      <button class="btn purple" type="submit">🙋 Gioca anche tu</button>
     </form>
     <p id="host-play-on" class="footer-note hidden"></p>
-    <p id="lobby-wait" class="big">In attesa dei giocatori…</p>
+    <p id="lobby-wait" class="big-title waiting-dots" style="font-size:1.4rem">In attesa dei giocatori</p>
     <div id="lobby-players" class="players"></div>
-    <p class="footer-note">Tocca un nickname per rimuovere il giocatore. Tieni aperta questa pagina fino alla fine della partita.</p>
+    <p class="footer-note">Tocca un nome per rimuovere il giocatore. Tieni aperta questa pagina fino alla fine della partita.</p>
   </main>
 
   <!-- Preparati -->
   <main id="h-getready" class="screen hidden">
-    <p id="gr-num" class="big"></p>
-    <div id="gr-text" class="question-banner"></div>
+    <span id="gr-mode" class="chip mode-badge"></span>
+    <p id="gr-num" class="big-title" style="font-size:1.6rem"></p>
+    <div id="gr-text" class="q-banner"></div>
     <div class="progress"><div id="gr-bar"></div></div>
   </main>
 
   <!-- Domanda -->
-  <main id="h-question" class="screen hidden" style="justify-content: space-between;">
-    <div id="q-text" class="question-banner"></div>
-    <div class="question-mid">
-      <div id="q-timer" class="timer-circle">20</div>
+  <main id="h-question" class="screen host-q hidden">
+    <div class="q-meta"><span id="q-cat" class="chip"></span><span id="q-mode" class="chip"></span></div>
+    <div id="q-text" class="q-banner"></div>
+    <div class="q-mid">
+      <div id="q-timer" class="timer big"></div>
+      <div id="q-media" class="media hidden"></div>
       <div class="answer-counter"><b id="q-count">0</b>risposte</div>
-      <button id="btn-skip" class="btn light">Salta</button>
     </div>
-    <div id="q-answers" class="answer-grid"></div>
+    <div id="q-answers" class="host-tiles"></div>
+    <div id="q-input" class="host-input hidden"></div>
+    <button id="btn-skip" class="btn ghost small">Salta ⏭</button>
   </main>
 
   <!-- Risultati della domanda -->
-  <main id="h-results" class="screen hidden" style="justify-content: space-between;">
-    <div class="editor-row" style="width:100%; justify-content: space-between;">
-      <div id="r-text" class="question-banner" style="flex:1"></div>
-      <button id="btn-to-score" class="btn light">Avanti</button>
+  <main id="h-results" class="screen host-q hidden">
+    <div class="results-top">
+      <div id="r-text" class="q-banner"></div>
+      <button id="btn-to-score" class="btn primary">Avanti ▶</button>
     </div>
     <div id="r-mine" class="my-result hidden"></div>
-    <div id="r-chart" class="chart"></div>
-    <div id="r-answers" class="answer-grid"></div>
+    <div id="r-body" class="wrap" style="align-items:center"></div>
+    <p id="r-why" class="why hidden"></p>
   </main>
 
   <!-- Classifica -->
-  <main id="h-scoreboard" class="screen hidden" style="justify-content: flex-start;">
-    <div class="editor-row" style="width: min(700px, 100%); justify-content: space-between;">
-      <h2 class="big">Classifica</h2>
-      <button id="btn-next" class="btn light">Avanti</button>
+  <main id="h-scoreboard" class="screen top hidden">
+    <div class="results-top" style="width:min(720px,100%)">
+      <h2 class="big-title" style="flex:1;text-align:left">🏆 Classifica</h2>
+      <button id="btn-next" class="btn primary">Avanti ▶</button>
     </div>
     <div id="sb-list" class="scoreboard"></div>
   </main>
 
   <!-- Podio -->
-  <main id="h-podium" class="screen bg-pattern hidden">
-    <h2 id="pod-title" class="big"></h2>
+  <main id="h-podium" class="screen hidden">
+    <h2 id="pod-title" class="big-title"></h2>
     <div id="pod" class="podium"></div>
-    <button id="btn-home" class="btn light">Torna ai quiz</button>
+    <div class="lobby-bar">
+      <button id="btn-again" class="btn primary">🔁 Rigioca con nuove domande</button>
+      <button id="btn-home" class="btn light">Torna alla home</button>
+    </div>
   </main>
 
   <div id="net-warning" class="reconnect hidden" role="status">
@@ -135,8 +198,16 @@
   <script src="/vendor/nostr-tools.min.js"></script>
   <script src="/js/net.js"></script>
   <script src="/js/game.js"></script>
+  <script src="/data/geo.js"></script>
+  <script src="/data/scienza.js"></script>
+  <script src="/data/storia.js"></script>
+  <script src="/data/cultura.js"></script>
+  <script src="/data/lingua.js"></script>
+  <script src="/data/varie.js"></script>
+  <script src="/data/images.js"></script>
+  <script src="/js/bank.js"></script>
   <script src="/js/quizzes.js"></script>
-  <script src="/js/shapes.js"></script>
+  <script src="/js/ui.js"></script>
   <script src="/js/host.js"></script>
 </body>
 </html>

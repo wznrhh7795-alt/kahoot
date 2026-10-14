@@ -3,102 +3,116 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#46178f">
+  <meta name="theme-color" content="#3c1180">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="description" content="Quizzone! Il quiz multigiocatore in italiano da giocare con il telefono.">
   <title>Quizzone! – Entra in partita</title>
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <!-- Barra in alto durante il gioco -->
   <header id="topbar" class="topbar hidden">
-    <span id="top-pin"></span>
-    <span id="top-progress"></span>
+    <span id="top-pin" class="chip"></span>
+    <span id="top-progress" class="chip"></span>
   </header>
 
   <!-- 1. PIN -->
-  <main id="s-pin" class="screen bg-pattern">
-    <h1 class="logo">Quizzone!</h1>
+  <main id="s-pin" class="screen">
+    <div class="hero">
+      <div class="logo-shapes" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <h1 class="logo">Quizzone<span class="bang">!</span></h1>
+      <p class="tagline">Il quiz da giocare insieme, ognuno col suo telefono</p>
+    </div>
     <form id="pin-form" class="card" autocomplete="off">
       <input id="pin-input" class="input" inputmode="numeric" pattern="[0-9 ]*" placeholder="PIN del gioco" aria-label="PIN del gioco" maxlength="7">
-      <button class="btn" type="submit">Entra</button>
+      <button class="btn primary big" type="submit">Entra</button>
     </form>
     <div id="pin-error" class="error hidden" role="alert"></div>
-    <a class="btn light" href="/host">Organizza una partita</a>
-    <p class="footer-note">Chi organizza crea la partita dal proprio telefono e condivide il PIN.<br>Funziona con qualsiasi connessione: Wi-Fi, 4G o 5G.</p>
+    <a class="btn ghost" href="/host">🎮 Organizza una partita</a>
+    <p class="footer-note">Funziona con qualsiasi connessione: Wi-Fi, 4G o 5G.</p>
   </main>
 
-  <!-- 2. Nickname -->
-  <main id="s-nick" class="screen bg-pattern hidden">
-    <h1 class="logo">Quizzone!</h1>
+  <!-- 2. Nickname e avatar -->
+  <main id="s-nick" class="screen hidden">
+    <h1 class="logo">Quizzone<span class="bang">!</span></h1>
     <form id="nick-form" class="card" autocomplete="off">
-      <input id="nick-input" class="input" placeholder="Nickname" aria-label="Nickname" maxlength="15" autocapitalize="words">
-      <button class="btn" type="submit">OK, via!</button>
+      <div id="avatar-current" class="avatar-big" aria-hidden="true">🦊</div>
+      <input id="nick-input" class="input" placeholder="Il tuo nickname" aria-label="Nickname" maxlength="15" autocapitalize="words">
+      <div class="small muted">Scegli il tuo avatar</div>
+      <div id="avatar-picker" class="avatar-picker" role="radiogroup" aria-label="Avatar"></div>
+      <button class="btn primary big" type="submit">OK, via!</button>
     </form>
     <div id="nick-error" class="error hidden" role="alert"></div>
   </main>
 
-  <!-- 3. Istruzioni / sala d'attesa -->
+  <!-- 3. Sala d'attesa -->
   <main id="s-lobby" class="screen hidden">
-    <h2 id="lobby-title" class="big">Eccoti!</h2>
+    <div id="lobby-avatar" class="avatar-big"></div>
+    <h2 id="lobby-title" class="big-title">Eccoti!</h2>
     <p id="lobby-sub">Vedi il tuo nickname sullo schermo?</p>
     <div class="spinner"></div>
   </main>
 
   <!-- 4. Preparati -->
   <main id="s-getready" class="screen hidden">
-    <h2 id="gr-title" class="big">Domanda 1</h2>
+    <span id="gr-mode" class="chip mode-badge"></span>
+    <h2 id="gr-title" class="big-title">Domanda 1</h2>
     <div id="gr-count" class="countdown-ring">5</div>
-    <p class="big">Preparati!</p>
+    <p class="big-title" style="font-size:1.6rem">Preparati!</p>
   </main>
 
-  <!-- 5. Domanda: testo e risposte anche sul telefono, così non serve uno schermo grande -->
+  <!-- 5. Domanda -->
   <main id="s-question" class="screen player-question hidden">
-    <div class="player-q-head">
-      <div id="q-text" class="player-q-text"></div>
-      <div id="q-timer" class="timer-circle small">20</div>
+    <div class="q-meta"><span id="q-cat" class="chip"></span></div>
+    <div class="q-head">
+      <div id="q-text" class="q-text"></div>
+      <div id="q-timer"></div>
     </div>
-    <div id="answers" class="answer-grid player-answers"></div>
+    <div id="q-media" class="media hidden"></div>
+    <div id="answers" class="answer-input"></div>
   </main>
 
   <!-- 6. Risposta inviata -->
   <main id="s-sent" class="screen hidden">
     <div class="spinner"></div>
-    <h2 class="big">Risposta inviata</h2>
+    <h2 class="big-title">Risposta inviata</h2>
     <p id="sent-quip"></p>
   </main>
 
-  <!-- 7. Risultato della domanda -->
+  <!-- 7. Risultato -->
   <main id="s-result" class="screen hidden">
-    <h2 id="res-title" class="big"></h2>
+    <h2 id="res-title" class="big-title"></h2>
     <div id="res-icon" class="result-icon"></div>
     <div id="res-streak" class="streak hidden"></div>
     <div id="res-points" class="points-box"></div>
-    <p id="res-answer"></p>
-    <p id="res-rank" class="big" style="font-size: 1.3rem"></p>
+    <div id="res-solution" class="solution hidden"></div>
+    <p id="res-why" class="why hidden"></p>
+    <p id="res-rank" class="big-title" style="font-size:1.4rem"></p>
     <p id="res-behind"></p>
   </main>
 
   <!-- 8. Fine partita -->
-  <main id="s-gameover" class="screen bg-pattern hidden">
-    <h2 id="go-title" class="big"></h2>
-    <div id="go-medal" style="font-size: 5rem"></div>
-    <p id="go-rank" class="big"></p>
+  <main id="s-gameover" class="screen hidden">
+    <div id="go-medal" style="font-size:5rem"></div>
+    <h2 id="go-title" class="big-title"></h2>
+    <p id="go-rank" class="big-title" style="font-size:1.6rem"></p>
     <p id="go-score"></p>
-    <a class="btn light" href="/">Gioca ancora</a>
+    <p class="footer-note">Resta qui: se l'organizzatore avvia un'altra partita, entri in automatico.</p>
+    <a class="btn ghost" href="/">Esci</a>
   </main>
 
-  <!-- Messaggi (espulso, partita chiusa...) -->
-  <main id="s-message" class="screen bg-pattern hidden">
-    <h2 id="msg-title" class="big"></h2>
+  <!-- Messaggi -->
+  <main id="s-message" class="screen hidden">
+    <h2 id="msg-title" class="big-title"></h2>
     <p id="msg-body"></p>
     <a class="btn light" href="/">Torna all'inizio</a>
   </main>
 
   <footer id="bottombar" class="bottombar hidden">
-    <span id="bb-nick"></span>
+    <span class="me"><span id="bb-avatar" class="avatar"></span><span id="bb-nick"></span></span>
     <span id="bb-score" class="score-pill">0</span>
   </footer>
 
@@ -109,7 +123,7 @@
 
   <script src="/vendor/nostr-tools.min.js"></script>
   <script src="/js/net.js"></script>
-  <script src="/js/shapes.js"></script>
+  <script src="/js/ui.js"></script>
   <script src="/js/player.js"></script>
 </body>
 </html>
