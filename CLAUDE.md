@@ -18,7 +18,8 @@ https://quizzone-it.netlify.app · cartella pubblicata: `public/`.
 - `public/css/style.css` — tutto lo stile; temi via variabili CSS.
 - `public/js/music.js` — musica di sottofondo sintetizzata (playlist home/lobby/question/finale); audio a 3 stati in `ui.js`.
 - `public/data/pop-*.js` — categorie «pop» (Disney, Harry Potter…) descritte da dati: formato in `public/data/POP-FORMAT.md`,
-  controllo con `node scripts/check-pop.js public/data/pop-<id>.js --sample=5`.
+  controllo con `node scripts/check-pop.js public/data/pop-<id>.js --sample=5`; dopo aver aggiunto un file esegui
+  `node scripts/pop-tags.js` (aggiorna i `<script>` in host.html e solo.html).
 
 ## Risparmio di token
 - NON leggere per intero `public/data/*.js` (dati, 20–70 KB l'uno), `public/vendor/*` (minificato) né `public/flags/*`: usa `grep` o un `node -e` che stampi solo forme e conteggi.

@@ -3,6 +3,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 for (const f of ['geo', 'scienza', 'storia', 'cultura', 'lingua', 'varie', 'images']) require(`../public/data/${f}.js`);
+// Anche le categorie «pop» (Disney, Harry Potter…), se presenti.
+for (const f of require('fs').readdirSync(`${__dirname}/../public/data`).filter((x) => /^pop-[a-z0-9]+\.js$/.test(x)).sort()) require(`../public/data/${f}`);
 const Bank = require('../public/js/bank');
 const { validateQuestion, validateQuiz, matchTyped, normalizeText, MAX_TYPED, Game } = require('../public/js/game');
 
