@@ -96,7 +96,8 @@
     return idx.map((i) => items[i]);
   }
 
-  const image = (info) => info && { kind: 'image', src: info.src, credit: `${info.author} · ${info.license}`, link: info.page };
+  // L'autore (per i quadri è la risposta!) viene mostrato solo nei risultati, non durante la domanda.
+  const image = (info) => info && { kind: 'image', src: info.src, license: info.license, author: info.author, link: info.page };
   const flagMedia = (iso) => ({ kind: 'image', src: `/flags/${iso}.svg`, flag: true });
   const emoji = (value) => ({ kind: 'emoji', value });
   const quote = (text) => ({ kind: 'quote', text });

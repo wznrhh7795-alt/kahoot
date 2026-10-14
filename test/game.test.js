@@ -153,3 +153,17 @@ test('publicQuestion non rivela soluzioni di nessun tipo', () => {
     assert.equal('why' in pub, false);
   }
 });
+
+test('immagini: l\'autore non viene inviato con la domanda ma solo con la soluzione', () => {
+  const media = { kind: 'image', src: 'https://x/y.jpg', license: 'Public domain', author: 'Leonardo da Vinci', link: 'https://commons.wikimedia.org/wiki/File:Y.jpg' };
+  const q = { type: 'quiz', text: 'Chi è l\'autore?', answers: ['Leonardo da Vinci', 'Raffaello'], correct: 0, time: 20, media };
+  const g = new Game('1', { title: 'x', questions: [q] });
+  g.addPlayer('a', 'Anna');
+  g.nextQuestion();
+  const pub = g.publicQuestion();
+  assert.deepEqual(pub.media, { kind: 'image', src: 'https://x/y.jpg', license: 'Public domain' });
+  assert.equal(JSON.stringify(pub.media).includes('Leonardo'), false);
+  g.openQuestion();
+  const { reveal } = g.closeQuestion();
+  assert.deepEqual(reveal.credit, { author: 'Leonardo da Vinci', license: 'Public domain', link: media.link });
+});

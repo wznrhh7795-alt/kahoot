@@ -53,18 +53,29 @@
       };
       img.src = safeSrc(media.src);
       el.appendChild(img);
-      if (media.credit) {
-        const credit = document.createElement('a');
+      // Durante la domanda solo fonte e licenza: l'autore compare nei risultati (renderCredit).
+      if (media.license) {
+        const credit = document.createElement('span');
         credit.className = 'media-credit';
-        credit.textContent = `Immagine: ${media.credit}`;
-        if (safeLink(media.link)) {
-          credit.href = safeLink(media.link);
-          credit.target = '_blank';
-          credit.rel = 'noopener';
-        }
+        credit.textContent = `Immagine: Wikimedia Commons · ${media.license}`;
         el.appendChild(credit);
       }
     }
+  }
+
+  // Crediti completi dell'immagine (autore, licenza, collegamento), mostrati dopo la risposta.
+  function renderCredit(el, credit) {
+    el.innerHTML = '';
+    el.classList.toggle('hidden', !credit);
+    if (!credit) return;
+    const a = document.createElement(safeLink(credit.link) ? 'a' : 'span');
+    a.textContent = `📷 Immagine: ${credit.author}${credit.license ? ` · ${credit.license}` : ''} · Wikimedia Commons`;
+    if (safeLink(credit.link)) {
+      a.href = safeLink(credit.link);
+      a.target = '_blank';
+      a.rel = 'noopener';
+    }
+    el.appendChild(a);
   }
 
   // Precarica l'immagine della prossima domanda (durante «Preparati!»).
@@ -391,7 +402,7 @@
   }
 
   root.UI = {
-    esc, safeSrc, SHAPES, SHAPE_NAMES, AVATARS, formatNumber, renderMedia, preload, renderAnswerInput,
+    esc, safeSrc, SHAPES, SHAPE_NAMES, AVATARS, formatNumber, renderMedia, renderCredit, preload, renderAnswerInput,
     timer, confetti, sound, installSoundToggle, vibrate,
   };
   // Compatibilità con il codice esistente

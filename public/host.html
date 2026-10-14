@@ -2,6 +2,9 @@
 <html lang="it">
 <head>
   <meta charset="utf-8">
+  <!-- Nasconde il badge «Powered by Netlify»: stessa scelta che salva il suo pulsante «Hide this badge». -->
+  <script>try { localStorage.setItem('nl-hud:public:v1', 'hidden'); } catch (e) {}</script>
+  <style>#nl-badge-frame, #nl-hud-frame { display: none !important; }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#3c1180">
   <meta name="description" content="Organizza una partita di Quizzone!: migliaia di domande, 24 categorie, 6 giochi.">
@@ -169,6 +172,7 @@
     <div id="r-mine" class="my-result hidden"></div>
     <div id="r-body" class="wrap" style="align-items:center"></div>
     <p id="r-why" class="why hidden"></p>
+    <p id="r-credit" class="credit-line hidden"></p>
   </main>
 
   <!-- Classifica -->

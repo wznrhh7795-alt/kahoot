@@ -434,6 +434,7 @@
       sol.classList.toggle('hidden', !html);
       $('res-why').textContent = reveal.why || '';
       $('res-why').classList.toggle('hidden', !reveal.why);
+      UI.renderCredit($('res-credit'), reveal.credit);
 
       const streak = $('res-streak');
       if (r.correct && r.streak >= 2) {

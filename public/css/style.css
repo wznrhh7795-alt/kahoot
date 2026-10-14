@@ -731,3 +731,7 @@ body.host .setup-bar { padding-left: 66px; }
   .podium-step.p2 { min-height: 215px; }
   .podium-step.p3 { min-height: 190px; }
 }
+
+/* Crediti delle immagini nei risultati */
+.credit-line { font-size: 0.8rem; opacity: 0.8; max-width: 560px; }
+.credit-line a { color: inherit; }

@@ -2,6 +2,9 @@
 <html lang="it">
 <head>
   <meta charset="utf-8">
+  <!-- Nasconde il badge «Powered by Netlify»: stessa scelta che salva il suo pulsante «Hide this badge». -->
+  <script>try { localStorage.setItem('nl-hud:public:v1', 'hidden'); } catch (e) {}</script>
+  <style>#nl-badge-frame, #nl-hud-frame { display: none !important; }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#3c1180">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -92,6 +95,7 @@
     <p id="res-why" class="why hidden"></p>
     <p id="res-rank" class="big-title" style="font-size:1.4rem"></p>
     <p id="res-behind"></p>
+    <p id="res-credit" class="credit-line hidden"></p>
   </main>
 
   <!-- 8. Fine partita -->

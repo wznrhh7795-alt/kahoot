@@ -228,7 +228,9 @@ class Game {
     if (CHOICE_TYPES.has(type)) text = q.answers[q.correct];
     else if (type === 'ordina') text = q.correct.map((i) => q.items[i]).join(' → ');
     else text = `${formatNumber(q.answer, q.format)}${q.unit ? ` ${q.unit}` : ''}`;
-    return { type, correct: q.correct, answer: q.answer, text, why: q.why || null };
+    const m = q.media;
+    const credit = m && m.kind === 'image' && m.author ? { author: m.author, license: m.license || '', link: m.link || '' } : null;
+    return { type, correct: q.correct, answer: q.answer, text, why: q.why || null, credit };
   }
 
   ranking() {
@@ -245,7 +247,7 @@ class Game {
     const type = q.type || 'quiz';
     const out = {
       index: this.index, total: this.total, type, mode: q.mode || type, text: q.text, time: q.time,
-      category: q.category, categoryEmoji: q.categoryEmoji, media: q.media || null,
+      category: q.category, categoryEmoji: q.categoryEmoji, media: publicMedia(q.media),
     };
     if (CHOICE_TYPES.has(type)) Object.assign(out, { answers: q.answers, answerMedia: q.answerMedia || null });
     if (type === 'ordina') out.items = q.items;
@@ -254,12 +256,19 @@ class Game {
   }
 }
 
+// Media senza autore né collegamento: per un quadro l'autore è proprio la risposta.
+function publicMedia(media) {
+  if (!media) return null;
+  const { author, link, credit, ...rest } = media;
+  return rest;
+}
+
 function formatNumber(n, format) {
   if (format === 'year') return n < 0 ? `${-n} a.C.` : String(n);
   return Number(n).toLocaleString('it-IT');
 }
 
-const api = { Game, validateQuiz, validateQuestion, scoreFor, streakBonus, evaluate, formatNumber, MAX_NICKNAME };
+const api = { Game, publicMedia, validateQuiz, validateQuestion, scoreFor, streakBonus, evaluate, formatNumber, MAX_NICKNAME };
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 else root.QuizGame = api;
 })(typeof window !== 'undefined' ? window : globalThis);

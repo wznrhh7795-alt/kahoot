@@ -503,7 +503,7 @@
   function getreadyMessage(ms) {
     const { game } = session;
     const q = game.question;
-    return { t: 'getready', index: game.index, total: game.total, ms, mode: q.mode || q.type, next: q.media?.kind === 'image' ? q.media : null };
+    return { t: 'getready', index: game.index, total: game.total, ms, mode: q.mode || q.type, next: q.media?.kind === 'image' ? { kind: 'image', src: q.media.src } : null };
   }
 
   // Stato attuale per chi entra o rientra a partita in corso.
@@ -746,6 +746,7 @@
     }
     $('r-why').textContent = reveal.why || '';
     $('r-why').classList.toggle('hidden', !reveal.why);
+    UI.renderCredit($('r-credit'), reveal.credit);
 
     const me = game.players.get(HOST_KEY);
     $('r-mine').classList.toggle('hidden', !me);
