@@ -5,6 +5,8 @@ Gioco a quiz multigiocatore in tempo reale, in italiano, ispirato al flusso di g
 entrano con il PIN (o con il link condiviso) e rispondono toccando le forme colorate. Domanda e risposte
 compaiono su ogni telefono, quindi non serve uno schermo grande.
 
+**Gioca subito: <https://quizzone-it.netlify.app>** (organizzatore: <https://quizzone-it.netlify.app/host>)
+
 | Organizzatore | Giocatore | Giocatore |
 | --- | --- | --- |
 | ![Sala d'attesa](docs/phone-host-lobby.png) | ![Domanda sul telefono](docs/phone-player-question.png) | ![Risultato](docs/phone-player-result.png) |
