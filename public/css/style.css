@@ -829,3 +829,12 @@ body.host .setup-bar { padding-left: 66px; }
 }
 .audio-toast.show { opacity: 1; transform: translate(-50%, 0); }
 .preset-group { grid-column: 1 / -1; margin: 10px 0 0; font-family: var(--font-head); font-weight: 600; font-size: 1.15rem; text-align: left; }
+
+/* Giochi a tema sul telefono: due colonne compatte invece di una scheda per riga */
+@media (max-width: 600px) {
+  .preset-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .preset-card { padding: 12px; gap: 4px; }
+  .preset-card .p-emoji { font-size: 1.6rem; }
+  .preset-card .p-name { font-size: 1rem; line-height: 1.15; }
+  .preset-card .p-desc { font-size: 0.75rem; }
+}
