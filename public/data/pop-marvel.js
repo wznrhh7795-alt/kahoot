@@ -209,8 +209,8 @@
     ["Ms. Marvel", 2, 2022, "Iman Vellani", "Kamala Khan"],
     ["She-Hulk: Attorney at Law", 2, 2022, "Tatiana Maslany", "Jennifer Walters"],
     ["Secret Invasion", 2, 2023, "Samuel L. Jackson"],
-    ["Echo", 3, 2024, "Alaqua Cox", "Maya Lopez"],
-    ["Agatha All Along", 2, 2024, "Kathryn Hahn", "Agatha Harkness"],
+    ["Echo", 3, 2024, null, "Maya Lopez"],
+    ["Agatha All Along", 2, 2024, null, "Agatha Harkness"],
     ["X-Men '97", 3, 2024],
   ]);
 
@@ -324,13 +324,13 @@
   ]);
 
   // ---------- Tabella: Gemme dell'Infinito ----------
-  const gemme = rows(['name', 'd', 'colore', 'custodia'], [
-    ["Gemma dello Spazio", 1, "Blu", "Tesseract"],
-    ["Gemma della Mente", 1, "Gialla", "Scettro di Loki"],
-    ["Gemma della Realtà", 2, "Rossa", "Aether"],
-    ["Gemma del Potere", 2, "Viola", "Sfera (Orb)"],
-    ["Gemma del Tempo", 1, "Verde", "Occhio di Agamotto"],
-    ["Gemma dell'Anima", 2, "Arancione"],
+  const gemme = rows(['name', 'd', 'colore'], [
+    ["Gemma dello Spazio", 1, "blu"],
+    ["Gemma della Mente", 1, "giallo"],
+    ["Gemma della Realtà", 2, "rosso"],
+    ["Gemma del Potere", 2, "viola"],
+    ["Gemma del Tempo", 1, "verde"],
+    ["Gemma dell'Anima", 2, "arancione"],
   ]);
 
   // ---------- Tabella: personaggi nei fumetti ----------
@@ -341,9 +341,6 @@
     ["Thor", 1, 1962],
     ["Iron Man", 1, 1963],
     ["Ant-Man", 2, 1962],
-    ["I Fantastici Quattro", 1, 1961, "Stan Lee e Jack Kirby"],
-    ["Gli X-Men", 1, 1963, "Stan Lee e Jack Kirby"],
-    ["I Vendicatori", 1, 1963],
     ["Doctor Strange", 1, 1963, "Stan Lee e Steve Ditko"],
     ["Daredevil", 2, 1964],
     ["Black Panther", 2, 1966, "Stan Lee e Jack Kirby"],
@@ -748,11 +745,11 @@
 
   // ---------- Tabella: oggetti che custodiscono le Gemme ----------
   const custodi = rows(['name', 'd', 'gemma'], [
-    ["Tesseract", 1, "Gemma dello Spazio"],
-    ["Scettro di Loki", 2, "Gemma della Mente"],
-    ["Aether", 3, "Gemma della Realtà"],
-    ["Sfera (Orb)", 3, "Gemma del Potere"],
-    ["Occhio di Agamotto", 2, "Gemma del Tempo"],
+    ["Il Tesseract", 1, "Gemma dello Spazio"],
+    ["Lo scettro di Loki", 2, "Gemma della Mente"],
+    ["L'Aether", 3, "Gemma della Realtà"],
+    ["La Sfera (Orb)", 3, "Gemma del Potere"],
+    ["L'Occhio di Agamotto", 2, "Gemma del Tempo"],
   ]);
 
   // ---------- Citazioni ----------
@@ -1078,8 +1075,8 @@
         fields: {
           legato: {
             ask: "A quale personaggio o gruppo è legato {name}?",
-            who: "Quale di questi luoghi è legato a {value}?",
-            tf: "{name} è legato a {value}.",
+            who: "Quale di questi luoghi è legato al personaggio o gruppo {value}?",
+            tf: "{name} è legato al personaggio o gruppo {value}.",
           },
         },
       },
@@ -1090,7 +1087,7 @@
           colore: {
             ask: "Di che colore è la {name}?",
             who: "Quale Gemma dell'Infinito è di colore {value}?",
-            tf: "La {name} è di colore {value}.",
+            tf: "Il colore della {name} è {value}.",
           },
         },
       },
@@ -1099,9 +1096,9 @@
         items: custodi,
         fields: {
           gemma: {
-            ask: "Quale Gemma dell'Infinito è legata a questo oggetto: {name}?",
-            who: "Quale oggetto custodisce la {value}?",
-            tf: "{name} custodisce questa Gemma: {value}.",
+            ask: "A quale Gemma dell'Infinito è legato questo oggetto: {name}?",
+            who: "Quale di questi oggetti è legato alla {value}?",
+            tf: "{name} è legato alla {value}.",
           },
         },
       },
