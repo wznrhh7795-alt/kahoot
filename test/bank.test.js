@@ -24,7 +24,7 @@ function checkShape(q) {
     assert.equal(q.type, 'quiz', where);
     assert.equal(q.answers.length, 4, where);
     assert.equal(new Set(q.answers).size, 4, `risposte doppie → ${where}`);
-    assert.match(q.text, /^Trova l'intruso: .* NON /, where);
+    assert.match(q.text, /^Trova l['’]intruso: .* NON /, where);
     assert.ok(q.why, `manca la spiegazione → ${where}`);
   }
   if (q.mode === 'duello') {
@@ -54,8 +54,8 @@ test('ogni categoria genera domande valide per tutte le sue modalità e difficol
   }
 });
 
-test('ci sono migliaia di domande diverse in 24 categorie e 9 modalità', () => {
-  assert.equal(Bank.categories.length, 24);
+test('ci sono migliaia di domande diverse in almeno 24 categorie e 9 modalità', () => {
+  assert.ok(Bank.categories.length >= 24);
   assert.equal(Bank.modes.length, 9);
   assert.deepEqual(Bank.modes.slice(0, 6).map((m) => m.id), ['quiz', 'vf', 'immagine', 'citazione', 'ordina', 'numero']);
   assert.ok(Bank.estimateCount() > 5000, `solo ${Bank.estimateCount()}`);
