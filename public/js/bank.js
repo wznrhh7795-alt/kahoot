@@ -1906,7 +1906,8 @@
           mode: 'quiz', count: has.length,
           make(rng, diff) {
             const it = pick(rng, byDiff(has, diff));
-            return choice(rng, fill(cfg.ask, it.name, it[field]), it[field], values, { key: `${k}:a:${it.name}` });
+            // Mai il personaggio stesso tra le risposte («Chi è stato il maestro di Obi-Wan?» → non «Obi-Wan»).
+            return choice(rng, fill(cfg.ask, it.name, it[field]), it[field], values.filter((v) => v !== it.name), { key: `${k}:a:${it.name}` });
           },
         });
       }
@@ -1915,7 +1916,7 @@
           mode: 'quiz', count: values.length,
           make(rng, diff) {
             const it = pick(rng, byDiff(has, diff));
-            const others = has.filter((o) => o[field] !== it[field]).map((o) => o.name);
+            const others = has.filter((o) => o[field] !== it[field] && o.name !== it[field]).map((o) => o.name);
             return choice(rng, fill(cfg.who, '', it[field]), it.name, others, { key: `${k}:w:${it[field]}` });
           },
         });
@@ -1926,7 +1927,7 @@
           make(rng, diff) {
             const it = pick(rng, byDiff(has, diff));
             const truth = rng() < 0.5;
-            const v = truth ? it[field] : pick(rng, values.filter((x) => x !== it[field]));
+            const v = truth ? it[field] : pick(rng, values.filter((x) => x !== it[field] && x !== it.name));
             return trueFalse(fill(cfg.tf, it.name, v), truth, { key: `${k}:t:${it.name}`, why: truth ? undefined : fill(cfg.tf, it.name, it[field]) });
           },
         });
