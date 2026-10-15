@@ -606,7 +606,7 @@
   // ---- Emoji ----
   const EMOJI = [
     ['🍎👸🧙‍♀️', 'Biancaneve e i sette nani', 1], ['🤥🪵🦗', 'Pinocchio', 1], ['🐘🎪👂', 'Dumbo', 1], ['🦌🐰🦨', 'Bambi', 1],
-    ['🎃🐭👠🕛', 'Cenerentola', 1], ['🐇🎩🐱🫖', 'Alice nel Paese delle Meraviglie', 1], ['🏴‍☠️🧚‍♀️🌟', 'Le avventure di Peter Pan', 2],
+    ['🎃🐭👠🕛', 'Cenerentola', 1], ['🐇🎩🐱🫖', 'Alice nel Paese delle Meraviglie', 1], ['🧚‍♀️🐊⏰🏴‍☠️', 'Le avventure di Peter Pan', 2],
     ['🐶🍝❤️', 'Lilli e il vagabondo', 1], ['🌹😴🧚🐉', 'La bella addormentata nel bosco', 2], ['1️⃣0️⃣1️⃣🐶', 'La carica dei cento e uno', 1],
     ['🐻🐍🐯🌴', 'Il libro della giungla', 1], ['🐱🐱🐱🎷🗼', 'Gli Aristogatti', 2], ['🏹🦊', 'Robin Hood', 1],
     ['🧜‍♀️🦀🐙', 'La sirenetta', 1], ['🌹🕯️⏰👸', 'La bella e la bestia', 1], ['🧞🪔🐒🕌', 'Aladdin', 1], ['🦁👑🌅', 'Il re leone', 1],
