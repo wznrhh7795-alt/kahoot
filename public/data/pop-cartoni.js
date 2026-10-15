@@ -16,7 +16,7 @@
   const CREATORE_ALT = {
     'Matt Groening': ['Groening'], 'Stephen Hillenburg': ['Hillenburg'], 'Seth MacFarlane': ['MacFarlane', 'McFarlane'],
     [HB]: ['Hanna e Barbera', 'Hanna-Barbera', 'Hanna Barbera'], Peyo: ['Pierre Culliford'],
-    'Neville Astley e Mark Baker': ['Astley e Baker'], 'Iginio Straffi': ['Straffi'], ' Ben Bocquelet': [],
+    'Neville Astley e Mark Baker': ['Astley e Baker'], 'Iginio Straffi': ['Straffi'],
     'Ben Bocquelet': ['Bocquelet'], 'Pendleton Ward': ['Ward'], 'Joe Brumm': ['Brumm'], 'Oleg Kuznetsov': ['Kuznetsov'],
     Altan: ['Francesco Tullio Altan', 'Tullio Altan'], 'Nino e Toni Pagot': ['Pagot', 'Fratelli Pagot'],
     'Dan Povenmire e Jeff Marsh': ['Povenmire e Marsh'], 'Genndy Tartakovsky': ['Tartakovsky'], 'Craig McCracken': ['McCracken'],
@@ -353,8 +353,7 @@
     ['⌚👽💚', 'Ben 10', 2], ['🐤⬛🥚', 'Calimero', 2], ['🐻👧🍳', 'Masha e Orso', 2], ['🐶🔵🏠', 'Bluey', 2],
     ['🥕🐰💬', 'Bugs Bunny', 1], ['🐤🐈🏠', 'Titti e Gatto Silvestro', 2], ['🤖🍺🚀', 'Futurama', 2], ['🐢🍕🥷', 'Tartarughe Ninja', 1],
     ['🐕‍🦺🚒🚓', 'PAW Patrol', 1], ['🐞🐈‍⬛', 'Miraculous', 2], ['🐻🧺🌲', 'Yoghi e Bubu', 2], ['👧👧👧💥', 'Le Superchicche', 2],
-    ['🐶🐱🧑‍🚀', 'Gumball', 3], ['🏴‍☠️🐶', 'Dottor Doofenshmirtz', 3],
-  ].map(([emoji, answer, d]) => ({ emoji, answer, d })).filter((e) => e.answer !== 'Gumball' && e.answer !== 'Dottor Doofenshmirtz');
+  ].map(([emoji, answer, d]) => ({ emoji, answer, d }));
 
   const O = (q, items, d) => ({ q, items, d });
   const order = [
