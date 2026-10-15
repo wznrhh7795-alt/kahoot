@@ -1933,7 +1933,11 @@
       }
       if (cfg.odd) {
         gens.push(oddGen(k, has.map((it) => ({ label: it.name, group: it[field], d: it.d })), {
-          text: (g) => fill(cfg.odd, '', g),
+          // Tutti gli intrusi iniziano allo stesso modo, anche se i dati non lo scrivono.
+          text: (g) => {
+            const t = fill(cfg.odd, '', g);
+            return /^Trova l['’]intruso/i.test(t) ? t : `Trova l'intruso: ${t[0].toLowerCase()}${t.slice(1)}`;
+          },
           why: (g, odd) => `${odd.label}: ${odd.group}. Gli altri: ${g}.`,
         }));
       }
