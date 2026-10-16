@@ -1,0 +1,439 @@
+# Canzoni per «Indovina la canzone»: artista | titolo | anno | genere | difficoltà (1-3) [| ricerca alternativa]
+# L'audio non è nel progetto: scripts/build-songs.mjs cerca l'anteprima ufficiale (iTunes Search API)
+# e salva solo il collegamento. Anno = prima pubblicazione del singolo o dell'album (usato con tolleranza).
+Domenico Modugno | Nel blu dipinto di blu | 1958 | Classici italiani | 1
+Renato Carosone | Tu vuo' fa' l'americano | 1956 | Classici italiani | 1
+Renato Carosone | Torero | 1957 | Classici italiani | 3
+Fred Buscaglione | Che bambola | 1956 | Classici italiani | 3
+Adriano Celentano | Azzurro | 1968 | Classici italiani | 1
+Adriano Celentano | Il ragazzo della via Gluck | 1966 | Classici italiani | 2
+Mina | Il cielo in una stanza | 1960 | Classici italiani | 2
+Mina | Se telefonando | 1966 | Classici italiani | 2
+Mina | Grande grande grande | 1972 | Classici italiani | 2
+Gino Paoli | Sapore di sale | 1963 | Classici italiani | 1
+Gino Paoli | Senza fine | 1961 | Classici italiani | 3
+Gianni Morandi | Fatti mandare dalla mamma | 1962 | Classici italiani | 2
+Gianni Morandi | In ginocchio da te | 1964 | Classici italiani | 2
+Gianni Morandi | Uno su mille | 1985 | Pop italiano | 2
+Rita Pavone | Viva la pappa col pomodoro | 1965 | Classici italiani | 2
+Rita Pavone | Il ballo del mattone | 1963 | Classici italiani | 3
+Patty Pravo | La bambola | 1968 | Classici italiani | 1
+Patty Pravo | Pazza idea | 1973 | Classici italiani | 3
+Gigliola Cinquetti | Non ho l'età | 1964 | Classici italiani | 3
+Nada | Ma che freddo fa | 1969 | Classici italiani | 3
+Ornella Vanoni | L'appuntamento | 1970 | Classici italiani | 3
+Lucio Battisti | Emozioni | 1970 | Cantautori | 1
+Lucio Battisti | La canzone del sole | 1971 | Cantautori | 1
+Lucio Battisti | Il mio canto libero | 1972 | Cantautori | 2
+Lucio Battisti | Acqua azzurra, acqua chiara | 1969 | Cantautori | 2
+Lucio Battisti | I giardini di marzo | 1972 | Cantautori | 2
+Lucio Battisti | Ancora tu | 1976 | Cantautori | 2
+Fabrizio De André | La canzone di Marinella | 1964 | Cantautori | 2
+Fabrizio De André | Bocca di rosa | 1967 | Cantautori | 2
+Fabrizio De André | Il pescatore | 1970 | Cantautori | 2
+Lucio Dalla | Caruso | 1986 | Cantautori | 1
+Lucio Dalla | L'anno che verrà | 1979 | Cantautori | 1
+Lucio Dalla | Attenti al lupo | 1990 | Cantautori | 2
+Lucio Dalla | Futura | 1980 | Cantautori | 3
+Francesco De Gregori | La donna cannone | 1983 | Cantautori | 2
+Francesco De Gregori | Rimmel | 1975 | Cantautori | 3
+Francesco De Gregori | Generale | 1978 | Cantautori | 3
+Franco Battiato | La cura | 1996 | Cantautori | 1
+Franco Battiato | Centro di gravità permanente | 1981 | Cantautori | 1
+Franco Battiato | Cuccurucucù | 1981 | Cantautori | 2
+Franco Battiato | Voglio vederti danzare | 1982 | Cantautori | 3
+Rino Gaetano | Gianna | 1978 | Cantautori | 2
+Rino Gaetano | Ma il cielo è sempre più blu | 1975 | Cantautori | 1
+Riccardo Cocciante | Margherita | 1976 | Cantautori | 2
+Riccardo Cocciante | Bella senz'anima | 1974 | Cantautori | 2
+Edoardo Bennato | L'isola che non c'è | 1980 | Cantautori | 2
+Edoardo Bennato | Il gatto e la volpe | 1977 | Cantautori | 2
+Paolo Conte | Via con me | 1981 | Cantautori | 2
+Claudio Baglioni | Questo piccolo grande amore | 1972 | Cantautori | 1
+Claudio Baglioni | Strada facendo | 1981 | Cantautori | 2
+Claudio Baglioni | Avrai | 1982 | Cantautori | 2
+Claudio Baglioni | La vita è adesso | 1985 | Cantautori | 3
+Antonello Venditti | Notte prima degli esami | 1984 | Cantautori | 1
+Antonello Venditti | Roma capoccia | 1972 | Cantautori | 3
+Renato Zero | I migliori anni della nostra vita | 1995 | Pop italiano | 1
+Renato Zero | Triangolo | 1978 | Pop italiano | 2
+Pino Daniele | Napule è | 1977 | Cantautori | 1
+Pino Daniele | Quando | 1991 | Cantautori | 2
+Pino Daniele | Je so' pazzo | 1979 | Cantautori | 2
+Mia Martini | Almeno tu nell'universo | 1989 | Pop italiano | 1
+Mia Martini | Minuetto | 1973 | Pop italiano | 3
+Loredana Bertè | Non sono una signora | 1982 | Pop italiano | 2
+Loredana Bertè | Sei bellissima | 1975 | Pop italiano | 2
+Fiorella Mannoia | Quello che le donne non dicono | 1987 | Pop italiano | 2
+Raffaella Carrà | A far l'amore comincia tu | 1976 | Pop italiano | 1
+Raffaella Carrà | Tanti auguri | 1978 | Pop italiano | 1
+Raffaella Carrà | Rumore | 1974 | Pop italiano | 2
+Raffaella Carrà | Pedro | 1980 | Pop italiano | 2
+Toto Cutugno | L'italiano | 1983 | Pop italiano | 1
+Al Bano & Romina Power | Felicità | 1982 | Pop italiano | 1
+Al Bano & Romina Power | Ci sarà | 1984 | Pop italiano | 2
+Ricchi e Poveri | Sarà perché ti amo | 1981 | Pop italiano | 1
+Ricchi e Poveri | Mamma Maria | 1982 | Pop italiano | 2
+Umberto Tozzi | Gloria | 1979 | Pop italiano | 1
+Umberto Tozzi | Ti amo | 1977 | Pop italiano | 1
+Matia Bazar | Vacanze romane | 1983 | Pop italiano | 2
+Matia Bazar | Ti sento | 1985 | Pop italiano | 2
+Pooh | Pensiero | 1971 | Pop italiano | 2
+Pooh | Uomini soli | 1990 | Pop italiano | 2
+Pooh | Piccola Katy | 1968 | Pop italiano | 3
+Nomadi | Io vagabondo | 1972 | Pop italiano | 2
+Massimo Ranieri | Perdere l'amore | 1988 | Pop italiano | 2
+Vasco Rossi | Albachiara | 1979 | Rock | 1
+Vasco Rossi | Vita spericolata | 1983 | Rock | 1
+Vasco Rossi | Siamo solo noi | 1981 | Rock | 2
+Vasco Rossi | Sally | 1996 | Rock | 1
+Vasco Rossi | Senza parole | 1994 | Rock | 2
+Vasco Rossi | Vado al massimo | 1982 | Rock | 2
+Vasco Rossi | Un senso | 2004 | Rock | 2
+Ligabue | Certe notti | 1995 | Rock | 1
+Ligabue | Balliamo sul mondo | 1990 | Rock | 2
+Ligabue | Urlando contro il cielo | 1991 | Rock | 2
+Ligabue | Piccola stella senza cielo | 1990 | Rock | 3
+Litfiba | El diablo | 1990 | Rock | 3
+Litfiba | Spirito | 1994 | Rock | 3
+Gianna Nannini | Bello e impossibile | 1986 | Rock | 1
+Gianna Nannini | Meravigliosa creatura | 2004 | Pop italiano | 2
+Zucchero | Senza una donna | 1987 | Rock | 1
+Zucchero | Diamante | 1989 | Rock | 2
+Zucchero | Baila (Sexy Thing) | 2001 | Pop italiano | 2
+Subsonica | Tutti i miei sbagli | 2000 | Rock | 3
+Negramaro | Mentre tutto scorre | 2005 | Rock | 2
+Negramaro | Estate | 2005 | Rock | 2
+Måneskin | Zitti e buoni | 2021 | Rock | 1
+Måneskin | I Wanna Be Your Slave | 2021 | Rock | 2
+Eros Ramazzotti | Più bella cosa | 1996 | Pop italiano | 1
+Eros Ramazzotti | Adesso tu | 1986 | Pop italiano | 2
+Eros Ramazzotti | Terra promessa | 1984 | Pop italiano | 2
+Eros Ramazzotti | Cose della vita | 1993 | Pop italiano | 2
+Eros Ramazzotti | Un'emozione per sempre | 2003 | Pop italiano | 2
+Laura Pausini | La solitudine | 1993 | Pop italiano | 1
+Laura Pausini | Strani amori | 1994 | Pop italiano | 2
+Laura Pausini | Tra te e il mare | 2000 | Pop italiano | 2
+Laura Pausini | Non c'è | 1993 | Pop italiano | 3
+Jovanotti | Ragazzo fortunato | 1992 | Pop italiano | 1
+Jovanotti | A te | 2008 | Pop italiano | 1
+Jovanotti | Penso positivo | 1994 | Pop italiano | 2
+Jovanotti | L'ombelico del mondo | 1995 | Pop italiano | 2
+Jovanotti | Bella | 1997 | Pop italiano | 2
+Nek | Laura non c'è | 1997 | Pop italiano | 1
+883 | Hanno ucciso l'Uomo Ragno | 1992 | Pop italiano | 1
+883 | Nord sud ovest est | 1993 | Pop italiano | 1
+883 | Come mai | 1993 | Pop italiano | 2
+883 | Gli anni | 1995 | Pop italiano | 2
+Lunapop | 50 Special | 1999 | Pop italiano | 1
+Cesare Cremonini | Marmellata #25 | 2005 | Pop italiano | 2
+Elisa | Luce (Tramonti a nord est) | 2001 | Pop italiano | 2
+Tiziano Ferro | Xdono | 2002 | Pop italiano | 1
+Alex Britti | 7000 caffè | 2003 | Pop italiano | 2
+Carmen Consoli | Confusa e felice | 1997 | Cantautori | 3
+Daniele Silvestri | Salirò | 2002 | Cantautori | 2
+Marco Mengoni | L'essenziale | 2013 | Pop italiano | 1
+Marco Mengoni | Due vite | 2023 | Pop italiano | 1
+Il Volo | Grande amore | 2015 | Pop italiano | 2
+Francesco Gabbani | Occidentali's Karma | 2017 | Pop italiano | 1
+Ermal Meta & Fabrizio Moro | Non mi avete fatto niente | 2018 | Pop italiano | 2
+Mahmood | Soldi | 2019 | Pop italiano | 1
+Mahmood & Blanco | Brividi | 2022 | Pop italiano | 1
+Blanco | Notti in bianco | 2021 | Pop italiano | 2
+Diodato | Fai rumore | 2020 | Pop italiano | 2
+Annalisa | Mon amour | 2023 | Pop italiano | 1
+Annalisa | Bellissima | 2022 | Pop italiano | 2
+Angelina Mango | La noia | 2024 | Pop italiano | 1
+Tananai | Tango | 2023 | Pop italiano | 2
+Achille Lauro | Rolls Royce | 2019 | Pop italiano | 2
+J-Ax & Fedez | Vorrei ma non posto | 2016 | Rap e hip hop | 2
+Ghali | Cara Italia | 2018 | Rap e hip hop | 2
+Caparezza | Fuori dal tunnel | 2003 | Rap e hip hop | 2
+Fabri Fibra | Applausi per Fibra | 2006 | Rap e hip hop | 3
+Spagna | Easy Lady | 1986 | Dance | 3
+Ryan Paris | Dolce vita | 1983 | Dance | 3
+Righeira | Vamos a la playa | 1983 | Dance | 2
+Sabrina | Boys (Summertime Love) | 1987 | Dance | 3
+Gala | Freed from Desire | 1996 | Dance | 1
+Eiffel 65 | Blue (Da Ba Dee) | 1998 | Dance | 1
+Gigi D'Agostino | L'amour toujours | 1999 | Dance | 1
+Alexia | Uh La La La | 1997 | Dance | 3
+Corona | The Rhythm of the Night | 1993 | Dance | 2
+Haddaway | What Is Love | 1993 | Dance | 1
+The Beatles | Yesterday | 1965 | Classici internazionali | 1
+The Beatles | Hey Jude | 1968 | Classici internazionali | 1
+The Beatles | Let It Be | 1970 | Classici internazionali | 1
+The Beatles | Help! | 1965 | Classici internazionali | 2
+The Beatles | Yellow Submarine | 1966 | Classici internazionali | 1
+The Beatles | Here Comes the Sun | 1969 | Classici internazionali | 2
+The Beatles | Come Together | 1969 | Classici internazionali | 2
+The Rolling Stones | (I Can't Get No) Satisfaction | 1965 | Rock | 1
+The Rolling Stones | Paint It Black | 1966 | Rock | 2
+The Rolling Stones | Angie | 1973 | Rock | 2
+Elvis Presley | Jailhouse Rock | 1957 | Classici internazionali | 1
+Elvis Presley | Can't Help Falling in Love | 1961 | Classici internazionali | 1
+Elvis Presley | Hound Dog | 1956 | Classici internazionali | 2
+Chuck Berry | Johnny B. Goode | 1958 | Classici internazionali | 2
+Bill Haley & His Comets | Rock Around the Clock | 1954 | Classici internazionali | 2
+Ray Charles | Hit the Road Jack | 1961 | Classici internazionali | 1
+Ben E. King | Stand by Me | 1961 | Classici internazionali | 1
+Aretha Franklin | Respect | 1967 | Classici internazionali | 1
+Louis Armstrong | What a Wonderful World | 1967 | Classici internazionali | 1
+Frank Sinatra | My Way | 1969 | Classici internazionali | 1
+Frank Sinatra | Fly Me to the Moon | 1964 | Classici internazionali | 2
+Stevie Wonder | Superstition | 1972 | Classici internazionali | 2
+Stevie Wonder | Isn't She Lovely | 1976 | Classici internazionali | 2
+Marvin Gaye | Let's Get It On | 1973 | Classici internazionali | 3
+The Beach Boys | Good Vibrations | 1966 | Classici internazionali | 2
+The Doors | Light My Fire | 1967 | Rock | 2
+Jimi Hendrix | Purple Haze | 1967 | Rock | 2
+Bob Dylan | Like a Rolling Stone | 1965 | Classici internazionali | 2
+Bob Dylan | Blowin' in the Wind | 1963 | Classici internazionali | 2
+Simon & Garfunkel | Mrs. Robinson | 1968 | Classici internazionali | 2
+John Lennon | Imagine | 1971 | Classici internazionali | 1
+David Bowie | Space Oddity | 1969 | Rock | 2
+David Bowie | Heroes | 1977 | Rock | 2
+David Bowie | Let's Dance | 1983 | Pop internazionale | 2
+David Bowie | Starman | 1972 | Rock | 3
+Elton John | Your Song | 1970 | Pop internazionale | 2
+Elton John | Rocket Man | 1972 | Pop internazionale | 2
+Elton John | I'm Still Standing | 1983 | Pop internazionale | 1
+Bob Marley & The Wailers | Three Little Birds | 1977 | Reggae e latino | 1
+Bob Marley & The Wailers | Could You Be Loved | 1980 | Reggae e latino | 2
+Bob Marley & The Wailers | No Woman, No Cry | 1974 | Reggae e latino | 2
+Queen | Bohemian Rhapsody | 1975 | Rock | 1
+Queen | We Will Rock You | 1977 | Rock | 1
+Queen | We Are the Champions | 1977 | Rock | 1
+Queen | Don't Stop Me Now | 1979 | Rock | 1
+Queen | Another One Bites the Dust | 1980 | Rock | 2
+Queen | Radio Ga Ga | 1984 | Rock | 2
+Queen | I Want to Break Free | 1984 | Rock | 2
+Led Zeppelin | Stairway to Heaven | 1971 | Rock | 2
+Led Zeppelin | Whole Lotta Love | 1969 | Rock | 3
+Deep Purple | Smoke on the Water | 1972 | Rock | 2
+Pink Floyd | Another Brick in the Wall, Pt. 2 | 1979 | Rock | 1
+Pink Floyd | Wish You Were Here | 1975 | Rock | 2
+Eagles | Hotel California | 1976 | Rock | 1
+AC/DC | Highway to Hell | 1979 | Rock | 1
+AC/DC | Back in Black | 1980 | Rock | 2
+AC/DC | Thunderstruck | 1990 | Rock | 2
+Dire Straits | Sultans of Swing | 1978 | Rock | 2
+Dire Straits | Money for Nothing | 1985 | Rock | 2
+The Police | Every Breath You Take | 1983 | Rock | 1
+The Police | Roxanne | 1978 | Rock | 2
+Toto | Africa | 1982 | Rock | 1
+Survivor | Eye of the Tiger | 1982 | Rock | 1
+Europe | The Final Countdown | 1986 | Rock | 1
+Bon Jovi | Livin' on a Prayer | 1986 | Rock | 1
+Bon Jovi | It's My Life | 2000 | Rock | 1
+Guns N' Roses | Sweet Child o' Mine | 1987 | Rock | 1
+Guns N' Roses | November Rain | 1991 | Rock | 2
+Journey | Don't Stop Believin' | 1981 | Rock | 2
+Bonnie Tyler | Total Eclipse of the Heart | 1983 | Pop internazionale | 2
+Scorpions | Wind of Change | 1990 | Rock | 2
+U2 | With or Without You | 1987 | Rock | 1
+U2 | One | 1991 | Rock | 2
+U2 | Sunday Bloody Sunday | 1983 | Rock | 2
+R.E.M. | Losing My Religion | 1991 | Rock | 1
+Nirvana | Smells Like Teen Spirit | 1991 | Rock | 1
+Nirvana | Come As You Are | 1991 | Rock | 2
+Metallica | Enter Sandman | 1991 | Rock | 2
+Metallica | Nothing Else Matters | 1991 | Rock | 2
+The Cranberries | Zombie | 1994 | Rock | 1
+Oasis | Wonderwall | 1995 | Rock | 1
+Oasis | Don't Look Back In Anger | 1996 | Rock | 2
+Radiohead | Creep | 1992 | Rock | 2
+Red Hot Chili Peppers | Californication | 1999 | Rock | 1
+Red Hot Chili Peppers | Under the Bridge | 1992 | Rock | 2
+Green Day | Boulevard of Broken Dreams | 2004 | Rock | 1
+Green Day | Basket Case | 1994 | Rock | 2
+Linkin Park | In the End | 2000 | Rock | 1
+Linkin Park | What I've Done | 2007 | Rock | 2
+The White Stripes | Seven Nation Army | 2003 | Rock | 1
+The Killers | Mr. Brightside | 2004 | Rock | 2
+Arctic Monkeys | Do I Wanna Know? | 2013 | Rock | 2
+Imagine Dragons | Radioactive | 2012 | Rock | 1
+Imagine Dragons | Believer | 2017 | Rock | 1
+Coldplay | Yellow | 2000 | Pop internazionale | 1
+Coldplay | The Scientist | 2002 | Pop internazionale | 2
+Coldplay | Fix You | 2005 | Pop internazionale | 2
+Coldplay | Viva la Vida | 2008 | Pop internazionale | 1
+Kate Bush | Running Up That Hill | 1985 | Pop internazionale | 2
+ABBA | Dancing Queen | 1976 | Dance | 1
+ABBA | Mamma Mia | 1975 | Dance | 1
+ABBA | Waterloo | 1974 | Dance | 2
+ABBA | Gimme! Gimme! Gimme! (A Man After Midnight) | 1979 | Dance | 2
+ABBA | The Winner Takes It All | 1980 | Pop internazionale | 2
+Bee Gees | Stayin' Alive | 1977 | Dance | 1
+Bee Gees | How Deep Is Your Love | 1977 | Pop internazionale | 2
+Gloria Gaynor | I Will Survive | 1978 | Dance | 1
+Village People | Y.M.C.A. | 1978 | Dance | 1
+Earth, Wind & Fire | September | 1978 | Dance | 1
+Kool & The Gang | Get Down on It | 1981 | Dance | 2
+Donna Summer | I Feel Love | 1977 | Dance | 2
+Donna Summer | Hot Stuff | 1979 | Dance | 2
+Boney M. | Rasputin | 1978 | Dance | 2
+Boney M. | Daddy Cool | 1976 | Dance | 2
+Michael Jackson | Billie Jean | 1983 | Pop internazionale | 1
+Michael Jackson | Beat It | 1983 | Pop internazionale | 1
+Michael Jackson | Thriller | 1983 | Pop internazionale | 1
+Michael Jackson | Bad | 1987 | Pop internazionale | 2
+Michael Jackson | Smooth Criminal | 1988 | Pop internazionale | 2
+Michael Jackson | Black or White | 1991 | Pop internazionale | 2
+Madonna | Like a Virgin | 1984 | Pop internazionale | 1
+Madonna | La Isla Bonita | 1987 | Pop internazionale | 1
+Madonna | Like a Prayer | 1989 | Pop internazionale | 2
+Madonna | Vogue | 1990 | Pop internazionale | 2
+Madonna | Hung Up | 2005 | Pop internazionale | 2
+Whitney Houston | I Will Always Love You | 1992 | Pop internazionale | 1
+Whitney Houston | I Wanna Dance with Somebody (Who Loves Me) | 1987 | Pop internazionale | 1
+Prince | Purple Rain | 1984 | Pop internazionale | 2
+Prince | Kiss | 1986 | Pop internazionale | 3
+Cyndi Lauper | Girls Just Want to Have Fun | 1983 | Pop internazionale | 1
+Tina Turner | The Best | 1989 | Pop internazionale | 1
+Tina Turner | What's Love Got to Do with It | 1984 | Pop internazionale | 3
+Wham! | Last Christmas | 1984 | Pop internazionale | 1
+Wham! | Wake Me Up Before You Go-Go | 1984 | Pop internazionale | 2
+George Michael | Careless Whisper | 1984 | Pop internazionale | 1
+George Michael | Faith | 1987 | Pop internazionale | 2
+a-ha | Take On Me | 1985 | Pop internazionale | 1
+Eurythmics | Sweet Dreams (Are Made of This) | 1983 | Pop internazionale | 1
+Rick Astley | Never Gonna Give You Up | 1987 | Pop internazionale | 1
+Phil Collins | In the Air Tonight | 1981 | Pop internazionale | 2
+Bobby McFerrin | Don't Worry Be Happy | 1988 | Pop internazionale | 1
+Nena | 99 Luftballons | 1983 | Pop internazionale | 2
+Celine Dion | My Heart Will Go On | 1997 | Pop internazionale | 1
+Spice Girls | Wannabe | 1996 | Pop internazionale | 1
+Backstreet Boys | I Want It That Way | 1999 | Pop internazionale | 1
+Backstreet Boys | Everybody (Backstreet's Back) | 1997 | Pop internazionale | 2
+Britney Spears | ...Baby One More Time | 1998 | Pop internazionale | 1
+Britney Spears | Toxic | 2003 | Pop internazionale | 1
+Robbie Williams | Angels | 1997 | Pop internazionale | 1
+Robbie Williams | Feel | 2002 | Pop internazionale | 2
+Kylie Minogue | Can't Get You Out of My Head | 2001 | Pop internazionale | 1
+Amy Winehouse | Rehab | 2006 | Pop internazionale | 1
+Amy Winehouse | Back to Black | 2006 | Pop internazionale | 2
+Mika | Grace Kelly | 2007 | Pop internazionale | 2
+Beyoncé | Crazy in Love | 2003 | Pop internazionale | 1
+Beyoncé | Halo | 2008 | Pop internazionale | 2
+Rihanna | Umbrella | 2007 | Pop internazionale | 1
+Rihanna | Diamonds | 2012 | Pop internazionale | 2
+Lady Gaga | Poker Face | 2008 | Pop internazionale | 1
+Lady Gaga | Bad Romance | 2009 | Pop internazionale | 1
+Katy Perry | Roar | 2013 | Pop internazionale | 1
+Katy Perry | Firework | 2010 | Pop internazionale | 2
+Adele | Rolling in the Deep | 2010 | Pop internazionale | 1
+Adele | Someone Like You | 2011 | Pop internazionale | 1
+Adele | Hello | 2015 | Pop internazionale | 1
+Adele | Skyfall | 2012 | Pop internazionale | 2
+Bruno Mars | Just the Way You Are | 2010 | Pop internazionale | 1
+Bruno Mars | 24K Magic | 2016 | Pop internazionale | 2
+Mark Ronson | Uptown Funk (feat. Bruno Mars) | 2014 | Pop internazionale | 1
+Pharrell Williams | Happy | 2013 | Pop internazionale | 1
+Daft Punk | Get Lucky (feat. Pharrell Williams & Nile Rodgers) | 2013 | Dance | 1
+Daft Punk | One More Time | 2000 | Dance | 2
+Avicii | Wake Me Up | 2013 | Dance | 1
+Avicii | Levels | 2011 | Dance | 2
+David Guetta | Titanium (feat. Sia) | 2011 | Dance | 1
+Gotye | Somebody That I Used to Know (feat. Kimbra) | 2011 | Pop internazionale | 1
+PSY | Gangnam Style | 2012 | Dance | 1
+Sia | Chandelier | 2014 | Pop internazionale | 1
+OneRepublic | Counting Stars | 2013 | Pop internazionale | 2
+Maroon 5 | Moves Like Jagger (feat. Christina Aguilera) | 2011 | Pop internazionale | 2
+Lorde | Royals | 2013 | Pop internazionale | 2
+Sam Smith | Stay with Me | 2014 | Pop internazionale | 2
+Ed Sheeran | Shape of You | 2017 | Pop internazionale | 1
+Ed Sheeran | Perfect | 2017 | Pop internazionale | 1
+Ed Sheeran | Thinking Out Loud | 2014 | Pop internazionale | 2
+Taylor Swift | Shake It Off | 2014 | Pop internazionale | 1
+Taylor Swift | Blank Space | 2014 | Pop internazionale | 2
+Taylor Swift | Love Story | 2008 | Pop internazionale | 2
+Taylor Swift | Anti-Hero | 2022 | Pop internazionale | 2
+Justin Bieber | Baby (feat. Ludacris) | 2010 | Pop internazionale | 1
+Billie Eilish | bad guy | 2019 | Pop internazionale | 1
+The Weeknd | Blinding Lights | 2019 | Pop internazionale | 1
+Dua Lipa | New Rules | 2017 | Pop internazionale | 2
+Dua Lipa | Don't Start Now | 2019 | Pop internazionale | 1
+Dua Lipa | Levitating | 2020 | Pop internazionale | 2
+Harry Styles | As It Was | 2022 | Pop internazionale | 1
+Harry Styles | Watermelon Sugar | 2019 | Pop internazionale | 2
+Lewis Capaldi | Someone You Loved | 2018 | Pop internazionale | 2
+Olivia Rodrigo | drivers license | 2021 | Pop internazionale | 2
+Glass Animals | Heat Waves | 2020 | Pop internazionale | 3
+Miley Cyrus | Flowers | 2023 | Pop internazionale | 1
+Miley Cyrus | Wrecking Ball | 2013 | Pop internazionale | 2
+Eminem | Lose Yourself | 2002 | Rap e hip hop | 1
+Eminem | Without Me | 2002 | Rap e hip hop | 1
+50 Cent | In Da Club | 2003 | Rap e hip hop | 1
+Coolio | Gangsta's Paradise (feat. L.V.) | 1995 | Rap e hip hop | 1
+Dr. Dre | Still D.R.E. (feat. Snoop Dogg) | 1999 | Rap e hip hop | 2
+Stromae | Alors on danse | 2009 | Dance | 2
+Stromae | Papaoutai | 2013 | Pop internazionale | 2
+Shakira | Hips Don't Lie (feat. Wyclef Jean) | 2006 | Reggae e latino | 1
+Shakira | Waka Waka (This Time for Africa) | 2010 | Reggae e latino | 1
+Shakira | Whenever, Wherever | 2001 | Reggae e latino | 2
+Ricky Martin | Livin' la Vida Loca | 1999 | Reggae e latino | 1
+Luis Fonsi | Despacito (feat. Daddy Yankee) | 2017 | Reggae e latino | 1
+Lou Bega | Mambo No. 5 (A Little Bit of...) | 1999 | Reggae e latino | 1
+Gipsy Kings | Bamboléo | 1987 | Reggae e latino | 2
+Bad Bunny | Tití Me Preguntó | 2022 | Reggae e latino | 3
+Édith Piaf | La vie en rose | 1947 | Classici internazionali | 2
+Édith Piaf | Non, je ne regrette rien | 1960 | Classici internazionali | 3
+Andrea Bocelli | Con te partirò | 1995 | Classici italiani | 1
+Ennio Morricone | Il buono, il brutto, il cattivo | 1966 | Colonne sonore | 1 | ennio morricone the good the bad and the ugly main title
+Hans Zimmer | Time | 2010 | Colonne sonore | 3 | hans zimmer time inception
+Vangelis | Chariots of Fire | 1981 | Colonne sonore | 2 | vangelis chariots of fire titles
+Nino Rota | Speak Softly Love (Tema d'amore del Padrino) | 1972 | Colonne sonore | 2 | nino rota godfather love theme
+Idina Menzel | Let It Go | 2013 | Colonne sonore | 1 | idina menzel let it go frozen
+Elton John | Can You Feel the Love Tonight | 1994 | Colonne sonore | 2 | elton john can you feel the love tonight
+Ray Parker Jr. | Ghostbusters | 1984 | Colonne sonore | 1
+Kenny Loggins | Footloose | 1984 | Colonne sonore | 2
+Irene Cara | Flashdance... What a Feeling | 1983 | Colonne sonore | 2
+Bill Medley & Jennifer Warnes | (I've Had) The Time of My Life | 1987 | Colonne sonore | 1
+John Travolta & Olivia Newton-John | You're the One That I Want | 1978 | Colonne sonore | 1
+Whitney Houston | I Have Nothing | 1992 | Colonne sonore | 3
+Louis Prima | Just a Gigolo / I Ain't Got Nobody | 1956 | Jazz e swing | 2
+Glenn Miller | In the Mood | 1939 | Jazz e swing | 2
+Dean Martin | That's Amore | 1953 | Jazz e swing | 1
+Nat King Cole | L-O-V-E | 1965 | Jazz e swing | 2
+Ella Fitzgerald & Louis Armstrong | Dream a Little Dream of Me | 1950 | Jazz e swing | 3
+Michael Bublé | Feeling Good | 2005 | Jazz e swing | 2
+Nina Simone | My Baby Just Cares for Me | 1958 | Jazz e swing | 2
+Johnny Cash | Ring of Fire | 1963 | Country e folk | 2
+Dolly Parton | Jolene | 1973 | Country e folk | 1
+John Denver | Take Me Home, Country Roads | 1971 | Country e folk | 1
+Kenny Rogers | The Gambler | 1978 | Country e folk | 3
+Shania Twain | Man! I Feel Like a Woman! | 1997 | Country e folk | 2
+Lil Nas X | Old Town Road (feat. Billy Ray Cyrus) | 2019 | Country e folk | 2
+Avicii | Hey Brother | 2013 | Dance | 2
+Bob Sinclar | Love Generation | 2005 | Dance | 2
+Black Eyed Peas | I Gotta Feeling | 2009 | Pop internazionale | 1
+Black Eyed Peas | Where Is the Love? | 2003 | Pop internazionale | 2
+OutKast | Hey Ya! | 2003 | Rap e hip hop | 1
+Kanye West | Gold Digger (feat. Jamie Foxx) | 2005 | Rap e hip hop | 2
+Jay-Z & Alicia Keys | Empire State of Mind | 2009 | Rap e hip hop | 1
+Sfera Ebbasta | Tesla (feat. Capo Plaza & DrefGold) | 2018 | Rap e hip hop | 3
+Articolo 31 | Domani smetto | 2002 | Rap e hip hop | 2
+Club Dogo | Tutto ciò che ho | 2010 | Rap e hip hop | 3
+Salmo | 90min | 2018 | Rap e hip hop | 3
+Geolier | I p' me, tu p' te | 2024 | Rap e hip hop | 2
+Pinguini Tattici Nucleari | Ringo Starr | 2020 | Pop italiano | 2
+Pinguini Tattici Nucleari | Giovani wannabe | 2019 | Pop italiano | 2
+The Kolors | Italodisco | 2023 | Pop italiano | 1
+Irama | Ovunque sarai | 2022 | Pop italiano | 3
+Ultimo | Alba | 2023 | Pop italiano | 3
+Coez | La musica non c'è | 2017 | Pop italiano | 3
+Calcutta | Paracetamolo | 2018 | Cantautori | 3
+Vinicio Capossela | Che coss'è l'amor | 1994 | Cantautori | 3
+Ivano Fossati | La costruzione di un amore | 1978 | Cantautori | 3
+Santana | Smooth (feat. Rob Thomas) | 1999 | Reggae e latino | 2
+Santana | Black Magic Woman | 1970 | Rock | 3
+Buena Vista Social Club | Chan Chan | 1997 | Reggae e latino | 3
+Daddy Yankee | Gasolina | 2004 | Reggae e latino | 2
+J Balvin & Willy William | Mi Gente | 2017 | Reggae e latino | 2
+Rosalía | Despechá | 2022 | Reggae e latino | 3
+Inner Circle | Sweat (A La La La La Long) | 1992 | Reggae e latino | 2
+UB40 | Red Red Wine | 1983 | Reggae e latino | 2
+Shaggy | It Wasn't Me (feat. Rikrok) | 2000 | Reggae e latino | 2
+Kaoma | Lambada | 1989 | Reggae e latino | 1
+Los del Río | Macarena (Bayside Boys Remix) | 1995 | Reggae e latino | 1

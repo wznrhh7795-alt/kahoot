@@ -1891,6 +1891,8 @@
   // public/data/POP-FORMAT.md, controllo con scripts/check-pop.js): da tabelle di personaggi, film,
   // squadre… nascono in automatico domande per tutti i giochi.
   const fill = (tpl, name, value) => String(tpl).replaceAll('{name}', name ?? '').replaceAll('{value}', value ?? '');
+  // Come fill, ma con anche gli altri campi dell'elemento: «In che anno è uscita «{name}» di {artista}?».
+  const fillIt = (tpl, it, value) => fill(tpl, it.name, value).replace(/\{(\w+)\}/g, (m, k) => (it[k] !== undefined ? it[k] : m));
   const fmtVal = (v, cfg) => (cfg.format === 'year' ? formatYear(v) : fmtNum(v)) + (cfg.unit ? ` ${cfg.unit}` : '');
 
   function popTableGens(id, t) {
@@ -1907,7 +1909,7 @@
           make(rng, diff) {
             const it = pick(rng, byDiff(has, diff));
             // Mai il personaggio stesso tra le risposte («Chi è stato il maestro di Obi-Wan?» → non «Obi-Wan»).
-            return choice(rng, fill(cfg.ask, it.name, it[field]), it[field], values.filter((v) => v !== it.name), { key: `${k}:a:${it.name}` });
+            return choice(rng, fillIt(cfg.ask, it, it[field]), it[field], values.filter((v) => v !== it.name), { key: `${k}:a:${it.name}` });
           },
         });
       }
@@ -1928,7 +1930,7 @@
             const it = pick(rng, byDiff(has, diff));
             const truth = rng() < 0.5;
             const v = truth ? it[field] : pick(rng, values.filter((x) => x !== it[field] && x !== it.name));
-            return trueFalse(fill(cfg.tf, it.name, v), truth, { key: `${k}:t:${it.name}`, why: truth ? undefined : fill(cfg.tf, it.name, it[field]) });
+            return trueFalse(fillIt(cfg.tf, it, v), truth, { key: `${k}:t:${it.name}`, why: truth ? undefined : fillIt(cfg.tf, it, it[field]) });
           },
         });
       }
@@ -1944,8 +1946,8 @@
       }
       if (cfg.typed && cfg.ask) {
         gens.push(typedGen(k, has, (it) => (cfg.typed === 'person'
-          ? personQs(fill(cfg.ask, it.name, it[field]), it[field], values, { key: it.name }, it[`${field}Alt`] || [])
-          : typed(fill(cfg.ask, it.name, it[field]), it[field], { key: it.name, accept: it[`${field}Alt`] || [] })), values));
+          ? personQs(fillIt(cfg.ask, it, it[field]), it[field], values, { key: it.name }, it[`${field}Alt`] || [])
+          : typed(fillIt(cfg.ask, it, it[field]), it[field], { key: it.name, accept: it[`${field}Alt`] || [] })), values));
       }
     }
     for (const [field, cfg] of Object.entries(t.numeric || {})) {
@@ -1960,11 +1962,12 @@
             const it = pick(rng, byDiff(has, diff));
             const step = cfg.step || 1;
             const { min, max } = range(rng, it[field], cfg.span || 40, { floor: cfg.floor ?? 0, step });
-            return numeric(rng, fill(cfg.ask, it.name), it[field], { min, max, step, tol: cfg.tol || 0, unit: cfg.unit || '', format: cfg.format, key: `${k}:n:${it.name}` });
+            return numeric(rng, fillIt(cfg.ask, it), it[field], { min, max, step, tol: cfg.tol || 0, unit: cfg.unit || '', format: cfg.format, key: `${k}:n:${it.name}` });
           },
         });
       }
-      const list = has.map((it) => ({ label: it.name, value: it[field], d: it.d }));
+      // «label» (facoltativo) distingue gli omonimi nei confronti: «Hello (Adele)».
+      const list = has.map((it) => ({ label: cfg.label ? fillIt(cfg.label, it) : it.name, value: it[field], d: it.d }));
       if (cfg.duel) {
         gens.push(duelGen(k, list, {
           text: cfg.duel, lowerWins: Boolean(cfg.lowerWins),
@@ -2047,6 +2050,107 @@
       const answers = f.typed.map((x) => x.a);
       gens.push(typedGen(`${id}:t`, f.typed, (it) => typed(it.q, it.a, { accept: it.accept || [], hint: it.hint, key: it.q }), answers));
     }
+    if (f.songs?.length) gens.push(...songGens(id, f));
+    return gens;
+  }
+
+  // ---- Canzoni: si ascoltano pochi secondi dell'anteprima ufficiale (30 s, in streaming da Apple Music) ----
+  // L'interprete, la copertina e il collegamento al brano arrivano ai telefoni solo nei risultati.
+  const CLIP_SECONDS = 8;
+  const shortTitle = (t) => t.replace(/^\([^)]*\)\s*/, '').replace(/\s*\([^)]*\)\s*$/, '').trim() || t;
+  function songGens(id, f) {
+    const songs = f.songs.filter((s) => s.src && s.title && s.artist);
+    if (songs.length < 8) return [];
+    const audio = (rng, s) => ({ kind: 'audio', src: s.src, start: Math.floor(rng() * 14), dur: CLIP_SECONDS, link: s.link, art: s.art });
+    const label = (s) => `«${s.title}» · ${s.artist}${s.year ? ` (${s.year})` : ''}`;
+    // Una canzone al massimo una volta per partita, qualunque sia la domanda.
+    const key = (s) => `${id}:au:${s.title}|${s.artist}`;
+    const genre = memoBy((g) => songs.filter((o) => o.genre === g));
+    const rivals = (s) => (genre(s.genre).length > 6 ? genre(s.genre) : songs).filter((o) => o !== s);
+    // Interpreti che non possono essere la risposta sbagliata: chi canta nel brano o un duo che lo contiene.
+    const words = (x) => ` ${norm(x)} `;
+    const clash = (s, artist) => words(`${s.artist} ${s.feat || ''}`).includes(words(artist)) || words(artist).includes(words(s.artist));
+    const thisYear = new Date().getFullYear();
+    const dated = songs.filter((s) => s.year >= 1930 && s.year <= thisYear);
+    const gens = [
+      {
+        mode: 'ascolta', count: songs.length,
+        make(rng, diff) {
+          const s = pick(rng, byDiff(songs, diff));
+          return choice(rng, 'Ascolta: qual è il titolo di questa canzone?', s.title, rivals(s).map((o) => o.title), { key: key(s), media: audio(rng, s), why: label(s) });
+        },
+      },
+      {
+        mode: 'ascolta', count: songs.length,
+        make(rng, diff) {
+          const s = pick(rng, byDiff(songs, diff));
+          const wrong = rivals(s).map((o) => o.artist).filter((a) => !clash(s, a));
+          return choice(rng, 'Ascolta: chi canta questa canzone?', s.artist, wrong, { key: key(s), media: audio(rng, s), why: label(s) });
+        },
+      },
+      {
+        mode: 'ascolta', count: dated.length,
+        make(rng, diff) {
+          const s = pick(rng, byDiff(dated, diff));
+          const { min, max } = range(rng, s.year, 40, { floor: 1930, ceil: thisYear });
+          return numeric(rng, 'Ascolta: in che anno è uscita questa canzone?', s.year, { min, max, tol: 3, format: 'year', key: key(s), media: audio(rng, s), why: label(s) });
+        },
+      },
+      {
+        mode: 'ascolta', count: songs.length * 2,
+        make(rng, diff) {
+          const s = pick(rng, byDiff(songs, diff));
+          const truth = rng() < 0.5;
+          const o = truth ? s : pick(rng, rivals(s).filter((x) => x.title !== s.title && !clash(s, x.artist)));
+          return trueFalse(`Ascolta: questa canzone è «${o.title}» di ${o.artist}.`, truth, { key: key(s), media: audio(rng, s), why: label(s) });
+        },
+      },
+    ];
+    // Le domande «scrivi» hanno la chiave della canzone (e il brano parte da un secondo a caso).
+    const songKeyed = (genId, gen, mode) => ({
+      mode,
+      get count() { return gen.count; },
+      make(rng, diff) {
+        const q = gen.make(rng, diff);
+        if (!q) return null;
+        const out = { ...q, key: `${id}:au:${q.key.slice(`w${genId}:`.length)}` };
+        if (q.media) out.media = { ...q.media, start: Math.floor(rng() * 14) };
+        return out;
+      },
+    });
+    const titles = songs.map((s) => shortTitle(s.title));
+    gens.push(songKeyed(`${id}:au`, typedGen(`${id}:au`, songs, (s) => typed('Ascolta e scrivi il titolo di questa canzone', shortTitle(s.title), {
+      accept: [s.title], key: `${s.title}|${s.artist}`, media: audio(() => 0, s), why: label(s),
+    }), titles), 'ascolta'));
+
+    // «Completa il titolo»: l'ultima parola di un titolo di almeno tre parole.
+    const gaps = songs.flatMap((s) => {
+      const m = shortTitle(s.title).match(/^(.*\s)(\S+)$/);
+      if (!m || m[1].trim().split(/\s+/).length < 2) return [];
+      const [, head, last] = m;
+      const ap = last.lastIndexOf('\'');
+      const [prefix, word] = ap > 0 ? [head + last.slice(0, ap + 1), last.slice(ap + 1)] : [head, last];
+      return /^\p{L}{4,}$/u.test(word) ? [{ d: s.d, s, prefix: prefix.trimEnd(), word }] : [];
+    });
+    gens.push(songKeyed(`${id}:g`, typedGen(`${id}:g`, gaps, (g) => typed(`Completa il titolo della canzone di ${g.s.artist}: «${g.prefix}${g.prefix.endsWith('\'') ? '' : ' '}…»`, g.word, {
+      key: `${g.s.title}|${g.s.artist}`, why: label(g.s),
+    })), 'scrivi'));
+
+    // Indovina dal testo raccontato con parole nostre (mai versi originali di brani protetti).
+    const byTitle = new Map(songs.map((s) => [s.title, s]));
+    const clues = (f.clues || []).filter((c) => c.q && c.a);
+    if (clues.length >= 4) {
+      gens.push({
+        mode: 'quiz', count: clues.length,
+        make(rng, diff) {
+          const c = pick(rng, byDiff(clues, diff));
+          const s = byTitle.get(c.a);
+          const pool = s ? rivals(s).filter((o) => o.artist !== s.artist) : songs;
+          const text = `${c.q}${/[.?!…]$/.test(c.q) ? '' : '.'} Di quale canzone si parla?`;
+          return choice(rng, text, c.a, pool.map((o) => o.title), { key: s ? key(s) : `${id}:c:${c.a}`, why: s ? label(s) : undefined });
+        },
+      });
+    }
     return gens;
   }
   for (const f of D.pop || []) cat(f.id, f.name, f.emoji, f.color, f.description, popGenerators(f));
@@ -2062,6 +2166,7 @@
     { id: 'scrivi', name: 'Scrivi la risposta', emoji: '⌨️', description: 'Digita tu la risposta: accenti e piccoli errori perdonati', time: 30 },
     { id: 'intruso', name: 'Trova l\'intruso', emoji: '🕵️', description: 'Tre hanno qualcosa in comune, uno no', time: 20 },
     { id: 'duello', name: 'Testa a testa', emoji: '⚔️', description: 'Due opzioni: chi vince il confronto?', time: 12 },
+    { id: 'ascolta', name: 'Ascolta e indovina', emoji: '🎧', description: 'Pochi secondi del brano originale: titolo, interprete o anno?', time: 25 },
   ];
   const SPEED = { veloce: 0.7, normale: 1, rilassato: 1.5 };
 
@@ -2146,7 +2251,7 @@
   // Partite a tema già pronte, divise per gruppo. «options» può fissare numero di domande, difficoltà,
   // tempo o punti doppi; le categorie che mancano vengono ignorate (e il tema sparisce se non ne resta nessuna).
   const POP = ['disney', 'pixar', 'harrypotter', 'terradimezzo', 'trono', 'starwars', 'marvel', 'dc', 'anime', 'pokemon', 'videogiochi',
-    'cartoni', 'serietv', 'tvitaliana', 'pop', 'sanremo', 'calcio', 'motori', 'fiabe', 'fumetti', 'saghe', 'animazione'];
+    'cartoni', 'serietv', 'canzoni', 'tvitaliana', 'pop', 'sanremo', 'calcio', 'motori', 'fiabe', 'fumetti', 'saghe', 'animazione'];
   const P = (group, id, name, emoji, categories, modes = [], options = {}) => ({ group, id, name, emoji, categories, modes, options });
   const ALL_PRESETS = [
     P('Fantasy e magia', 'hogwarts', 'Notte a Hogwarts', '⚡', ['harrypotter']),
@@ -2179,10 +2284,14 @@
     P('Serie TV, anime e videogiochi', 'nerd', 'Nerd night', '🤓', ['videogiochi', 'anime', 'pokemon', 'starwars', 'marvel', 'terradimezzo']),
     P('Serie TV, anime e videogiochi', 'infanzia', 'Infanzia a colori', '🧃', ['cartoni', 'anime', 'disney', 'fumetti']),
 
+    P('Musica', 'canzoni', 'Indovina la canzone', '🎧', ['canzoni']),
+    P('Musica', 'ascolto', 'Solo ascolto', '🔊', ['canzoni'], ['ascolta']),
+    P('Musica', 'testi', 'Dal testo al titolo', '📝', ['canzoni'], ['quiz', 'citazione', 'scrivi', 'immagine']),
+    P('Musica', 'decenni', 'Viaggio nei decenni', '📻', ['canzoni'], ['ascolta', 'duello', 'ordina', 'numero']),
     P('Musica', 'hit', 'Hit parade', '🎤', ['pop']),
     P('Musica', 'sanremo', 'Perché Sanremo è Sanremo', '🌺', ['sanremo']),
-    P('Musica', 'notemusica', 'Notte di musica', '🎶', ['pop', 'sanremo', 'musica']),
-    P('Musica', 'melodramma', 'Dall\'opera al rock', '🎻', ['musica', 'pop']),
+    P('Musica', 'notemusica', 'Notte di musica', '🎶', ['canzoni', 'pop', 'sanremo', 'musica']),
+    P('Musica', 'melodramma', 'Dall\'opera al rock', '🎻', ['musica', 'canzoni', 'pop']),
 
     P('Sport', 'calcio', 'Fischio d\'inizio', '⚽', ['calcio']),
     P('Sport', 'motori', 'Bandiera a scacchi', '🏎️', ['motori']),
@@ -2204,7 +2313,7 @@
     P('Viaggi e sapere', 'mate', 'Matematica lampo', '🧮', ['matematica'], [], { speed: 'veloce' }),
 
     P('Sfide speciali', 'pop', 'Tutta la cultura pop', '🌟', POP),
-    P('Sfide speciali', 'famiglia', 'Festa in famiglia', '👨‍👩‍👧', ['cultura', 'cucina', 'disney', 'sanremo', 'calcio', 'tvitaliana'], [], { difficulty: 'facile' }),
+    P('Sfide speciali', 'famiglia', 'Festa in famiglia', '👨‍👩‍👧', ['cultura', 'cucina', 'disney', 'canzoni', 'sanremo', 'calcio', 'tvitaliana'], [], { difficulty: 'facile' }),
     P('Sfide speciali', 'piccoli', 'Per i più piccoli', '🧒', ['disney', 'pixar', 'cartoni', 'animali', 'fiabe', 'pokemon'], [], { difficulty: 'facile' }),
     P('Sfide speciali', 'esperti', 'Solo per esperti', '🧠', [], [], { difficulty: 'difficile' }),
     P('Sfide speciali', 'lampo', 'Round lampo', '⚡', [], ['vf', 'duello'], { speed: 'veloce', count: 20 }),

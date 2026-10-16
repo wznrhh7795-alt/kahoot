@@ -12,7 +12,7 @@
   const MODE_LABELS = {
     quiz: '❓ Quiz', vf: '⚖️ Vero o falso', immagine: '🖼️ Indovina dall\'immagine',
     citazione: '💬 Chi l\'ha detto?', ordina: '🔢 Metti in ordine', numero: '🎯 Indovina il numero',
-    scrivi: '⌨️ Scrivi la risposta', intruso: '🕵️ Trova l\'intruso', duello: '⚔️ Testa a testa',
+    scrivi: '⌨️ Scrivi la risposta', intruso: '🕵️ Trova l\'intruso', duello: '⚔️ Testa a testa', ascolta: '🎧 Ascolta e indovina',
     quiz_custom: '❓ Quiz', vero_falso: '⚖️ Vero o falso',
   };
 
@@ -51,6 +51,7 @@
     // così più telefoni nella stessa stanza non si sovrappongono.
     if (['s-pin', 's-nick'].includes(id)) UI.music?.play('home');
     else UI.music?.stop();
+    if (!['s-question', 's-sent', 's-result'].includes(id)) UI.clip.stop();
     for (const s of screens) $(s).classList.toggle('hidden', s !== id);
     const inGame = !['s-pin', 's-nick', 's-message'].includes(id);
     $('bottombar').classList.toggle('hidden', !inGame);

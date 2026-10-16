@@ -54,9 +54,9 @@ test('ogni categoria genera domande valide per tutte le sue modalità e difficol
   }
 });
 
-test('ci sono migliaia di domande diverse in almeno 24 categorie e 9 modalità', () => {
+test('ci sono migliaia di domande diverse in almeno 24 categorie e 10 modalità', () => {
   assert.ok(Bank.categories.length >= 24);
-  assert.equal(Bank.modes.length, 9);
+  assert.equal(Bank.modes.length, 10);
   assert.deepEqual(Bank.modes.slice(0, 6).map((m) => m.id), ['quiz', 'vf', 'immagine', 'citazione', 'ordina', 'numero']);
   assert.ok(Bank.estimateCount() > 5000, `solo ${Bank.estimateCount()}`);
   for (const m of Bank.modes) {
@@ -80,7 +80,7 @@ test('buildGame: niente doppioni, modalità alternate, partita giocabile', () =>
   assert.equal(g.questions.length, 40);
   assert.equal(new Set(g.questions.map((q) => q.key)).size, 40);
   const modes = new Set(g.questions.map((q) => q.mode));
-  assert.equal(modes.size, 9);
+  assert.equal(modes.size, Bank.modes.length);
   assert.equal(validateQuiz(g), null);
   const game = new Game('1', g);
   assert.ok(game.total === 40);

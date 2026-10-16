@@ -302,7 +302,8 @@ class Game {
     else if (type === 'scrivi') text = q.answer;
     else text = `${formatNumber(q.answer, q.format)}${q.unit ? ` ${q.unit}` : ''}`;
     const m = q.media;
-    const credit = m && m.kind === 'image' && m.author ? { author: m.author, license: m.license || '', link: m.link || '' } : null;
+    let credit = m && m.kind === 'image' && m.author ? { author: m.author, license: m.license || '', link: m.link || '' } : null;
+    if (m && m.kind === 'audio' && m.link) credit = { kind: 'audio', link: m.link, art: m.art || '' };
     return { type, correct: q.correct, answer: q.answer, text, why: q.why || null, credit };
   }
 
@@ -330,10 +331,11 @@ class Game {
   }
 }
 
-// Media senza autore né collegamento: per un quadro l'autore è proprio la risposta.
+// Media senza autore né collegamento: per un quadro l'autore è proprio la risposta (per una canzone
+// lo sono il collegamento al brano e la copertina).
 function publicMedia(media) {
   if (!media) return null;
-  const { author, link, credit, ...rest } = media;
+  const { author, link, credit, art, ...rest } = media;
   return rest;
 }
 

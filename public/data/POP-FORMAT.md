@@ -45,6 +45,10 @@ i giochi. Controllo: `node scripts/check-pop.js public/data/pop-<id>.js` (errori
     order:   [ { q: 'Metti in ordine i libri, dal primo', items: ['A', 'B', 'C', 'D'], d: 1 } ], // ordine giusto, 3-6 elementi
     numbers: [ { q: 'Quanti…?', v: 7, min: 0, max: 20, tol: 0, unit: 'libri', d: 1 } ],         // indovina il numero
     typed:   [ { q: 'Domanda a risposta libera?', a: 'Risposta', accept: ['Variante'], d: 1 } ],  // scrivi la risposta
+    // Solo per le categorie musicali (vedi pop-canzoni.js, generato da scripts/build-songs.mjs):
+    songs:   [ { title: 'Titolo', artist: 'Interprete', feat: 'Ospite', year: 1979, genre: 'Rock', d: 1,
+                 src: 'https://…anteprima.m4a', link: 'https://music.apple.com/…', art: 'https://…copertina.jpg' } ],
+    clues:   [ { q: 'Il testo raccontato con parole nostre', a: 'Titolo di una canzone di «songs»', d: 1 } ],
   });
 })(typeof window !== 'undefined' ? window : globalThis);
 ```
@@ -62,7 +66,10 @@ i giochi. Controllo: `node scripts/check-pop.js public/data/pop-<id>.js` (errori
 - `who` solo se la domanda resta vera con 4 nomi: le opzioni sbagliate sono elementi con un valore diverso.
 - `typed` solo per risposte brevi e univoche (nomi, titoli); varianti comuni in `accept` o in `<campo>Alt`
   (es. `attoreAlt: ['Watson']`). `'person'` accetta già il cognome da solo quando non è ambiguo.
-- Citazioni: battute brevi e famose (max ~120 caratteri). **Niente testi di canzoni.**
+- Citazioni: battute brevi e famose (max ~120 caratteri). **Niente testi di canzoni protette**: si possono
+  citare solo brani in pubblico dominio (inni, canti popolari, arie d'opera, autori morti da oltre 70 anni).
+- `songs` crea il gioco «Ascolta e indovina» (8 secondi dell'anteprima ufficiale, mai copiata nel progetto).
+  `clues` descrive il testo di una canzone con parole proprie, senza versi originali.
 - Niente contenuti volgari, offensivi o spoiler inutilmente crudi.
 - Il conteggio di `check-pop.js` (domande distinte) è quello mostrato nel gioco: non conta le combinazioni
   di «intruso», «testa a testa» e «metti in ordine» da tabella.

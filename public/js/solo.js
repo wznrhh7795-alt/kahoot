@@ -107,7 +107,10 @@
   // ---- Schermate ----
   // Musica: impostazioni → home, domanda → un brano diverso ogni volta, fine → finale.
   function show(id) {
-    if (id === 's-question') UI.music?.next('question');
+    const song = $('q-media').classList.contains('media-audio');
+    if (id !== 's-question' && id !== 's-result') UI.clip.stop();
+    if (id === 's-question' && song) UI.music?.stop(); // si sente solo la canzone
+    else if (id === 's-question') UI.music?.next('question');
     else if (id === 's-setup') UI.music?.play('home');
     else if (id === 's-end') UI.music?.play('finale');
     else UI.music?.stop();
@@ -333,7 +336,7 @@
     $('q-mode').textContent = modeLabel(q);
     $('q-double').classList.toggle('hidden', !q.double);
     $('q-text').textContent = q.text;
-    UI.renderMedia($('q-media'), q.media);
+    UI.renderMedia($('q-media'), q.media, { autoplay: true });
     $('s-question').classList.toggle('with-media', Boolean(q.media));
     show('s-question');
     play.input = UI.renderAnswerInput($('answers'), q, onAnswer);

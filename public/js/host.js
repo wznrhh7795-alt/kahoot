@@ -21,10 +21,13 @@
 
   // Musica: home e editor → home, attesa → lobby, domanda → un brano diverso ogni volta, podio → finale.
   const MUSIC_FOR = { 'h-home': 'home', 'h-editor': 'home', 'h-connecting': 'lobby', 'h-lobby': 'lobby', 'h-scoreboard': 'lobby', 'h-podium': 'finale' };
+  // Con una canzone da indovinare niente musica: si sente solo il brano (che finisce anche nei risultati).
   function show(id) {
-    if (id === 'h-question') UI.music?.next('question');
+    const song = $('q-media').classList.contains('media-audio');
+    if (id === 'h-question' && !song) UI.music?.next('question');
     else if (MUSIC_FOR[id]) UI.music?.play(MUSIC_FOR[id]);
     else UI.music?.stop();
+    if (id !== 'h-question' && id !== 'h-results') UI.clip.stop();
     for (const s of screens) $(s).classList.toggle('hidden', s !== id);
     window.scrollTo(0, 0);
   }
@@ -32,14 +35,18 @@
   // ---- Impostazioni della partita rapida (ricordate nel browser) ----
   const setup = (() => {
     const allModes = Bank.modes.map((m) => m.id);
-    const defaults = { categories: Bank.categories.map((c) => c.id), modes: allModes, knownModes: allModes, count: 15, difficulty: 'mista', speed: 'normale', bonus: 'off', theme: 'classico' };
+    const allCats = Bank.categories.map((c) => c.id);
+    const defaults = { categories: allCats, knownCategories: allCats, modes: allModes, knownModes: allModes, count: 15, difficulty: 'mista', speed: 'normale', bonus: 'off', theme: 'classico' };
     try {
       const saved = JSON.parse(localStorage.getItem(SETUP_KEY));
       if (saved) {
         // Le modalità uscite dopo l'ultimo salvataggio vengono attivate in automatico.
         const known = saved.knownModes || ['quiz', 'vf', 'immagine', 'citazione', 'ordina', 'numero'];
         const modes = [...(saved.modes || []), ...allModes.filter((m) => !known.includes(m))];
-        return { ...defaults, ...saved, modes, knownModes: allModes };
+        // Lo stesso per le categorie nuove (es. «Indovina la canzone»).
+        const knownCats = saved.knownCategories || allCats.filter((c) => c !== 'canzoni');
+        const categories = [...(saved.categories || []), ...allCats.filter((c) => !knownCats.includes(c))].filter((c) => allCats.includes(c));
+        return { ...defaults, ...saved, modes, knownModes: allModes, categories, knownCategories: allCats };
       }
     } catch {}
     return defaults;
@@ -724,7 +731,7 @@
     $('q-double').classList.toggle('hidden', !q.double);
     $('q-text').textContent = q.text;
     $('q-count').textContent = '0';
-    UI.renderMedia($('q-media'), q.media);
+    UI.renderMedia($('q-media'), q.media, { autoplay: true });
 
     const tiles = $('q-answers');
     const input = $('q-input');

@@ -102,6 +102,15 @@ for (const f of added) {
     const ok = isStr(x.q) && [x.v, x.min, x.max].every(Number.isFinite) && x.min < x.max && x.v >= x.min && x.v <= x.max;
     if (!ok) err(where(`numbers[${i}] non valida (v tra min e max): ${x.q}`));
   });
+  (f.songs || []).forEach((x, i) => {
+    if (!isStr(x.title) || !isStr(x.artist) || !isStr(x.genre) || !D_OK(x.d)) err(where(`songs[${i}] incompleta: ${x.title}`));
+    if (!/^https:\/\//.test(x.src || '')) err(where(`songs[${i}] senza anteprima https: ${x.title}`));
+    if (x.year !== undefined && x.year !== null && !Number.isFinite(x.year)) err(where(`songs[${i}] anno non valido: ${x.title}`));
+  });
+  (f.clues || []).forEach((x, i) => {
+    if (!isStr(x.q) || !isStr(x.a) || !D_OK(x.d)) err(where(`clues[${i}] incompleto`));
+    else if (!(f.songs || []).some((s) => s.title === x.a)) warn.push(where(`clues[${i}]: «${x.a}» non è tra le canzoni`));
+  });
   (f.typed || []).forEach((x, i) => {
     if (!isStr(x.q) || !isStr(x.a) || x.a.length > 40 || !D_OK(x.d)) err(where(`typed[${i}] non valida (a ≤ 40 caratteri): ${x.q}`));
   });

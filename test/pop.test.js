@@ -8,11 +8,14 @@ require('./fixtures/pop-prova.js');
 const { validateQuiz } = require('../public/js/game');
 const Bank = require('../public/js/bank');
 
-test('una categoria pop genera domande valide per tutti i 9 giochi', () => {
+// «Ascolta e indovina» nasce solo dall'elenco «songs» (test in songs.test.js).
+const TEXT_MODES = Bank.modes.filter((m) => m.id !== 'ascolta');
+
+test('una categoria pop genera domande valide per tutti i 9 giochi di testo', () => {
   const cat = Bank.categories.find((c) => c.id === 'prova');
   assert.ok(cat, 'categoria creata');
-  assert.deepEqual(Bank.modesOf(cat).sort(), Bank.modes.map((m) => m.id).sort());
-  for (const m of Bank.modes) {
+  assert.deepEqual(Bank.modesOf(cat).sort(), TEXT_MODES.map((m) => m.id).sort());
+  for (const m of TEXT_MODES) {
     for (let seed = 1; seed <= 10; seed++) {
       const game = Bank.buildGame({ categories: ['prova'], modes: [m.id], count: 6, seed });
       assert.equal(game.error, undefined, m.id);

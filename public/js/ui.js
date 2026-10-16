@@ -23,8 +23,104 @@
   const safeSrc = (u) => (typeof u === 'string' && (/^https:\/\//i.test(u) || /^\/[^/]/.test(u)) ? u : '');
   const safeLink = (u) => (typeof u === 'string' && /^https:\/\//i.test(u) ? u : '');
 
+  // ---- Brani musicali: pochi secondi dell'anteprima ufficiale (Apple Music), mai scaricata né copiata ----
+  // Un solo elemento <audio> per tutta la pagina: su iPhone parte solo se è già stato avviato da un tocco,
+  // quindi al primo tocco lo «sblocchiamo» con un istante di silenzio.
+  const clip = (() => {
+    const SILENCE = 'data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQIAAACAgA==';
+    let el = null;
+    let current = null;
+    let stopAt = 0;
+    let guard = 0;
+    let view = null; // { box, media } del riquadro mostrato
+    function audio() {
+      if (el) return el;
+      el = new Audio();
+      el.preload = 'auto';
+      el.addEventListener('timeupdate', () => {
+        if (!current) return;
+        const left = stopAt - el.currentTime;
+        if (left <= 0) finish();
+        else if (left < 0.8) el.volume = Math.max(0, left / 0.8); // dissolvenza finale
+      });
+      el.addEventListener('ended', () => current && finish());
+      // Messo in pausa dal sistema (blocco schermo, telefonata): il pulsante torna «Riascolta».
+      // (el.paused: la pausa che precede un nuovo play() arriva quando il brano è già ripartito.)
+      el.addEventListener('pause', () => current && el.paused && el.currentTime < stopAt - 0.3 && finish());
+      el.addEventListener('error', () => current && current.src && el.src !== SILENCE && state('error'));
+      return el;
+    }
+    function state(name) {
+      if (view && current && view.media.src === current.src) {
+        const { box } = view;
+        box.classList.toggle('playing', name === 'playing');
+        box.classList.toggle('clip-error', name === 'error');
+        const btn = box.querySelector('.clip-btn');
+        if (btn) btn.textContent = { playing: '⏹️ Ferma', loading: '⏳ Caricamento…', error: 'Audio non disponibile 😕' }[name] || (view.played ? '🔁 Riascolta' : '▶️ Ascolta');
+        if (name === 'playing') {
+          view.played = true;
+          const bar = box.querySelector('.clip-bar > div');
+          bar.style.animation = 'none';
+          void bar.offsetWidth;
+          bar.style.animation = `clipbar ${Math.max(1, stopAt - (current.start || 0))}s linear forwards`;
+        }
+      }
+      if (name !== 'playing' && name !== 'loading') current = null;
+    }
+    function finish() {
+      clearTimeout(guard);
+      if (el) el.pause();
+      state('ended');
+    }
+    function play(media) {
+      const a = audio();
+      clearTimeout(guard);
+      a.pause();
+      current = media;
+      const start = Math.max(0, Number(media.start) || 0);
+      stopAt = start + (Number(media.dur) || 8);
+      const src = safeSrc(media.src);
+      if (!src) return state('error');
+      state('loading');
+      // «#t=» fa partire il brano dal secondo giusto; lo riposizioniamo comunque quando è pronto.
+      const url = `${src}#t=${start}`;
+      if (a.src !== url) a.src = url;
+      const seek = () => {
+        if (current === media && Math.abs(a.currentTime - start) > 0.6) {
+          try { a.currentTime = start; } catch {}
+        }
+      };
+      if (a.readyState >= 1) seek();
+      else a.addEventListener('loadedmetadata', seek, { once: true });
+      a.volume = 1;
+      const p = a.play();
+      const ok = () => current === media && state('playing');
+      // Bloccato dal browser (serve un tocco) oppure brano non riproducibile.
+      if (p && p.then) p.then(ok, (e) => current === media && state(e?.name === 'NotAllowedError' ? 'blocked' : 'error'));
+      else ok();
+      guard = setTimeout(() => current === media && finish(), (stopAt - start + 8) * 1000);
+    }
+    function stop() {
+      if (current) finish();
+    }
+    function unlock() {
+      const a = audio();
+      if (a.src) return;
+      a.src = SILENCE;
+      a.play()?.catch?.(() => {});
+    }
+    document.addEventListener('pointerdown', unlock, { once: true, capture: true });
+    return {
+      play, stop, unlock,
+      bind(box, media) { view = { box, media, played: false }; },
+      get playing() { return Boolean(current); },
+    };
+  })();
+
   // ---- Media ----
-  function renderMedia(el, media) {
+  // opts.autoplay: fa partire subito il brano (host e allenamento); sui telefoni si ascolta con un tocco.
+  function renderMedia(el, media, opts = {}) {
+    clip.stop();
     el.innerHTML = '';
     el.className = 'media';
     if (!media) {
@@ -37,6 +133,19 @@
     } else if (media.kind === 'quote') {
       el.classList.add('media-quote');
       el.innerHTML = `<blockquote><span class="qmark" aria-hidden="true">“</span>${esc(media.text)}</blockquote>`;
+    } else if (media.kind === 'audio') {
+      el.classList.add('media-audio');
+      el.innerHTML = `
+        <div class="eq" aria-hidden="true">${'<span></span>'.repeat(9)}</div>
+        <button type="button" class="clip-btn">▶️ Ascolta</button>
+        <div class="clip-bar" aria-hidden="true"><div></div></div>
+        <span class="media-credit">🎧 ${Number(media.dur) || 8} secondi · anteprima ufficiale Apple Music</span>`;
+      clip.bind(el, media);
+      el.querySelector('.clip-btn').addEventListener('click', () => {
+        if (clip.playing) clip.stop();
+        else clip.play(media);
+      });
+      if (opts.autoplay && audioMode !== 'none') clip.play(media);
     } else if (media.kind === 'image') {
       el.classList.add('media-image', 'loading');
       if (media.flag) el.classList.add('media-flag');
@@ -67,6 +176,18 @@
     el.innerHTML = '';
     el.classList.toggle('hidden', !credit);
     if (!credit) return;
+    if (credit.kind === 'audio') {
+      const a = document.createElement('a');
+      a.className = 'song-credit';
+      if (safeLink(credit.link)) {
+        a.href = safeLink(credit.link);
+        a.target = '_blank';
+        a.rel = 'noopener';
+      }
+      a.innerHTML = `${safeSrc(credit.art) ? `<img src="${esc(safeSrc(credit.art))}" alt="" referrerpolicy="no-referrer">` : ''}<span>🎵 Ascolta il brano completo su Apple Music</span>`;
+      el.appendChild(a);
+      return;
+    }
     const a = document.createElement(safeLink(credit.link) ? 'a' : 'span');
     a.textContent = `📷 Immagine: ${credit.author}${credit.license ? ` · ${credit.license}` : ''} · Wikimedia Commons`;
     if (safeLink(credit.link)) {
@@ -79,6 +200,12 @@
 
   // Precarica l'immagine della prossima domanda (durante «Preparati!»).
   function preload(media) {
+    if (media?.kind === 'audio' && safeSrc(media.src)) {
+      // Solo i primi dati: il brano vero lo suona l'elemento condiviso (l'anteprima arriva dalla cache).
+      const a = new Audio();
+      a.preload = 'metadata';
+      a.src = safeSrc(media.src);
+    }
     if (media?.kind === 'image') {
       const img = new Image();
       img.referrerPolicy = 'no-referrer';
@@ -445,6 +572,7 @@
     });
     if (announce) toast(`${icon} ${label}`);
     audioListeners.forEach((fn) => fn(audioMode));
+    if (audioMode === 'none') clip.stop();
   }
   let toastTimer;
   function toast(text) {
@@ -481,7 +609,7 @@
   }
 
   root.UI = {
-    esc, safeSrc, SHAPES, SHAPE_NAMES, AVATARS, THEMES, applyTheme, formatNumber, renderMedia, renderCredit, preload, renderAnswerInput,
+    esc, safeSrc, SHAPES, SHAPE_NAMES, AVATARS, THEMES, applyTheme, formatNumber, renderMedia, renderCredit, preload, renderAnswerInput, clip,
     timer, confetti, sound, installSoundToggle, vibrate,
     audioContext: ctx, audioMode: () => audioMode, setAudioMode, onAudioMode: (fn) => audioListeners.push(fn),
   };

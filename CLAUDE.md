@@ -20,6 +20,9 @@ https://quizzone-it.netlify.app · cartella pubblicata: `public/`.
 - `public/data/pop-*.js` — categorie «pop» (Disney, Harry Potter…) descritte da dati: formato in `public/data/POP-FORMAT.md`,
   controllo con `node scripts/check-pop.js public/data/pop-<id>.js --sample=5`; dopo aver aggiunto un file esegui
   `node scripts/pop-tags.js` (aggiorna i `<script>` in host.html e solo.html).
+- `public/data/pop-canzoni.js` — GENERATO: modifica `scripts/songs.txt` (brani) o `scripts/canzoni-extra.js` (versi in
+  pubblico dominio, indizi, emoji) e lancia `NODE_USE_ENV_PROXY=1 node scripts/build-songs.mjs` (cache in `scripts/songs-cache.json`).
+  Audio: `UI.clip` in `ui.js` (anteprime Apple, 8 s); gioco `ascolta` in `bank.js` (`songGens`).
 
 ## Risparmio di token
 - NON leggere per intero `public/data/*.js` (dati, 20–70 KB l'uno), `public/vendor/*` (minificato) né `public/flags/*`: usa `grep` o un `node -e` che stampi solo forme e conteggi.
@@ -32,3 +35,4 @@ https://quizzone-it.netlify.app · cartella pubblicata: `public/`.
 - Testi del gioco in italiano. Niente dipendenze di runtime: tutto è JS vanilla caricato con `<script>`.
 - Le soluzioni non devono mai arrivare ai telefoni prima della fine della domanda (`publicQuestion`, `publicMedia`).
 - Immagini solo da Wikimedia Commons con licenza libera, con autore e licenza mostrati nei risultati.
+- Canzoni: mai file audio nel progetto (solo anteprime ufficiali in streaming) e mai versi di brani protetti.

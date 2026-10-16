@@ -16,11 +16,11 @@ smartphone, gli altri entrano con il PIN o con il link condiviso.
 
 - **Oltre 45.000 domande diverse** in **37 categorie**, comprese 13 categorie pop (Disney, Pixar, Harry Potter,
   Il Signore degli Anelli, Il Trono di Spade, Star Wars, Marvel, Supereroi DC, Anime e manga, Pokémon, Videogiochi,
-  Cartoni animati, Serie TV) — oltre 9.500 nelle categorie classiche
+  Cartoni animati, Serie TV), la categoria musicale 🎧 **Indovina la canzone** e oltre 9.500 domande nelle categorie classiche
   Geografia del mondo, Bandiere, Italia, Monumenti e luoghi, Storia, Mitologia, Arte, Letteratura, Citazioni,
   Cinema, Musica, Scienza, Elementi chimici, Spazio, Corpo umano, Animali, Sport, Cucina, Lingua italiana,
   Inglese, Proverbi e modi di dire, Matematica, Invenzioni e tecnologia, Cultura generale.
-- **9 giochi diversi**, mescolabili nella stessa partita:
+- **10 giochi diversi**, mescolabili nella stessa partita:
   - ❓ **Quiz**: quattro risposte, una giusta.
   - ⚖️ **Vero o falso**, con la spiegazione quando è falso.
   - 🖼️ **Indovina dall'immagine**: 195 bandiere, oltre 180 foto di monumenti, opere d'arte e animali, film e
@@ -34,7 +34,12 @@ smartphone, gli altri entrano con il PIN o con il link condiviso.
     errore di battitura vengono perdonati. Sullo schermo dell'host compaiono le risposte date.
   - 🕵️ **Trova l'intruso**: tre elementi hanno qualcosa in comune, uno no.
   - ⚔️ **Testa a testa**: due opzioni, chi vince il confronto (più antico, più lungo, più alto…).
-- **Partita rapida**: scegli categorie, giochi, numero di domande (5–50), difficoltà (facile, media, difficile,
+  - 🎧 **Ascolta e indovina**: lo schermo dell'host fa sentire 8 secondi di un brano originale (oltre 400 canzoni
+    di ogni genere: cantautori, pop, rock, dance, rap, latino, colonne sonore…) e si indovina titolo, interprete o
+    anno. Sul telefono c'è il tasto ▶️ Ascolta per chi gioca da lontano.
+- 🎧 **Indovina la canzone**, anche dal testo: versi da completare di brani in pubblico dominio (inni, canzoni
+  napoletane classiche, arie d'opera, canti popolari), testi raccontati con parole nostre, titoli con le emoji e
+  «completa il titolo».- **Partita rapida**: scegli categorie, giochi, numero di domande (5–50), difficoltà (facile, media, difficile,
   mista o **progressiva**, da facile a difficile) e tempo (veloce, normale, rilassato). Le domande non si
   ripetono nella stessa partita.
 - **Punti doppi a sorpresa** ⚡: alcune domande, e sempre l'ultima, valgono il doppio.
@@ -97,12 +102,13 @@ public/index.html      App del giocatore                     public/js/player.js
 public/host.html       App dell'organizzatore + editor        public/js/host.js
 public/solo.html       Allenamento in solitaria               public/js/solo.js
 public/js/game.js      Motore di gioco: tipi di domanda, punteggi, classifica
-public/js/bank.js      Banca delle domande: 24 categorie, generatori per i 9 giochi, partite casuali
+public/js/bank.js      Banca delle domande: categorie, generatori per i 10 giochi, partite casuali
 public/js/ui.js        Componenti grafici condivisi: risposte, timer, temi, coriandoli, suoni
 public/js/net.js       Rete di gioco via relay Nostr
 public/data/*.js       Dati: geografia, scienza, storia, cultura, lingua, varie, immagini
 public/flags/          Bandiere (flag-icons)
 scripts/build-images.mjs  Rigenera public/data/images.js da Wikipedia/Wikimedia Commons
+scripts/build-songs.mjs   Rigenera public/data/pop-canzoni.js da scripts/songs.txt e scripts/canzoni-extra.js
 test/                  Test del motore e della banca delle domande
 public/manifest.webmanifest, public/icons/   Installazione come app
 .claude/skills/        Skill di Claude Code usate per sviluppare il gioco (vedi .claude/skills/README.md)
@@ -112,6 +118,13 @@ CLAUDE.md              Guida rapida al progetto per Claude Code
 La soluzione non viene mai inviata ai giocatori prima della chiusura della domanda.
 
 ## Fonti e licenze
+
+**Canzoni.** Il progetto non contiene file audio: per ogni brano si salva solo il collegamento all'anteprima
+ufficiale di 30 secondi che Apple mette a disposizione tramite la
+[iTunes Search API](https://performance-partners.apple.com/search-api), riprodotta in streaming dai server di
+Apple, con il collegamento al brano su Apple Music nei risultati. Nessun testo di canzoni protette: i versi citati
+sono di brani in pubblico dominio; degli altri si usano solo titoli, interpreti, anni e descrizioni con parole
+nostre.
 
 - **Domande**: scritte per questo progetto o generate da elenchi di dati (Paesi e capitali, elementi chimici,
   eventi storici, opere, film…). Se trovi un errore, segnalalo!
