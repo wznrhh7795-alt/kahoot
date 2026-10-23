@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Controlla un file di categoria «pop»: formato, qualità minima, domande generate e conteggio.
 // Uso: node scripts/check-pop.js public/data/pop-<id>.js [--sample N]
+// Vale anche per i file «extends» (domande in più per una categoria classica, es. pop-plusstoria.js).
 'use strict';
 const path = require('path');
 
@@ -28,9 +29,12 @@ const D_OK = (d) => [1, 2, 3].includes(d);
 if (!added.length) err('Il file non aggiunge nessuna categoria a QZ_DATA.pop');
 for (const f of added) {
   const where = (s) => `[${f.id}] ${s}`;
-  for (const k of ['id', 'name', 'emoji', 'color', 'description']) if (!isStr(f[k])) err(where(`manca «${k}»`));
+  for (const k of f.extends ? ['id'] : ['id', 'name', 'emoji', 'color', 'description']) if (!isStr(f[k])) err(where(`manca «${k}»`));
   if (!/^[a-z0-9]+$/.test(f.id || '')) err(where('id: solo minuscole e cifre'));
-  if (Bank.categories.filter((c) => c.id === f.id).length !== 1) err(where('id già usato da un\'altra categoria'));
+  if (f.extends) {
+    if (!Bank.categories.some((c) => c.id === f.extends)) err(where(`extends: la categoria «${f.extends}» non esiste`));
+    if (Bank.categories.some((c) => c.id === f.id)) err(where('id uguale a una categoria'));
+  } else if (Bank.categories.filter((c) => c.id === f.id).length !== 1) err(where('id già usato da un\'altra categoria'));
   const seenQ = new Set();
   const dupQ = (q) => {
     const k = String(q).toLowerCase().trim();
@@ -116,24 +120,32 @@ for (const f of added) {
   });
 
   // Generazione: ogni gioco della categoria, tanti semi, ogni difficoltà.
-  const category = Bank.categories.find((c) => c.id === f.id);
+  const category = Bank.categories.find((c) => c.id === (f.extends || f.id));
   if (!category) continue;
-  const modes = Bank.modesOf(category);
+  // Con «extends» si contano e si mostrano solo le domande nuove (chiavi «pop:<id>:»).
+  const gens = f.extends ? Bank.popGenerators(f) : category.generators;
+  const mine = (q) => !f.extends || q.key.includes(`pop:${f.id}:`);
+  const modes = [...new Set(gens.map((g) => g.mode))];
   const perMode = {};
-  for (const g of category.generators) perMode[g.mode] = (perMode[g.mode] || 0) + (g.count || 0);
+  for (const g of gens) perMode[g.mode] = (perMode[g.mode] || 0) + (g.count || 0);
   const COMBO = new Set(['ordina', 'intruso', 'duello']);
-  const counted = category.generators.filter((g) => !COMBO.has(g.mode)).reduce((n, g) => n + (g.count || 0), 0);
+  const counted = gens.filter((g) => !COMBO.has(g.mode)).reduce((n, g) => n + (g.count || 0), 0);
+  const oldTexts = new Set();
   const samples = {};
   for (const mode of modes) {
     let made = 0;
     const keys = new Set();
     for (let seed = 1; seed <= 40; seed++) {
       for (const difficulty of ['facile', 'media', 'difficile', 'mista']) {
-        const game = Bank.buildGame({ categories: [f.id], modes: [mode], count: 12, difficulty, seed: seed * 7 + difficulty.length });
+        const game = Bank.buildGame({ categories: [category.id], modes: [mode], count: 12, difficulty, seed: seed * 7 + difficulty.length });
         if (game.error) { err(where(`${mode}: ${game.error}`)); continue; }
         const e = Game.validateQuiz(game);
         if (e) err(where(`${mode}: domanda non valida → ${e}`));
         for (const q of game.questions) {
+          if (!mine(q)) {
+            oldTexts.add(q.text.toLowerCase().trim());
+            continue;
+          }
           made++;
           keys.add(q.key);
           if (q.text.length > 170) err(where(`${mode}: testo troppo lungo → ${q.text}`));
@@ -144,7 +156,11 @@ for (const f of added) {
     }
     if (!made) err(where(`${mode}: nessuna domanda generata`));
   }
-  console.log(`\n${f.emoji} ${f.name} (${f.id})`);
+  // Doppioni delle domande che la categoria aveva già (solo testi scritti a mano).
+  for (const x of [...(f.quiz || []), ...(f.tf || [])]) {
+    if (oldTexts.has(String(x.q).toLowerCase().trim())) warn.push(where(`già presente nella categoria: ${x.q}`));
+  }
+  console.log(f.extends ? `\n➕ ${category.emoji} ${category.name} (${f.id} → ${f.extends})` : `\n${f.emoji} ${f.name} (${f.id})`);
   console.log(`  giochi: ${modes.join(', ')}`);
   console.log(`  domande per gioco: ${Object.entries(perMode).map(([m, n]) => `${m} ${n}`).join(' · ')}`);
   console.log(`  DOMANDE CONTATE: ${counted}`);

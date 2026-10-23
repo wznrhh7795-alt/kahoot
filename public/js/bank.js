@@ -2153,7 +2153,11 @@
     }
     return gens;
   }
-  for (const f of D.pop || []) cat(f.id, f.name, f.emoji, f.color, f.description, popGenerators(f));
+  // «extends»: domande in più per una categoria classica (stesso formato, stessi giochi).
+  for (const f of D.pop || []) {
+    if (f.extends) C.some((c) => c.id === f.extends) && addTo(f.extends, popGenerators(f)); // categoria sbagliata: ignorata
+    else cat(f.id, f.name, f.emoji, f.color, f.description, popGenerators(f));
+  }
 
   // ---- Modalità di gioco ----
   const MODES = [
@@ -2198,7 +2202,9 @@
 
   // Crea una partita casuale: categorie e modalità scelte, numero di domande, difficoltà e velocità.
   // difficulty 'progressiva': un terzo facile, un terzo media, un terzo difficile; bonus: punti doppi.
-  function buildGame({ categories, modes, count = 10, difficulty = 'mista', speed = 'normale', seed, title, bonus = false } = {}) {
+  // avoid: chiavi delle domande uscite nelle partite precedenti, evitate finché ce ne sono altre.
+  function buildGame({ categories, modes, count = 10, difficulty = 'mista', speed = 'normale', seed, title, bonus = false, avoid } = {}) {
+    const seen = new Set(avoid || []);
     const rng = makeRng(seed ?? Math.floor(Math.random() * 2 ** 31));
     const cats = C.filter((c) => !categories?.length || categories.includes(c.id));
     const wantModes = modes?.length ? modes : MODES.map((m) => m.id);
@@ -2228,7 +2234,7 @@
       } catch {
         q = null;
       }
-      if (!q || !q.key || keys.has(q.key)) {
+      if (!q || !q.key || keys.has(q.key) || (seen.has(q.key) && attempt < count * 25)) {
         if (attempt > count * 30) usedMode.set(mode, (usedMode.get(mode) || 0) + 1); // modalità esaurita: passiamo oltre
         continue;
       }
@@ -2332,6 +2338,6 @@
     .map((p) => ({ ...p, categories: p.categories.filter((id) => catIds.has(id)) }))
     .filter((p, i) => p.categories.length || !ALL_PRESETS[i].categories.length);
 
-  root.QuizBank = { categories: C, modes: MODES, presets: PRESETS, buildGame, estimateCount, modesOf, makeRng, toRoman };
+  root.QuizBank = { categories: C, modes: MODES, presets: PRESETS, buildGame, estimateCount, modesOf, makeRng, toRoman, popGenerators };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.QuizBank;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -137,11 +137,12 @@
   $('mode-all').onclick = () => { setup.modes = Bank.modes.map((m) => m.id); saveSetup(); renderSetup(); };
 
   function generate(params) {
-    const game = Bank.buildGame({ count: setup.count, difficulty: setup.difficulty, speed: setup.speed, bonus: setup.bonus === 'on', ...params });
+    const game = Bank.buildGame({ count: setup.count, difficulty: setup.difficulty, speed: setup.speed, bonus: setup.bonus === 'on', avoid: UI.seenKeys(), ...params });
     if (game.error) {
       alert(game.error);
       return null;
     }
+    UI.rememberKeys(game.questions.map((q) => q.key));
     game.origin = params; // per «Rigioca con nuove domande»
     return game;
   }

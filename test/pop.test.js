@@ -5,6 +5,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 global.window = globalThis;
 require('./fixtures/pop-prova.js');
+require('./fixtures/pop-plusprova.js');
 const { validateQuiz } = require('../public/js/game');
 const Bank = require('../public/js/bank');
 
@@ -48,4 +49,21 @@ test('domanda inversa e intruso: le opzioni sbagliate non hanno il valore chiest
       if (odd) q.answers.forEach((a, i) => assert.equal(casaOf[a] !== odd[1], i === q.correct, q.text));
     }
   }
+});
+
+test('«extends» aggiunge domande a una categoria esistente, senza crearne una nuova', () => {
+  assert.ok(!Bank.categories.some((c) => c.id === 'plusprova'));
+  const texts = new Set();
+  for (let seed = 1; seed <= 30; seed++) {
+    for (const q of Bank.buildGame({ categories: ['prova'], modes: ['quiz'], count: 10, seed }).questions) texts.add(q.text);
+  }
+  assert.ok([...texts].some((t) => t.startsWith('Domanda extra numero')));
+});
+
+test('avoid: una nuova partita evita le domande già uscite', () => {
+  const first = Bank.buildGame({ categories: ['prova'], count: 10, seed: 1 });
+  const keys = first.questions.map((q) => q.key);
+  const next = Bank.buildGame({ categories: ['prova'], count: 10, seed: 1, avoid: keys });
+  assert.equal(next.questions.length, 10);
+  assert.equal(next.questions.filter((q) => keys.includes(q.key)).length, 0);
 });

@@ -602,6 +602,21 @@
     document.addEventListener('pointerdown', () => ctx(), { once: true });
   }
 
+  // Domande uscite di recente (host e allenamento), per non ripeterle nelle partite successive.
+  const SEEN_KEY = 'quizzone.seen';
+  function seenKeys() {
+    try {
+      return JSON.parse(localStorage.getItem(SEEN_KEY)) || [];
+    } catch {
+      return [];
+    }
+  }
+  function rememberKeys(keys) {
+    try {
+      localStorage.setItem(SEEN_KEY, JSON.stringify([...seenKeys(), ...keys].slice(-1500)));
+    } catch {}
+  }
+
   function vibrate(pattern) {
     try {
       navigator.vibrate?.(pattern);
@@ -610,7 +625,7 @@
 
   root.UI = {
     esc, safeSrc, SHAPES, SHAPE_NAMES, AVATARS, THEMES, applyTheme, formatNumber, renderMedia, renderCredit, preload, renderAnswerInput, clip,
-    timer, confetti, sound, installSoundToggle, vibrate,
+    timer, confetti, sound, installSoundToggle, vibrate, seenKeys, rememberKeys,
     audioContext: ctx, audioMode: () => audioMode, setAudioMode, onAudioMode: (fn) => audioListeners.push(fn),
   };
   // Compatibilità con il codice esistente

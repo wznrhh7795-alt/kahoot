@@ -254,7 +254,8 @@
     if (setup.bonus) params.bonus = true;
     let quiz;
     try {
-      quiz = Bank.buildGame(params);
+      quiz = Bank.buildGame({ ...params, avoid: UI.seenKeys() });
+      if (!quiz.error) UI.rememberKeys(quiz.questions.map((q) => q.key));
     } catch {
       quiz = { error: 'Non sono riuscito a creare le domande. Riprova.' };
     }
