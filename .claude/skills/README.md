@@ -13,6 +13,7 @@ Claude Code in ogni sessione su questo repository.
 | context-optimization, context-compression, context-degradation, multi-agent-patterns, memory-systems | [muratcankoylan/Agent-Skills-for-Context-Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering) (9ff0c99) | MIT | Gestione del contesto, compressione, architetture multi-agente, memoria |
 | web-design-guidelines | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) (063bee9) | MIT | Revisione di interfacce secondo le Web Interface Guidelines |
 | accessibility, performance, core-web-vitals, best-practices, web-quality-audit | [addyosmani/web-quality-skills](https://github.com/addyosmani/web-quality-skills) (afa8da9) | MIT | Accessibilità, prestazioni e qualità del sito |
+| ponytail, ponytail-review, ponytail-audit, ponytail-help, ponytail-debt, ponytail-gain | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) (09c434a) | MIT | Codice minimo: riusa ciò che c'è, niente aggiunte inutili; revisioni e audit in parole semplici |
 
 Testi delle licenze MIT/Apache dei repository in `_licenses/`.
 
@@ -24,4 +25,5 @@ Testi delle licenze MIT/Apache dei repository in `_licenses/`.
 ## Escluse
 - `caveman-compress`: invia i file a un modello per comprimerli ed esegue comandi (segnalata «High Risk» da Snyk).
 - `using-git-worktrees`: esegue in automatico `npm install`/`pip install`.
+- ponytail: installate solo le 6 skill (testo); esclusi gli hook JS/shell (eseguono codice a ogni sessione, barra di stato, import delle sessioni passate).
 - `canvas-design`, `ui-ux-pro-max`: diversi MB di font e dati, poco utili qui.
