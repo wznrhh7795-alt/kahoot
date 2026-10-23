@@ -19,7 +19,8 @@ https://quizzone-it.netlify.app · cartella pubblicata: `public/`.
 - `public/js/music.js` — musica di sottofondo sintetizzata (playlist home/lobby/question/finale); audio a 3 stati in `ui.js`.
 - `public/data/pop-*.js` — categorie «pop» (Disney, Harry Potter…) descritte da dati: formato in `public/data/POP-FORMAT.md`,
   controllo con `node scripts/check-pop.js public/data/pop-<id>.js --sample=5`; dopo aver aggiunto un file esegui
-  `node scripts/pop-tags.js` (aggiorna i `<script>` in host.html e solo.html).
+  `node scripts/pop-tags.js` (aggiorna i `<script>` in host.html e solo.html). I file `pop-plus<id>.js` con `extends`
+  aggiungono domande alle categorie classiche. Host e allenamento evitano le ultime 1.500 domande uscite (`avoid`).
 - `public/data/pop-canzoni.js` — GENERATO: modifica `scripts/songs.txt` (brani) o `scripts/canzoni-extra.js` (versi in
   pubblico dominio, indizi, emoji) e lancia `NODE_USE_ENV_PROXY=1 node scripts/build-songs.mjs` (cache in `scripts/songs-cache.json`).
   Audio: `UI.clip` in `ui.js` (anteprime Apple, 8 s); gioco `ascolta` in `bank.js` (`songGens`).

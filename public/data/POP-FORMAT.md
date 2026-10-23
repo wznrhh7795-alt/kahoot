@@ -53,6 +53,11 @@ i giochi. Controllo: `node scripts/check-pop.js public/data/pop-<id>.js` (errori
 })(typeof window !== 'undefined' ? window : globalThis);
 ```
 
+## Domande in più per una categoria classica (`extends`)
+Un file `pop-plus<id>.js` con `{ id: 'plus<id>', extends: '<id categoria classica>', quiz, tf, tables, … }` aggiunge le
+sue domande alla categoria esistente (es. `extends: 'storia'`), senza nome, emoji, colore né descrizione.
+`check-pop.js` conta solo le domande nuove e segnala quelle già presenti nella categoria.
+
 ## Regole di qualità (obbligatorie)
 - **Solo fatti certi e verificabili** (opere ufficiali: film, libri, serie, giochi). Nel dubbio, non metterlo.
   Se libro e film differiscono, dillo nella domanda («nei film», «nella serie TV»).
