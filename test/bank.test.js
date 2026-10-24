@@ -90,7 +90,7 @@ test('buildGame rispetta categorie, modalità e velocità', () => {
   const g = Bank.buildGame({ categories: ['bandiere'], modes: ['immagine'], count: 15, speed: 'veloce', seed: 5 });
   assert.equal(g.questions.length, 15);
   assert.ok(g.questions.every((q) => q.category === 'Bandiere' && q.mode === 'immagine' && q.time === 14));
-  assert.match(Bank.buildGame({ categories: ['mitologia'], modes: ['numero'] }).error, /Nessuna domanda/);
+  assert.match(Bank.buildGame({ categories: ['mitologia'], modes: ['ascolta'] }).error, /Nessuna domanda/);
   const w = Bank.buildGame({ modes: ['scrivi'], count: 10, seed: 3 });
   assert.ok(w.questions.every((q) => q.time === 30 && q.type === 'scrivi'));
 });
