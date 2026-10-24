@@ -946,6 +946,308 @@ Completa il modo di dire: «Tra Scilla e _____» | Cariddi | Cerbero | Medusa | 
 Completa il modo di dire: «Passare il _____» | Rubicone | Tevere | Po | Piave | 2
 `);
 
+  // Cultura sui detti: origini, significati, feste e proverbi del tempo.
+  const QUIZ_CULTURA = mkQuiz(`
+Qual è la risposta tradizionale all'augurio «In bocca al lupo»? | Crepi! | Mai più | Speriamo | Buona sera | 1
+Chi, secondo la leggenda, aprì il vaso da cui uscirono tutti i mali del mondo? | Pandora | Elena | Atena | Circe | 1
+Che cosa nascondeva il grande cavallo di legno portato dentro le mura di Troia? | Soldati greci | Il tesoro di Priamo | Armi per i Troiani | Un dono di Zeus | 1
+Qual è, nel mito, il punto debole di Achille? | Il tallone | Il ginocchio | La schiena | Il collo | 1
+Quale fiume attraversò Giulio Cesare con il suo esercito, secondo la tradizione «il dado è tratto»? | Rubicone | Tevere | Po | Arno | 2
+Come si chiamava il tiranno di Siracusa legato alla spada di Damocle? | Dionisio | Gerone | Agatocle | Archimede | 3
+Contro chi combatté Pirro nelle battaglie che hanno dato nome alla «vittoria di Pirro»? | I Romani | I Persiani | I Galli | Gli Egizi | 2
+Chi si lavò le mani davanti alla folla prima della condanna di Gesù? | Ponzio Pilato | Erode | Caifa | Giuseppe d'Arimatea | 2
+Quale personaggio aiutò Gesù a portare la croce, dando origine a «fare il cireneo»? | Simone di Cirene | Giuseppe | Nicodemo | Lazzaro | 3
+A che cosa allude «l'uovo di Colombo»? | A una soluzione semplicissima a cui nessuno aveva pensato | A una scoperta fatta per caso | A un tesoro nascosto | A un viaggio senza ritorno | 2
+Da quale personaggio romano nasce l'espressione «fare da cicerone»? | Cicerone, il grande oratore | Virgilio | Seneca | Plinio | 2
+A quale anno rimanda l'espressione «è successo un quarantotto»? | 1848 | 1748 | 1948 | 1648 | 2
+Quale imperatore romano è legato alla frase «Pecunia non olet»? | Vespasiano | Nerone | Augusto | Adriano | 3
+Di quale poeta latino è la locuzione «Panem et circenses»? | Giovenale | Virgilio | Orazio | Ovidio | 3
+Nel mito, a che cosa serve il «filo d'Arianna» a Teseo? | A uscire dal labirinto del Minotauro | A legare il Minotauro | A cucire la vela della nave | A calarsi in un pozzo | 2
+Dove la tradizione colloca i mostri Scilla e Cariddi? | Nello stretto di Messina | Nello stretto di Gibilterra | Nel canale di Sicilia | Nello stretto del Bosforo | 2
+Quale dea gettò tra gli invitati la mela d'oro, il «pomo della discordia»? | Eris | Era | Afrodite | Atena | 3
+Di quale regno antico era re Creso, proverbialmente ricchissimo? | Lidia | Persia | Egitto | Babilonia | 3
+Di quale città era principessa Cassandra, profetessa mai creduta? | Troia | Atene | Sparta | Micene | 2
+Che cosa doveva spingere Sisifo fino in cima al monte? | Un masso | Un carro | Una botte | Un tronco | 2
+Da quale sport nasce l'espressione «gettare la spugna»? | Pugilato | Calcio | Scherma | Nuoto | 2
+Da quale gioco deriva l'espressione «avere un asso nella manica»? | Giochi di carte | Scacchi | Dadi | Biliardo | 1
+Quale pianta c'entra con l'espressione «dormire sugli allori»? | Alloro | Ulivo | Quercia | Palma | 1
+Quale pianta è simbolo di pace nell'espressione «porgere il ramo...»? | Ulivo | Alloro | Quercia | Palma | 1
+Che cosa non si deve gettare ai porci, secondo il detto? | Le perle | Le rose | Il pane | Le monete | 1
+Che cosa significa «fare le nozze con i fichi secchi»? | Voler fare le cose in grande con mezzi scarsi | Sposarsi in autunno | Invitare pochi parenti | Fare un banchetto vegetariano | 2
+Che cos'è «la ciliegina sulla torta»? | Il tocco finale che completa qualcosa di già bello | Una piccola delusione | Un errore da nascondere | Un dolce troppo dolce | 1
+Che cosa significa «essere in brodo di giuggiole»? | Essere al colmo della felicità | Essere ubriaco | Essere in grande difficoltà | Avere molta fame | 2
+Che cosa significa «tirare i remi in barca»? | Ritirarsi o rinunciare a proseguire | Partire per un viaggio | Cominciare un'impresa | Chiedere aiuto | 2
+Che cosa significa «fare il grillo parlante»? | Dare consigli morali che nessuno ha chiesto | Parlare a voce molto alta | Raccontare bugie | Cantare in continuazione | 2
+Che cosa significa «combattere contro i mulini a vento»? | Lottare contro nemici immaginari | Fare un lavoro faticoso | Opporsi a un potente | Scegliere un'impresa facile | 2
+Che cosa indica oggi «il gatto e la volpe», dai personaggi di Pinocchio? | Una coppia di imbroglioni | Due amici inseparabili | Due eterni rivali | Due persone ingenue | 2
+Che cosa significa «essere un pesce lesso»? | Essere una persona priva di vivacità | Essere molto magro | Essere malato | Essere molto sano | 2
+Che cosa significa «avere il dente avvelenato»? | Provare rancore verso qualcuno | Avere mal di denti | Essere molto affamato | Mangiare con ingordigia | 2
+Che cosa significa «avere naso per gli affari»? | Fiutare le buone occasioni | Avere un naso grosso | Essere ficcanaso | Essere raffreddato | 2
+Che cosa significa «fare man bassa»? | Impadronirsi di tutto, saccheggiando | Salutare con la mano | Lavorare a basso costo | Alzare le mani | 3
+Che cosa significa «avere le fette di prosciutto sugli occhi»? | Non vedere ciò che è evidente | Avere sonno | Avere fame | Essere cieco | 2
+Che cosa significa «mettere i piedi nel piatto»? | Intervenire in modo inopportuno e brusco | Mangiare con le mani | Essere molto affamato | Fare colazione | 2
+Che cosa significa «fare spallucce»? | Alzare le spalle in segno di indifferenza | Piangere | Protestare | Ridere | 2
+Che cosa significa «avere la puzza sotto il naso»? | Essere altezzoso | Avere un cattivo odore | Essere raffreddato | Essere curioso | 2
+Che cosa significa «il canto del cigno»? | L'ultima grande opera di un artista | Un concerto di successo | Un coro di bambini | Una canzone d'amore | 3
+Che cos'è «un elefante bianco»? | Un'opera costosa e inutile | Una rarità preziosa | Un grande affare | Un animale sacro | 3
+Che cosa significa «avere la mosca al naso»? | Essere irritabile, sul punto di arrabbiarsi | Essere distratto | Avere il raffreddore | Essere curioso | 2
+Che cosa significa «fare la mosca cocchiera»? | Darsi importanza attribuendosi meriti altrui | Disturbare qualcuno | Essere velocissimo | Lavorare moltissimo | 3
+Che cosa significa «legare l'asino dove vuole il padrone»? | Obbedire anche se non si è d'accordo | Lavorare sodo | Comportarsi con furbizia | Restare fedeli | 3
+Che cosa significa «qui casca l'asino»? | Qui sta la difficoltà | Qui finisce il viaggio | Qui c'è un inganno | Qui si cade | 2
+Che cosa significa «scaldare una serpe in seno»? | Aiutare chi poi ci tradisce | Proteggere un animale | Avere molta paura | Fare qualcosa di rischioso | 3
+Che cos'è «un capro espiatorio»? | Chi paga per le colpe degli altri | Un animale sacrificale rarissimo | Una persona testarda | Un furbo | 2
+Che cosa significa «fare le pulci a qualcuno»? | Criticarlo per i minimi difetti | Curarlo | Spiarlo | Imitarlo | 3
+Che cosa significa «fare il galletto»? | Fare il vanitoso per corteggiare | Alzarsi molto presto | Fare lo sciocco | Gridare | 2
+Che cosa significa «un tempo da lupi»? | Un tempo bruttissimo | Un periodo molto felice | Un'epoca antica | Un'ora tarda | 2
+Che cosa significa «essere a cavallo»? | Essere in una situazione favorevole, fuori pericolo | Essere in difficoltà | Essere in viaggio | Essere in ritardo | 3
+Che cosa significa «gridare al lupo»? | Lanciare un falso allarme | Chiedere aiuto | Avere paura | Andare a caccia | 2
+Che cosa significa «contare le pecore»? | Cercare di prendere sonno | Fare l'inventario | Fare il pastore | Perdere tempo | 1
+Che cosa indica «la pecorella smarrita»? | Chi si è allontanato dalla retta via | Un animale perduto | Una persona ingenua | Il più piccolo del gruppo | 3
+Che cos'è un «cielo a pecorelle»? | Un cielo coperto di piccole nuvole bianche e tondeggianti | Un cielo sereno | Un cielo di tempesta | Un cielo rosso al tramonto | 2
+Che cos'è l'«estate di San Martino»? | Un periodo di bel tempo mite a inizio novembre | La festa estiva del santo | Il solstizio d'estate | Un vino novello | 2
+Quando cadono, secondo la tradizione, i «giorni della merla», i più freddi dell'anno? | Alla fine di gennaio | Alla fine di dicembre | All'inizio di marzo | A metà febbraio | 2
+Quale festa cade il 2 febbraio, ricordata da un famoso proverbio sull'inverno? | La Candelora | La Befana | San Valentino | Il Carnevale | 2
+Quale santa si festeggia il 13 dicembre? | Santa Lucia | Santa Barbara | Sant'Agata | Santa Caterina | 2
+Quale santo si festeggia il 10 agosto, la notte delle stelle cadenti? | San Lorenzo | San Pietro | San Giovanni | Sant'Antonio | 1
+Quale santo si festeggia il 19 marzo, giorno della festa del papà? | San Giuseppe | San Francesco | San Pietro | San Giovanni | 1
+Quale santo, protettore degli animali, si festeggia il 17 gennaio? | Sant'Antonio abate | San Francesco | San Martino | San Biagio | 2
+`);
+
+  const TF = lines(`
+La Candelora si festeggia il 2 febbraio. | V | 2
+Santa Lucia si festeggia il 13 dicembre. | V | 2
+San Lorenzo si festeggia il 10 agosto. | V | 1
+San Martino si festeggia l'11 novembre. | V | 2
+San Giuseppe si festeggia il 19 marzo. | V | 1
+San Martino si festeggia il 25 dicembre. | F | 2 | San Martino cade l'11 novembre; il 25 dicembre è Natale.
+Sant'Antonio abate si festeggia il 17 gennaio. | V | 2
+Il proverbio «Cielo a pecorelle, acqua a catinelle» preannuncia pioggia. | V | 1
+Secondo il proverbio, «rosso di mattina» porta bel tempo. | F | 1 | Il proverbio dice «Rosso di mattina, la pioggia è vicina»; il bel tempo è per il rosso di sera.
+Secondo il proverbio, aprile è il mese in cui «è dolce dormire». | V | 2
+L'«estate di San Martino» è un periodo di bel tempo mite a inizio novembre. | V | 2
+I «giorni della merla» sono gli ultimi giorni di gennaio. | V | 2
+I «giorni della merla» cadono a metà agosto. | F | 2 | Sono gli ultimi giorni di gennaio, tradizionalmente i più freddi dell'anno.
+A «In bocca al lupo» si risponde tradizionalmente «Crepi!». | V | 1
+Secondo il modo di dire italiano, i gatti hanno sette vite. | V | 1
+Secondo il modo di dire italiano, i gatti hanno nove vite. | F | 2 | In italiano si dice «sette vite»; le nove vite appartengono al detto inglese.
+Il «vaso di Pandora» appartiene alla mitologia romana. | F | 2 | È un mito greco.
+L'espressione «tallone d'Achille» nasce da un mito greco. | V | 1
+La «vittoria di Pirro» ricorda un re dell'Epiro. | V | 2
+La «vittoria di Pirro» ricorda un re della Macedonia. | F | 3 | Pirro era re dell'Epiro.
+«Passare il Rubicone» ricorda Giulio Cesare. | V | 1
+«Passare il Rubicone» ricorda Annibale. | F | 2 | Ricorda Giulio Cesare, che nel 49 a.C. varcò il fiume con le sue legioni.
+La spada di Damocle era appesa a un crine di cavallo. | V | 3
+Cassandra, nel mito, profetizzava il vero ma nessuno le credeva. | V | 2
+Nel mito, Cassandra era creduta da tutti. | F | 2 | Aveva il dono della profezia, ma nessuno le credeva.
+«Lavarsene le mani» richiama il gesto di Ponzio Pilato. | V | 1
+Il «bacio di Giuda» richiama il tradimento di un apostolo. | V | 1
+Il Cireneo del Vangelo aiutò Gesù a portare la croce. | V | 3
+«Gettare la spugna» viene dal pugilato. | V | 2
+«Gettare la spugna» viene dal tennis. | F | 2 | Viene dal pugilato: l'angolo lanciava la spugna per far arrendere il pugile.
+L'espressione «avvocato del diavolo» nasce dai processi di canonizzazione. | V | 3
+Secondo il mito, l'idea del cavallo di Troia fu di Ulisse. | V | 2
+Il cavallo di Troia fu un dono dei Troiani ai Greci. | F | 1 | Fu un inganno dei Greci: il cavallo fu portato dentro le mura di Troia.
+La locuzione «Alea iacta est» si attribuisce a Giulio Cesare. | V | 2
+La locuzione «Alea iacta est» si attribuisce a Nerone. | F | 3 | Si attribuisce a Giulio Cesare, al passaggio del Rubicone.
+«Mens sana in corpore sano» è una frase del poeta latino Giovenale. | V | 3
+«Panem et circenses» è una frase del poeta latino Giovenale. | V | 3
+«Pecunia non olet» si attribuisce all'imperatore Vespasiano. | V | 3
+«Habemus Papam» si annuncia dopo l'elezione di un nuovo papa. | V | 1
+«Habemus Papam» si pronuncia il giorno di Natale. | F | 1 | Si annuncia dopo l'elezione di un nuovo papa.
+Il motto olimpico «Citius, altius, fortius» significa «più veloce, più alto, più forte». | V | 2
+«L'uovo di Colombo» è una soluzione semplicissima a cui nessuno aveva pensato. | V | 2
+Il Grillo parlante è un personaggio di Pinocchio. | V | 1
+Il gatto e la volpe sono personaggi di Pinocchio. | V | 1
+Il gatto e la volpe sono personaggi di Cenerentola. | F | 1 | Sono i due imbroglioni che ingannano Pinocchio.
+Il proverbio «Chi dorme non piglia pesci» invita a darsi da fare. | V | 1
+Il proverbio «Il silenzio è d'oro» elogia chi parla molto. | F | 1 | Elogia il saper tacere.
+Nel proverbio «Meglio un uovo oggi che una gallina domani» si preferisce il poco sicuro al molto incerto. | V | 1
+Il proverbio «Meglio un uovo oggi che una gallina domani» invita ad aspettare il premio più grande. | F | 1 | Invita invece ad accontentarsi del poco certo di oggi.
+«Una rondine non fa primavera» significa che un solo segno non basta come prova. | V | 1
+«Una rondine non fa primavera» significa che la primavera arriva sempre con le rondini. | F | 2 | Significa che un solo indizio non basta per essere sicuri.
+«L'abito non fa il monaco» significa che l'apparenza può ingannare. | V | 1
+«Squadra che vince non si cambia» invita a non cambiare ciò che funziona. | V | 1
+«Il pesce puzza dalla testa» dice che il degrado comincia dai vertici. | V | 2
+«Né carne né pesce» indica qualcosa di ben definito. | F | 2 | Indica qualcosa di indefinito, senza un carattere chiaro.
+«Fare un quarantotto» ricorda i moti rivoluzionari del 1848. | V | 2
+«Fare un quarantotto» ricorda il movimento studentesco del 1968. | F | 2 | Ricorda il 1848, anno di moti e rivoluzioni.
+La parola «cicerone», per una guida turistica, richiama un oratore romano. | V | 2
+«Il canto del cigno» indica l'ultima opera di un artista. | V | 2
+Il proverbio «La mela non cade lontano dall'albero» parla dei figli che somigliano ai genitori. | V | 1
+«Chi la dura la vince» invita alla perseveranza. | V | 1
+«Moglie e buoi dei paesi tuoi» consiglia di scegliere vicino a casa. | V | 1
+«A caval donato non si guarda in bocca» invita a non criticare un regalo. | V | 1
+«A caval donato non si guarda in bocca» invita a esaminare con cura ogni regalo. | F | 1 | Dice di non criticare ciò che si riceve in dono.
+«Natale con i tuoi, Pasqua con chi vuoi» riguarda le feste in famiglia. | V | 1
+Nel detto «Piove, governo ladro!» si dà la colpa al governo di ogni inconveniente. | V | 2
+Il detto «Mal comune, mezzo gaudio» sostiene che le sventure condivise pesano meno. | V | 2
+Il detto «Mal comune, mezzo gaudio» sostiene che le sventure condivise pesano il doppio. | F | 2 | Sostiene che un male comune a più persone pesa la metà.
+`).map(([q, a, d, why]) => (why ? { q, a: a === 'V', d: Number(d), why } : { q, a: a === 'V', d: Number(d) }));
+
+  const EMOJIS = lines(`
+🐟🏜️ | Sentirsi un pesce fuor d'acqua | 2
+🪡🌾🔍 | Cercare un ago in un pagliaio | 2
+🐊😭 | Piangere lacrime di coccodrillo | 1
+⛽🔥 | Gettare benzina sul fuoco | 1
+💧🔥 | Gettare acqua sul fuoco | 1
+🌙🍯 | Luna di miele | 1
+🐑⚫ | La pecora nera | 1
+🎩🐇 | Tirare fuori un coniglio dal cilindro | 2
+🌪️🥛 | Una tempesta in un bicchiere d'acqua | 3
+🐘🧠 | Avere una memoria da elefante | 1
+🐌🚶 | Andare a passo di lumaca | 1
+🦊🐔🏠 | Una volpe nel pollaio | 2
+🐺🐑👕 | Un lupo travestito da agnello | 2
+⏳💶 | Il tempo è denaro | 1
+🏔️🤰🐭 | La montagna ha partorito un topolino | 3
+🛣️🏛️ | Tutte le strade portano a Roma | 1
+💎🐖 | Gettare perle ai porci | 2
+🔥👤🔥 | Essere tra due fuochi | 3
+🦷🔫 | Essere armato fino ai denti | 3
+🩸🔵 | Sangue blu | 1
+🎲🕯️❌ | Il gioco non vale la candela | 3
+🌳🙈🌲 | Non vedere la foresta per gli alberi | 3
+🍎🌳📏 | La mela non cade lontano dall'albero | 2
+🥚🧺💥 | Rompere le uova nel paniere | 2
+🦁🍖 | Fare la parte del leone | 1
+🍋✊ | Spremere come un limone | 3
+🏳️🙌 | Alzare bandiera bianca | 1
+💣⏰ | Una bomba a orologeria | 2
+🗣️🧱 | Parlare al muro | 2
+🏰☁️ | Fare castelli in aria | 2
+🐸🤢 | Ingoiare il rospo | 2
+🦗🐜 | La cicala e la formica | 1
+🐥🦢 | Il brutto anatroccolo | 1
+🍽️👁️ | Anche l'occhio vuole la sua parte | 2
+🌧️🪣 | Piovere a catinelle | 1
+🥶🐶 | Fa un freddo cane | 1
+🐕🔄 | Come un cane che si morde la coda | 2
+🛏️🐔 | Andare a letto con le galline | 1
+🧠🐔 | Avere un cervello di gallina | 2
+👀🥓 | Avere le fette di prosciutto sugli occhi | 3
+🧂🧠 | Avere sale in zucca | 2
+🦵🏃 | Darsela a gambe | 2
+`).map(([emoji, answer, d]) => ({ emoji, answer, d: Number(d) }));
+
+  const ORDER = lines(`
+Un buon inizio rende più facile il lavoro | Chi ben comincia / è a metà / dell'opera | 2
+L'eccesso di qualsiasi cosa fa male | Il / troppo / stroppia | 1
+Le apparenze ingannano | Non è tutto oro / quel / che / luccica | 1
+Si può arrivare allo stesso risultato per vie diverse | Tutte le strade / portano / a Roma | 1
+Ci si scambia favori | Una mano / lava / l'altra | 1
+La sorte tocca a tutti, a turno | Oggi a me / domani / a te | 2
+Il fine non conta se è buono | Il fine / giustifica / i mezzi | 2
+Chi osa ha più probabilità di riuscire | La fortuna / aiuta / gli audaci | 1
+Chi non pretende troppo è più felice | Chi / si accontenta / gode | 1
+Meglio evitare il male che rimediarvi | Prevenire / è meglio / che curare | 1
+Meglio fare tardi che non fare | Meglio / tardi / che / mai | 1
+Meglio stare soli che in cattiva compagnia | Meglio soli / che / mal accompagnati | 1
+Le menzogne vengono presto scoperte | Le bugie / hanno / le gambe / corte | 1
+Le sfortune si presentano a catena | Le disgrazie / non vengono / mai / sole | 1
+L'opportunità spinge a comportarsi male | L'occasione / fa / l'uomo / ladro | 2
+La pena deve essere uguale al danno | Occhio / per occhio / dente / per dente | 2
+Le sventure condivise pesano meno | Mal comune / mezzo / gaudio | 2
+Non bisogna mai smettere di sperare | La speranza / è l'ultima / a morire | 1
+Il silenzio equivale a un sì | Chi / tace / acconsente | 1
+Le grandi cose richiedono tempo | Roma / non fu fatta / in un giorno | 1
+Ovunque le cose sono più o meno uguali | Tutto / il mondo / è paese | 1
+Dietro una voce c'è sempre qualcosa di vero | Non c'è / fumo / senza / fuoco | 1
+Se una cosa funziona non conviene toccarla | Squadra / che vince / non si cambia | 1
+Impegnati e troverai aiuto | Aiutati / che il ciel / ti aiuta | 1
+Collaborare aiuta a vedere meglio | Quattro occhi / vedono / meglio / di due | 2
+Sbagliare è normale, ripetere l'errore è colpa | Sbagliare / è umano, / perseverare / è diabolico | 2
+Chi è troppo remissivo viene sfruttato | Chi pecora / si fa / il lupo / se la mangia | 2
+Il proprio carattere non si cambia | Chi nasce tondo / non può / morire / quadrato | 2
+Col tempo la verità viene a galla | Il tempo / è / galantuomo | 2
+Dormirci su aiuta a decidere meglio | La notte / porta / consiglio | 1
+Ciò che si promette va mantenuto | Ogni promessa / è / debito | 2
+Adattarsi a una situazione obbligata traendone vantaggio | Fare di / necessità / virtù | 2
+Non fare nulla porta a comportamenti cattivi | L'ozio / è il padre / dei vizi | 2
+La necessità spinge a trovare soluzioni | Il bisogno / aguzza / l'ingegno | 2
+I progetti umani dipendono dal destino | L'uomo / propone / e Dio / dispone | 2
+Dallo scontro di due ne approfitta un terzo | Fra i due litiganti / il terzo / gode | 2
+Chi oggi è in fondo potrà essere in cima | Gli ultimi / saranno / i primi | 2
+I sentimenti non si possono controllare | Al cuor / non si / comanda | 1
+Il lavoro dà dignità alla persona | Il lavoro / nobilita / l'uomo | 1
+Non rimandare gli impegni | Non rimandare / a domani / quel che puoi / fare oggi | 1
+Non intromettersi nelle faccende di coppia | Tra moglie / e marito / non mettere / il dito | 1
+A chi capisce bastano pochi cenni | A buon intenditor / poche / parole | 2
+Senza impegno non si ha diritto ai frutti del lavoro | Chi non lavora / non / mangia | 1
+I figli somigliano ai genitori | Tale padre, / tale / figlio | 1
+Le differenze rendono la vita interessante | Il mondo / è bello / perché / è vario | 1
+Chi usa la violenza ne subisce le conseguenze | Chi di spada / ferisce / di spada / perisce | 2
+Per essere al sicuro bisogna essere pronti a difendersi | Se vuoi / la pace / prepara / la guerra | 3
+Anche l'aspetto estetico conta | Anche l'occhio / vuole / la sua / parte | 2
+`).map(([hint, chunks, d]) => ({ q: `Ricomponi il proverbio che significa: «${hint}»`, items: chunks.split(' / '), d: Number(d) }));
+
+  const SANTI = [
+    { q: 'Metti in ordine di calendario queste feste, dalla prima dell\'anno', items: ['Sant\'Antonio abate', 'San Giuseppe', 'San Giovanni Battista', 'San Martino'], d: 2 },
+    { q: 'Metti in ordine di calendario queste feste, dalla prima dell\'anno', items: ['Candelora', 'San Giuseppe', 'San Lorenzo', 'Santa Lucia'], d: 2 },
+    { q: 'Metti in ordine di calendario queste feste, dalla prima dell\'anno', items: ['Sant\'Antonio abate', 'Candelora', 'San Giuseppe', 'San Giovanni Battista', 'San Lorenzo'], d: 3 },
+    { q: 'Metti in ordine di calendario queste ricorrenze, dalla prima dell\'anno', items: ['San Giovanni Battista', 'San Lorenzo', 'San Martino', 'Santa Lucia', 'Natale'], d: 2 },
+    { q: 'Metti in ordine di calendario queste feste, dalla prima dell\'anno', items: ['Candelora', 'San Valentino', 'San Giuseppe', 'San Giovanni Battista'], d: 2 },
+  ];
+
+  const NUMBERS = lines(`
+Quante camicie si sudano nel modo di dire «sudare ... camicie»? | 7 | 1 | 12 | 0 | camicie | 1
+Quante vite hanno i gatti, secondo il detto italiano? | 7 | 1 | 12 | 0 | vite | 1
+Quanti piccioni si prendono con una fava, nel modo di dire? | 2 | 1 | 6 | 0 | piccioni | 1
+Quanti sono i «giorni della merla»? | 3 | 1 | 10 | 0 | giorni | 2
+In quale cielo si trova, nel modo di dire, chi è felicissimo («essere al ... cielo»)? | 7 | 1 | 12 | 0 |  | 1
+A quale anno rimanda l'espressione «è successo un quarantotto»? | 1848 | 1750 | 1950 | 0 |  | 2
+In quale giorno di febbraio cade la Candelora? | 2 | 1 | 28 | 0 |  | 2
+In quale giorno di novembre cade San Martino? | 11 | 1 | 30 | 0 |  | 2
+In quale giorno di dicembre cade Santa Lucia? | 13 | 1 | 31 | 0 |  | 2
+In quale giorno di agosto cade San Lorenzo? | 10 | 1 | 31 | 0 |  | 1
+In quale giorno di marzo cade San Giuseppe? | 19 | 1 | 31 | 0 |  | 1
+In quale giorno di gennaio cade Sant'Antonio abate? | 17 | 1 | 31 | 0 |  | 2
+In quale giorno di giugno cade San Giovanni Battista? | 24 | 1 | 30 | 0 |  | 2
+Quale numero completa il proverbio «Chi ha fatto trenta può fare ...»? | 31 | 20 | 50 | 0 |  | 1
+Quale numero completa il proverbio «Non c'è due senza ...»? | 3 | 1 | 10 | 0 |  | 1
+Quanti sono i gatti di «eravamo quattro gatti»? | 4 | 1 | 10 | 0 | gatti | 1
+`).map(([q, v, min, max, tol, unit, d]) => ({ q, v: Number(v), min: Number(min), max: Number(max), tol: Number(tol), unit, d: Number(d) }));
+
+  const QUOTES = lines(`
+Il dado è tratto | Giulio Cesare | 1
+Venni, vidi, vinsi | Giulio Cesare | 1
+Pane e giochi del circo | Giovenale | 3
+Mente sana in corpo sano | Giovenale | 3
+Cogli l'attimo | Orazio | 2
+Tutto scorre | Eraclito | 3
+Penso, dunque sono | Cartesio | 2
+Eureka! | Archimede | 1
+L'uomo è un animale sociale | Aristotele | 3
+L'uomo è lupo per l'uomo | Plauto | 3
+La vita è breve, l'arte è lunga | Ippocrate | 3
+`).map(([text, who, d]) => ({ text, who, d: Number(d) }));
+
+  const TYPED_EXTRA = lines(`
+Qual è la risposta tradizionale all'augurio «In bocca al lupo»? | Crepi | Crepi! ; Crepi il lupo | 1
+Quale eroe greco aveva il punto debole nel tallone? | Achille |  | 1
+Come si chiama la donna che, nel mito, aprì il vaso con tutti i mali del mondo? | Pandora |  | 1
+Quale fiume attraversò Giulio Cesare con il suo esercito? | Rubicone |  | 2
+Quale re dell'Epiro diede il nome a una vittoria costosissima? | Pirro |  | 2
+Come si chiama la profetessa troiana che nessuno credeva? | Cassandra |  | 2
+Quale mitico re fu condannato a spingere in eterno un masso fino in cima a un monte? | Sisifo |  | 3
+Quale re della Lidia è proverbialmente ricchissimo? | Creso |  | 3
+Quale oratore romano dà il nome alla guida turistica «cicerone»? | Cicerone | Marco Tullio Cicerone | 2
+Quale animale ha «sette vite» nel detto italiano? | Gatto | Il gatto ; Gatti | 1
+Quale animale ha una memoria proverbiale? | Elefante | L'elefante | 1
+Quale animale è proverbialmente «furbo come una ...»? | Volpe | La volpe | 1
+Come si dice in latino «cogli l'attimo»? | Carpe diem |  | 1
+Come si dice in latino «il dado è tratto»? | Alea iacta est |  | 2
+Come si dice in latino «venni, vidi, vinsi»? | Veni vidi vici | Veni, vidi, vici | 1
+Come si dice in latino «il tempo fugge»? | Tempus fugit |  | 2
+Come si dice in latino «per colpa mia»? | Mea culpa |  | 1
+Verso quale città portano tutte le strade, secondo il proverbio? | Roma |  | 1
+Quale santa si festeggia il 13 dicembre? | Santa Lucia | Lucia | 2
+Quale santo si festeggia il 10 agosto? | San Lorenzo | Lorenzo | 1
+Quale santo si festeggia l'11 novembre? | San Martino | Martino | 2
+Quale santo si festeggia il 19 marzo? | San Giuseppe | Giuseppe | 1
+Quale personaggio di Pinocchio dà consigli morali? | Il Grillo parlante | Grillo parlante ; Grillo | 1
+Il pianto falso si dice «lacrime di ...»? | Coccodrillo | Il coccodrillo | 1
+`).map(([q, a, acc, d]) => ({ q, a, accept: acc ? acc.split(' ; ').map((x) => x.trim()) : [], d: Number(d) }));
+
   (D.pop = D.pop || []).push({
     id: 'plusproverbi', extends: 'proverbi',
     tables: [
@@ -1035,7 +1337,17 @@ Completa il modo di dire: «Passare il _____» | Rubicone | Tevere | Po | Piave 
         },
       },
     ],
-    quiz: [...QUIZ_COMPLETA],
-    typed: COMPLETA.map((r) => ({ q: `Completa il proverbio o modo di dire: «${r.name}»`, a: r.parola, d: r.d })),
+    quiz: [...QUIZ_COMPLETA, ...QUIZ_CULTURA],
+    tf: TF,
+    quotes: QUOTES,
+    quoteText: 'Chi ha pronunciato (o scritto) questa celebre massima?',
+    emojis: EMOJIS,
+    emojiText: 'Quale proverbio o modo di dire raccontano queste emoji?',
+    order: [...ORDER, ...SANTI],
+    numbers: NUMBERS,
+    typed: [
+      ...COMPLETA.map((r) => ({ q: `Completa il proverbio o modo di dire: «${r.name}»`, a: r.parola, d: r.d })),
+      ...TYPED_EXTRA,
+    ],
   });
 })(typeof window !== 'undefined' ? window : globalThis);

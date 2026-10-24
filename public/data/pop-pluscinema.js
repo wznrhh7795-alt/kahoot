@@ -1501,6 +1501,549 @@ Aileen Wuornos in «Monster»|Charlize Theron|3
       },
     },
   });
+  // ===== Tabella 6: saghe e sequel =====
+  tables.push({
+    id: 'saghe',
+    items: rows(['name', 'saga', 'anno', 'd'], `
+La maledizione della prima luna|Pirati dei Caraibi|2003|1
+Il forziere del morto|Pirati dei Caraibi|2006|2
+Ai confini del mondo|Pirati dei Caraibi|2007|2
+Oltre i confini del mare|Pirati dei Caraibi|2011|3
+La vendetta di Salazar|Pirati dei Caraibi|2017|3
+Il mondo perduto|Jurassic Park e Jurassic World|1997|2
+Il regno distrutto|Jurassic Park e Jurassic World|2018|2
+Il dominio|Jurassic Park e Jurassic World|2022|2
+Interceptor|Mad Max|1979|3
+Il guerriero della strada|Mad Max|1981|3
+Oltre la sfera del tuono|Mad Max|1985|3
+Fury Road|Mad Max|2015|1
+Trappola di cristallo|Die Hard|1988|1
+58 minuti per morire|Die Hard|1990|3
+Duri a morire|Die Hard|1995|2
+Vivere o morire|Die Hard|2007|3
+Un buon giorno per morire|Die Hard|2013|3
+Protocollo fantasma|Mission: Impossible|2011|2
+Rogue Nation|Mission: Impossible|2015|2
+Fallout|Mission: Impossible|2018|2
+Dead Reckoning - Parte uno|Mission: Impossible|2023|2
+La ragazza di fuoco|Hunger Games|2013|2
+Il canto della rivolta - Parte 1|Hunger Games|2014|3
+Il canto della rivolta - Parte 2|Hunger Games|2015|3
+La ballata dell'usignolo e del serpente|Hunger Games|2023|3
+New Moon|Twilight|2009|2
+Eclipse|Twilight|2010|2
+Breaking Dawn - Parte 1|Twilight|2011|2
+Breaking Dawn - Parte 2|Twilight|2012|2
+Il leone, la strega e l'armadio|Le cronache di Narnia|2005|2
+Il principe Caspian|Le cronache di Narnia|2008|3
+Il viaggio del veliero|Le cronache di Narnia|2010|3
+`),
+    fields: {
+      saga: {
+        ask: 'A quale saga cinematografica appartiene «{name}»?',
+        who: 'Quale di questi film appartiene alla saga di {value}?',
+        tf: '«{name}» appartiene alla saga di {value}.',
+        odd: 'Trova l\'intruso: quale di questi film NON appartiene alla saga di {value}?',
+      },
+    },
+    numeric: {
+      anno: {
+        ask: 'In che anno è uscito «{name}»?',
+        span: 20, tol: 1, format: 'year', unit: '', step: 1,
+        duel: 'Quale di questi capitoli di saga è uscito prima?', lowerWins: true,
+        order: 'Metti in ordine di uscita questi capitoli di saga, dal primo', gap: 2,
+      },
+    },
+  });
+
+  // ===== Tabella 7: colonne sonore e compositori =====
+  tables.push({
+    id: 'colonne',
+    items: rows(['name', 'compositore', 'd'], `
+Lo squalo|John Williams|1
+Jurassic Park|John Williams|1
+Schindler's List|John Williams|1
+I predatori dell'arca perduta|John Williams|2
+Superman (1978)|John Williams|2
+Mamma, ho perso l'aereo|John Williams|2
+Hook - Capitan Uncino|John Williams|3
+Guerre stellari|John Williams|1
+Incontri ravvicinati del terzo tipo|John Williams|2
+Salvate il soldato Ryan|John Williams|2
+Minority Report|John Williams|3
+Il re leone|Hans Zimmer|1
+Il gladiatore|Hans Zimmer|1
+Inception|Hans Zimmer|1
+Interstellar|Hans Zimmer|1
+Dunkirk|Hans Zimmer|2
+Rain Man|Hans Zimmer|3
+Dune (2021)|Hans Zimmer|2
+Il codice da Vinci|Hans Zimmer|2
+Thelma & Louise|Hans Zimmer|3
+L'uomo d'acciaio|Hans Zimmer|3
+Il buono, il brutto, il cattivo|Ennio Morricone|1
+C'era una volta il West|Ennio Morricone|1
+C'era una volta in America|Ennio Morricone|2
+Mission|Ennio Morricone|2
+Gli intoccabili|Ennio Morricone|2
+Malèna|Ennio Morricone|2
+The Hateful Eight|Ennio Morricone|2
+Per un pugno di dollari|Ennio Morricone|2
+Giù la testa|Ennio Morricone|3
+Il grande silenzio|Ennio Morricone|3
+La leggenda del pianista sull'oceano|Ennio Morricone|2
+Novecento|Ennio Morricone|3
+Indagine su un cittadino al di sopra di ogni sospetto|Ennio Morricone|3
+La strada|Nino Rota|2
+La dolce vita|Nino Rota|1
+8½|Nino Rota|2
+Amarcord|Nino Rota|2
+Il Gattopardo|Nino Rota|2
+Romeo e Giulietta (1968)|Nino Rota|3
+I vitelloni|Nino Rota|3
+Le notti di Cabiria|Nino Rota|3
+Rocco e i suoi fratelli|Nino Rota|3
+Prova d'orchestra|Nino Rota|3
+Psyco|Bernard Herrmann|1
+Quarto potere|Bernard Herrmann|3
+La donna che visse due volte|Bernard Herrmann|2
+Taxi Driver|Bernard Herrmann|2
+Intrigo internazionale|Bernard Herrmann|3
+Fahrenheit 451|Bernard Herrmann|3
+Titanic|James Horner|1
+Braveheart - Cuore impavido|James Horner|2
+Apollo 13|James Horner|2
+Aliens - Scontro finale|James Horner|3
+Avatar|James Horner|2
+A Beautiful Mind|James Horner|3
+Cocoon|James Horner|3
+Willow|James Horner|3
+Momenti di gloria|Vangelis|2
+Blade Runner|Vangelis|2
+1492 - La conquista del paradiso|Vangelis|3
+Alexander|Vangelis|3
+Batman (1989)|Danny Elfman|2
+Edward mani di forbice|Danny Elfman|2
+Beetlejuice - Spiritello porcello|Danny Elfman|3
+Big Fish - Le storie di una vita incredibile|Danny Elfman|3
+La sposa cadavere|Danny Elfman|3
+Men in Black|Danny Elfman|2
+Nightmare Before Christmas|Danny Elfman|2
+Mars Attacks!|Danny Elfman|3
+Il mistero di Sleepy Hollow|Danny Elfman|3
+Ritorno al futuro|Alan Silvestri|1
+Forrest Gump|Alan Silvestri|2
+Chi ha incastrato Roger Rabbit|Alan Silvestri|3
+Contact|Alan Silvestri|3
+Cast Away|Alan Silvestri|3
+Predator|Alan Silvestri|3
+Polar Express|Alan Silvestri|3
+Ready Player One|Alan Silvestri|3
+Il silenzio degli innocenti|Howard Shore|3
+Seven|Howard Shore|3
+Hugo Cabret|Howard Shore|3
+Gangs of New York|Howard Shore|3
+The Aviator|Howard Shore|3
+The Departed - Il bene e il male|Howard Shore|3
+Philadelphia|Howard Shore|3
+La mosca|Howard Shore|3
+Grand Budapest Hotel|Alexandre Desplat|2
+La forma dell'acqua - The Shape of Water|Alexandre Desplat|3
+Il discorso del re|Alexandre Desplat|3
+Argo|Alexandre Desplat|3
+Il curioso caso di Benjamin Button|Alexandre Desplat|3
+La ragazza con l'orecchino di perla|Alexandre Desplat|3
+Fantastic Mr. Fox|Alexandre Desplat|3
+Moonrise Kingdom|Alexandre Desplat|3
+L'isola dei cani|Alexandre Desplat|3
+The Imitation Game|Alexandre Desplat|3
+Le ali della libertà|Thomas Newman|2
+American Beauty|Thomas Newman|2
+Alla ricerca di Nemo|Thomas Newman|2
+Skyfall|Thomas Newman|2
+WALL•E|Thomas Newman|2
+Il miglio verde|Thomas Newman|3
+1917|Thomas Newman|3
+Up|Michael Giacchino|2
+Ratatouille|Michael Giacchino|2
+Gli Incredibili|Michael Giacchino|2
+Inside Out|Michael Giacchino|2
+Coco|Michael Giacchino|3
+The Batman|Michael Giacchino|2
+Rogue One: A Star Wars Story|Michael Giacchino|3
+Doctor Strange|Michael Giacchino|3
+Toy Story|Randy Newman|2
+Monsters & Co.|Randy Newman|3
+Cars|Randy Newman|3
+Il presagio|Jerry Goldsmith|3
+Alien|Jerry Goldsmith|2
+Chinatown|Jerry Goldsmith|3
+Basic Instinct|Jerry Goldsmith|3
+Gremlins|Jerry Goldsmith|3
+Poltergeist|Jerry Goldsmith|3
+Atto di forza|Jerry Goldsmith|3
+L.A. Confidential|Jerry Goldsmith|3
+La mummia|Jerry Goldsmith|3
+Il pianeta delle scimmie (1968)|Jerry Goldsmith|3
+Lawrence d'Arabia|Maurice Jarre|3
+Il dottor Živago|Maurice Jarre|2
+Passaggio in India|Maurice Jarre|3
+Witness - Il testimone|Maurice Jarre|3
+Ghost - Fantasma|Maurice Jarre|3
+L'attimo fuggente|Maurice Jarre|3
+Colazione da Tiffany|Henry Mancini|2
+La pantera rosa|Henry Mancini|1
+Hollywood Party|Henry Mancini|3
+Victor Victoria|Henry Mancini|3
+Sciarada|Henry Mancini|3
+Giorni di vino e rose|Henry Mancini|3
+Missione Goldfinger|John Barry|2
+Dalla Russia con amore|John Barry|2
+Si vive solo due volte|John Barry|3
+La mia Africa|John Barry|2
+Balla coi lupi|John Barry|2
+Un uomo da marciapiede|John Barry|3
+Il leone d'inverno|John Barry|3
+Chaplin|John Barry|3
+La vita è bella|Nicola Piovani|1
+Ginger e Fred|Nicola Piovani|3
+La voce della luna|Nicola Piovani|3
+Intervista|Nicola Piovani|3
+Caro diario|Nicola Piovani|3
+Il postino|Luis Bacalov|1
+Django|Luis Bacalov|2
+Il Vangelo secondo Matteo|Luis Bacalov|3
+Divorzio all'italiana|Carlo Rustichelli|3
+Sedotta e abbandonata|Carlo Rustichelli|3
+L'armata Brancaleone|Carlo Rustichelli|3
+C'eravamo tanto amati|Armando Trovajoli|3
+Una giornata particolare|Armando Trovajoli|3
+Ieri, oggi, domani|Armando Trovajoli|3
+Matrimonio all'italiana|Armando Trovajoli|3
+Profumo di donna (1974)|Armando Trovajoli|3
+Brutti, sporchi e cattivi|Armando Trovajoli|3
+Carrie - Lo sguardo di Satana|Pino Donaggio|3
+Vestito per uccidere|Pino Donaggio|3
+Blow Out|Pino Donaggio|3
+A Venezia... un dicembre rosso shocking|Pino Donaggio|3
+Omicidio a luci rosse|Pino Donaggio|3
+Furyo|Ryuichi Sakamoto|3
+Il tè nel deserto|Ryuichi Sakamoto|3
+Piccolo Buddha|Ryuichi Sakamoto|3
+Il mio vicino Totoro|Joe Hisaishi|2
+La città incantata|Joe Hisaishi|2
+Principessa Mononoke|Joe Hisaishi|2
+Il castello errante di Howl|Joe Hisaishi|2
+Kiki - Consegne a domicilio|Joe Hisaishi|3
+Ponyo sulla scogliera|Joe Hisaishi|3
+Si alza il vento|Joe Hisaishi|3
+Nausicaä della Valle del vento|Joe Hisaishi|3
+La La Land|Justin Hurwitz|1
+Whiplash|Justin Hurwitz|2
+First Man - Il primo uomo|Justin Hurwitz|3
+Babylon|Justin Hurwitz|3
+Lezioni di piano|Michael Nyman|3
+Gattaca|Michael Nyman|3
+Il cuoco, il ladro, sua moglie e l'amante|Michael Nyman|3
+I segreti di Brokeback Mountain|Gustavo Santaolalla|3
+Babel|Gustavo Santaolalla|3
+I diari della motocicletta|Gustavo Santaolalla|3
+21 grammi|Gustavo Santaolalla|3
+Amores perros|Gustavo Santaolalla|3
+Oppenheimer|Ludwig Göransson|2
+Black Panther|Ludwig Göransson|3
+Tenet|Ludwig Göransson|3
+Creed - Nato per combattere|Ludwig Göransson|3
+Bullitt|Lalo Schifrin|3
+Ispettore Callaghan: il caso Scorpio è tuo|Lalo Schifrin|3
+Nick mano fredda|Lalo Schifrin|3
+I magnifici sette|Elmer Bernstein|2
+La grande fuga|Elmer Bernstein|2
+Il buio oltre la siepe|Elmer Bernstein|3
+Ghostbusters|Elmer Bernstein|2
+L'uomo dal braccio d'oro|Elmer Bernstein|3
+Una poltrona per due|Elmer Bernstein|3
+I dieci comandamenti|Elmer Bernstein|3
+L'aereo più pazzo del mondo|Elmer Bernstein|3
+Fargo|Carter Burwell|3
+Il grande Lebowski|Carter Burwell|3
+Non è un paese per vecchi|Carter Burwell|3
+Arizona Junior|Carter Burwell|3
+Crocevia della morte|Carter Burwell|3
+Twilight|Carter Burwell|3
+Requiem for a Dream|Clint Mansell|3
+Il cigno nero|Clint Mansell|3
+Moon|Clint Mansell|3
+The Fountain|Clint Mansell|3
+Fuga di mezzanotte|Giorgio Moroder|3
+Scarface (1983)|Giorgio Moroder|3
+Flashdance|Giorgio Moroder|3
+`),
+    fields: {
+      compositore: {
+        ask: 'Chi ha composto le musiche del film «{name}»?',
+        who: 'Quale di questi film ha le musiche composte da {value}?',
+        tf: 'Le musiche di «{name}» sono di {value}.',
+        odd: 'Trova l\'intruso: quale di questi film NON ha le musiche di {value}?',
+        typed: 'person',
+      },
+    },
+  });
+  // ===== Tabella 8: generi cinematografici =====
+  tables.push({
+    id: 'generi',
+    items: rows(['name', 'genere', 'd'], `
+Mezzogiorno di fuoco|Western|2
+Sentieri selvaggi|Western|2
+Il mucchio selvaggio|Western|2
+Gli spietati|Western|2
+Ombre rosse|Western|2
+I magnifici sette|Western|1
+Un dollaro d'onore|Western|3
+Butch Cassidy|Western|2
+Balla coi lupi|Western|1
+Django Unchained|Western|1
+Il cavaliere della valle solitaria|Western|3
+Tombstone|Western|3
+L'uomo che uccise Liberty Valance|Western|3
+Per un pugno di dollari|Western|1
+C'era una volta il West|Western|1
+Lo chiamavano Trinità|Western|1
+L'esorcista|Horror|1
+Halloween - La notte delle streghe|Horror|1
+Venerdì 13|Horror|1
+Nightmare - Dal profondo della notte|Horror|1
+Scream|Horror|1
+The Ring|Horror|2
+Poltergeist|Horror|2
+Shining|Horror|1
+La notte dei morti viventi|Horror|2
+Non aprite quella porta|Horror|2
+Carrie - Lo sguardo di Satana|Horror|2
+Get Out - Scappa|Horror|2
+Hereditary - Le radici del male|Horror|3
+Rosemary's Baby - Nastro rosso a New York|Horror|2
+Nosferatu il vampiro|Horror|3
+Midsommar - Il villaggio dei dannati|Horror|3
+Metropolis|Fantascienza|2
+Solaris|Fantascienza|3
+Incontri ravvicinati del terzo tipo|Fantascienza|2
+Atto di forza|Fantascienza|2
+RoboCop|Fantascienza|2
+Minority Report|Fantascienza|2
+Arrival|Fantascienza|2
+Gravity|Fantascienza|1
+Ex Machina|Fantascienza|3
+Blade Runner|Fantascienza|1
+Matrix|Fantascienza|1
+Interstellar|Fantascienza|1
+Il quinto elemento|Fantascienza|2
+Ritorno al futuro|Fantascienza|1
+Gattaca - La porta dell'universo|Fantascienza|3
+Moon|Fantascienza|3
+Tron|Fantascienza|2
+Il pianeta delle scimmie (1968)|Fantascienza|2
+Cantando sotto la pioggia|Musical|1
+West Side Story|Musical|1
+Tutti insieme appassionatamente|Musical|1
+Grease|Musical|1
+Chicago|Musical|2
+La La Land|Musical|1
+Mamma Mia!|Musical|1
+Moulin Rouge!|Musical|2
+Cabaret|Musical|2
+Fame - Saranno famosi|Musical|3
+My Fair Lady|Musical|2
+Il violinista sul tetto|Musical|3
+The Rocky Horror Picture Show|Musical|3
+Evita|Musical|3
+Hairspray - Grasso è bello|Musical|3
+The Greatest Showman|Musical|1
+Sette spose per sette fratelli|Musical|3
+Il ponte sul fiume Kwai|Film di guerra|1
+La grande fuga|Film di guerra|1
+Il cacciatore|Film di guerra|2
+Platoon|Film di guerra|1
+Full Metal Jacket|Film di guerra|1
+Salvate il soldato Ryan|Film di guerra|1
+La sottile linea rossa|Film di guerra|2
+Dunkirk|Film di guerra|2
+Fury|Film di guerra|2
+1917|Film di guerra|2
+Black Hawk Down - Black Hawk abbattuto|Film di guerra|2
+Patton, generale d'acciaio|Film di guerra|3
+Quella sporca dozzina|Film di guerra|2
+Il giorno più lungo|Film di guerra|3
+Lettere da Iwo Jima|Film di guerra|3
+Uomini contro|Film di guerra|3
+Apocalypse Now|Film di guerra|1
+Pretty Woman|Commedia romantica|1
+Harry, ti presento Sally|Commedia romantica|1
+C'è posta per te|Commedia romantica|1
+Notting Hill|Commedia romantica|1
+Quattro matrimoni e un funerale|Commedia romantica|2
+Il diario di Bridget Jones|Commedia romantica|1
+Love Actually|Commedia romantica|1
+Il matrimonio del mio migliore amico|Commedia romantica|2
+10 cose che odio di te|Commedia romantica|2
+Se scappi ti sposo|Commedia romantica|3
+Insonnia d'amore|Commedia romantica|2
+Come farsi lasciare in 10 giorni|Commedia romantica|3
+Colazione da Tiffany|Commedia romantica|2
+Il principe cerca moglie|Commedia romantica|3
+`),
+    fields: {
+      genere: {
+        ask: 'A quale genere appartiene il film «{name}»?',
+        who: 'Quale di questi film appartiene al genere «{value}»?',
+        tf: 'Il film «{name}» appartiene al genere «{value}».',
+        odd: 'Trova l\'intruso: quale di questi film NON appartiene al genere «{value}»?',
+      },
+    },
+  });
+  // ===== Tabella 9: nazionalità dei film =====
+  tables.push({
+    id: 'nazionalita',
+    items: rows(['name', 'paese', 'd'], `
+Casablanca|americano|1
+Via col vento|americano|1
+Quarto potere|americano|2
+Rocky|americano|1
+Top Gun|americano|1
+Dirty Dancing|americano|1
+Grease|americano|1
+Ghost - Fantasma|americano|1
+Pretty Woman|americano|1
+Il mago di Oz|americano|1
+Taxi Driver|americano|2
+Forrest Gump|americano|1
+Titanic|americano|1
+Jurassic Park|americano|1
+Mamma, ho perso l'aereo|americano|1
+Ritorno al futuro|americano|1
+Lo squalo|americano|1
+Il padrino|americano|1
+Pulp Fiction|americano|1
+Fight Club|americano|2
+Il silenzio degli innocenti|americano|2
+Gli Incredibili|americano|2
+Fargo|americano|2
+Le ali della libertà|americano|2
+Rain Man|americano|2
+Philadelphia|americano|3
+Scarface (1983)|americano|2
+Rambo|americano|2
+Terminator|americano|1
+Shrek|americano|1
+Mission: Impossible|americano|1
+Armageddon|americano|2
+Cast Away|americano|1
+Speed|americano|2
+Il laureato|americano|2
+Cantando sotto la pioggia|americano|2
+La vita è bella|italiano|1
+Fantozzi|italiano|1
+Amici miei|italiano|1
+Il sorpasso|italiano|2
+Il ciclone|italiano|2
+Johnny Stecchino|italiano|2
+Tre uomini e una gamba|italiano|1
+Ricomincio da tre|italiano|2
+Quo vado?|italiano|1
+Perfetti sconosciuti|italiano|1
+Il postino|italiano|1
+Gomorra|italiano|1
+La grande bellezza|italiano|1
+Romanzo criminale|italiano|2
+Profondo rosso|italiano|2
+Lo chiamavano Jeeg Robot|italiano|2
+Benvenuti al Sud|italiano|2
+Mediterraneo|italiano|2
+Il divo|italiano|3
+Nuovo Cinema Paradiso|italiano|1
+Il Gattopardo|italiano|2
+Ladri di biciclette|italiano|2
+Roma città aperta|italiano|2
+Il favoloso mondo di Amélie|francese|1
+Quasi amici|francese|1
+Léon|francese|2
+Fino all'ultimo respiro|francese|3
+I 400 colpi|francese|3
+Il tempo delle mele|francese|2
+Giù al nord|francese|3
+Non sposate le mie figlie!|francese|3
+L'odio|francese|3
+Mio zio|francese|3
+Un uomo, una donna|francese|3
+The Artist|francese|3
+Quattro matrimoni e un funerale|britannico|2
+Trainspotting|britannico|2
+Full Monty|britannico|2
+Billy Elliot|britannico|2
+Notting Hill|britannico|1
+Il discorso del re|britannico|2
+The Millionaire|britannico|2
+Love Actually|britannico|1
+Il diario di Bridget Jones|britannico|2
+Monty Python e il Sacro Graal|britannico|3
+Il terzo uomo|britannico|3
+Breve incontro|britannico|3
+Le ragazze del calendario|britannico|3
+Paddington|britannico|2
+I sette samurai|giapponese|2
+Rashomon|giapponese|3
+Godzilla (1954)|giapponese|2
+Akira|giapponese|2
+Principessa Mononoke|giapponese|2
+Il castello errante di Howl|giapponese|2
+Ran|giapponese|3
+Kagemusha - L'ombra del guerriero|giapponese|3
+Metropolis|tedesco|2
+Nosferatu il vampiro|tedesco|3
+Das Boot|tedesco|2
+Le vite degli altri|tedesco|2
+Good Bye, Lenin!|tedesco|2
+La caduta|tedesco|2
+Lola corre|tedesco|3
+Il gabinetto del dottor Caligari|tedesco|3
+Volver|spagnolo|2
+Tutto su mia madre|spagnolo|2
+Parla con lei|spagnolo|3
+Mare dentro|spagnolo|3
+Donne sull'orlo di una crisi di nervi|spagnolo|2
+REC|spagnolo|3
+Il settimo sigillo|svedese|2
+Il posto delle fragole|svedese|3
+Fanny e Alexander|svedese|3
+Lasciami entrare|svedese|3
+Persona|svedese|3
+Oldboy|sudcoreano|2
+Train to Busan|sudcoreano|2
+Memorie di un assassino|sudcoreano|3
+The Host|sudcoreano|3
+Festen|danese|3
+Dogville|danese|3
+Melancholia|danese|3
+Il sospetto|danese|3
+Il pranzo di Babette|danese|3
+Mad Max (1979)|australiano|2
+Mr. Crocodile Dundee|australiano|2
+Priscilla - La regina del deserto|australiano|3
+Roma (2018)|messicano|3
+Amores perros|messicano|3
+Y tu mamá también|messicano|3
+Una separazione|iraniano|3
+Il sapore della ciliegia|iraniano|3
+`),
+    fields: {
+      paese: {
+        ask: 'Di quale nazionalità è il film «{name}»?',
+        who: 'Quale di questi film è {value}?',
+        tf: '«{name}» è un film {value}.',
+        odd: 'Trova l\'intruso: quale di questi film NON è {value}?',
+      },
+    },
+  });
   (D.pop = D.pop || []).push({
     id: 'pluscinema', extends: 'cinema',
     quiz, tf, tables, quotes,
