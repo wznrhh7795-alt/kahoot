@@ -58,7 +58,7 @@
     ['Passare la notte in bianco', 1, 'Non dormire per tutta la notte'],
     ['Essere sulla cresta dell\'onda', 2, 'Essere al culmine del successo'],
     ['Buttarsi a capofitto', 2, 'Lanciarsi senza riflettere in un\'impresa'],
-    ['Stare sulle spine', 2, 'Essere in grande ansia, a disagio'],
+    ['Stare sulle spine', 2, 'Essere in ansia in attesa di qualcosa'],
     ['Avere le farfalle nello stomaco', 1, 'Provare l\'emozione dell\'innamoramento'],
     ['Cavarsela per il rotto della cuffia', 2, 'Cavarsela per un soffio'],
     ['Prendere il toro per le corna', 2, 'Affrontare con coraggio un problema'],
@@ -69,7 +69,7 @@
     ['Entrare da un orecchio e uscire dall\'altro', 1, 'Dimenticare subito ciò che si è sentito'],
     ['Essere uno stinco di santo', 3, 'Essere una persona irreprensibile'],
     ['Essere come cane e gatto', 1, 'Litigare di continuo'],
-    ['Fare il filo a qualcuno', 2, 'Corteggiarlo'],
+    ['Fare il filo a qualcuno', 2, 'Corteggiare qualcuno'],
     ['Avere fegato', 1, 'Avere coraggio'],
     ['Avere sale in zucca', 1, 'Avere buon senso'],
     ['Mettere la pulce nell\'orecchio', 2, 'Insinuare un dubbio'],
@@ -85,19 +85,17 @@
     ['Alzare il gomito', 1, 'Bere troppo alcol'],
     ['Rimanere di sasso', 1, 'Restare immobile per lo stupore'],
     ['Essere un libro aperto', 2, 'Essere una persona facile da capire'],
-    ['Avere i nervi a fior di pelle', 2, 'Essere molto nervoso'],
+    ['Avere i nervi a fior di pelle', 2, 'Essere sul punto di scattare per l\'irritazione'],
     ['Essere un bastian contrario', 2, 'Contraddire sempre gli altri'],
     ['Il gioco non vale la candela', 2, 'Il risultato non ripaga la fatica'],
     ['Cercare il pelo nell\'uovo', 1, 'Essere pignolo'],
-    ['Cadere in piedi', 2, 'Uscire indenne da una situazione difficile'],
-    ['Mettersi nei panni di qualcuno', 1, 'Immedesimarsi in lui'],
+    ['Mettersi nei panni di qualcuno', 1, 'Immedesimarsi nella situazione di un altro'],
     ['Scoprire l\'acqua calda', 1, 'Dire una cosa ovvia come se fosse una novità'],
     ['Fare scena muta', 2, 'Non riuscire a rispondere'],
     ['Tenere banco', 2, 'Dominare la conversazione'],
     ['Una goccia nel mare', 2, 'Un contributo insignificante'],
     ['Avere le spalle coperte', 2, 'Avere protezioni e appoggi'],
     ['Andare a pennello', 2, 'Calzare o andare perfettamente'],
-    ['Prendere fischi per fiaschi', 2, 'Confondere una cosa con un\'altra'],
     ['Qui gatta ci cova', 1, 'C\'è sotto qualcosa di losco'],
     ['Tutto fa brodo', 2, 'Ogni cosa, anche modesta, può servire'],
     ['Come un cane che si morde la coda', 2, 'Un circolo vizioso in cui il problema si ripete'],
@@ -107,7 +105,6 @@
     ['Mandare a monte', 2, 'Far saltare un progetto'],
     ['Fare il callo', 2, 'Abituarsi a qualcosa di sgradevole'],
     ['Fare una levataccia', 1, 'Svegliarsi molto presto'],
-    ['Giocare a carte scoperte', 2, 'Agire con trasparenza'],
     ['Essere un pozzo di scienza', 1, 'Essere una persona molto colta'],
     ['Avere un cuore d\'oro', 1, 'Essere molto generoso'],
     ['A bizzeffe', 2, 'In grande quantità'],
@@ -135,7 +132,6 @@
     ['Fare buon viso a cattivo gioco', 3, 'Accettare con serenità una situazione sgradevole'],
     ['Fare tappezzeria', 2, 'Restare in disparte a una festa senza ballare'],
     ['Fare le ore piccole', 1, 'Andare a letto molto tardi'],
-    ['Battere la fiacca', 2, 'Lavorare con poca voglia'],
     ['Battere cassa', 3, 'Chiedere soldi'],
     ['Vedere le stelle', 2, 'Provare un dolore fortissimo'],
     ['Toccare ferro', 1, 'Fare un gesto scaramantico'],
@@ -157,7 +153,7 @@
     ['Essere nel pallone', 2, 'Essere confuso e disorientato'],
     ['Vendere la pelle dell\'orso prima di averlo ucciso', 2, 'Dare per certo ciò che non è ancora avvenuto'],
     ['Salvare capra e cavoli', 2, 'Conciliare due interessi opposti'],
-    ['Spezzare una lancia a favore di qualcuno', 3, 'Difenderlo'],
+    ['Spezzare una lancia a favore di qualcuno', 3, 'Difendere qualcuno'],
     ['Rompere gli indugi', 3, 'Decidersi finalmente ad agire'],
     ['Mettere in piazza', 2, 'Rendere pubblico ciò che era privato'],
     ['Fare l\'avvocato del diavolo', 2, 'Sostenere la tesi opposta per metterla alla prova'],
@@ -168,7 +164,17 @@
     ['Essere un Ercole', 2, 'Essere fortissimo'],
     ['Il bacio di Giuda', 2, 'Un tradimento mascherato da gesto d\'affetto'],
     ['Una Babele', 2, 'Un luogo di grande confusione di voci e lingue'],
+    ['A malincuore', 1, 'Contro voglia, con dispiacere'],
+    ['A più non posso', 2, 'Con tutte le proprie forze'],
+    ['A braccio', 2, 'Senza preparazione, improvvisando'],
   ].map(([name, d, significato]) => ({ name, d, significato }));
+
+  const AVVERBIALI = new Set(['A bizzeffe', 'Con le mani nel sacco', 'A denti stretti', 'Di punto in bianco', 'A occhio e croce', 'Ogni morte di papa', 'Alla chetichella', 'Per filo e per segno', 'In quattro e quattr\'otto', 'Sul più bello', 'A malincuore', 'A più non posso', 'A braccio', 'Dalla padella alla brace']);
+  const NOMINALI = new Set(['Il tallone d\'Achille', 'Colpo di fulmine', 'Una mosca bianca', 'In bocca al lupo', 'Piove sul bagnato', 'Tra l\'incudine e il martello', 'Una vittoria di Pirro', 'La spada di Damocle', 'Un lavoro da certosino', 'Una fatica di Sisifo', 'Una goccia nel mare', 'Il gioco non vale la candela', 'Una Babele', 'Un\'odissea', 'Il bacio di Giuda', 'Qui gatta ci cova', 'Tutto fa brodo', 'Come un cane che si morde la coda', 'Acqua in bocca!']);
+  const MODI_VERBALI = MODI.filter((m) => !AVVERBIALI.has(m.name) && !NOMINALI.has(m.name));
+  const MODI_AVV = MODI.filter((m) => AVVERBIALI.has(m.name));
+  const MODI_NOM = MODI.filter((m) => NOMINALI.has(m.name));
+
   // Tabelle compatte: ogni riga «nome | difficoltà | valore».
   const rows = (text, key) => text.trim().split('\n').map((l) => {
     const [name, d, value] = l.split(' | ').map((x) => x.trim());
@@ -459,7 +465,7 @@ Rompere le uova nel paniere | 1 | Uovo
 Essere pieno come un uovo | 2 | Uovo
 Andare liscio come l'olio | 2 | Olio
 Gettare olio sul fuoco | 2 | Olio
-Avere olio di gomito | 1 | Olio
+Olio di gomito | 1 | Olio
 Una luna di miele | 1 | Miele
 Dolce come il miele | 1 | Miele
 Piangere sul latte versato | 1 | Latte
@@ -753,11 +759,8 @@ Essere in alto _____ | 2 | mare
 Avere il pollice _____ | 1 | verde
 Fare il passo più lungo della _____ | 1 | gamba
 Avere un asso nella _____ | 2 | manica
-Gettare la _____ | 1 | spugna
-Mangiarsi le _____ | 2 | mani
 Passare la notte in _____ | 1 | bianco
 Essere nato con la _____ | 1 | camicia
-Tagliare la _____ | 1 | corda
 Costare un occhio della _____ | 1 | testa
 Prendere il toro per le _____ | 2 | corna
 Cadere dalle _____ | 1 | nuvole
@@ -768,13 +771,11 @@ Scoprire l'acqua _____ | 1 | calda
 Tenere il piede in due _____ | 2 | staffe
 Fare i conti senza l'_____ | 2 | oste
 Essere un osso _____ | 2 | duro
-Avere le mani _____ | 1 | bucate
 Avere sale in _____ | 1 | zucca
 Fare un buco nell'_____ | 1 | acqua
 Lavarsene le _____ | 1 | mani
 Mettere il dito nella _____ | 2 | piaga
 Cercare il pelo nell'_____ | 1 | uovo
-Parlare a _____ | 2 | vanvera
 Vendere la pelle dell'orso prima di averlo _____ | 2 | ucciso
 Salvare capra e _____ | 1 | cavoli
 Essere al settimo _____ | 1 | cielo
@@ -790,8 +791,6 @@ Il gioco non vale la _____ | 2 | candela
 Gettare perle ai _____ | 2 | porci
 Avere le farfalle nello _____ | 1 | stomaco
 Essere come cane e _____ | 1 | gatto
-Chiudere un _____ | 1 | occhio
-Alzare il _____ | 1 | gomito
 Prendere fischi per _____ | 2 | fiaschi
 Tirare l'acqua al proprio _____ | 2 | mulino
 Rompere le uova nel _____ | 2 | paniere
@@ -799,16 +798,13 @@ Rimanere con un pugno di _____ | 2 | mosche
 Fare la parte del _____ | 1 | leone
 Essere sulla cresta dell'_____ | 2 | onda
 Stare con le mani in _____ | 1 | mano
-Mettere la mano sul _____ | 1 | fuoco
 Navigare in cattive _____ | 2 | acque
-Essere nel _____ | 2 | pallone
 Spezzare una _____ | 3 | lancia
 Salire sul carro del _____ | 2 | vincitore
 Prendere due piccioni con una _____ | 1 | fava
 Essere in un mare di _____ | 1 | guai
 Arrampicarsi sugli _____ | 1 | specchi
 Aprire il vaso di _____ | 2 | Pandora
-Passare il _____ | 2 | Rubicone
 Una vittoria di _____ | 2 | Pirro
 La spada di _____ | 2 | Damocle
 Il filo d'_____ | 2 | Arianna
@@ -817,6 +813,12 @@ L'uovo di _____ | 2 | Colombo
 Il bacio di _____ | 1 | Giuda
 Tra Scilla e _____ | 2 | Cariddi
 `, 'parola');
+  // Varianti accettate nelle risposte scritte.
+  const ACCETTA = {
+    'Tenere il piede in due _____': ['scarpe'],
+    'Il gioco non vale la _____': ['pena'],
+    'Dopo la tempesta viene il _____': ['sereno'],
+  };
 
   // Altri formati: righe «campo | campo | …».
   const lines = (text) => text.trim().split('\n').map((l) => l.split(' | ').map((x) => x.trim()));
@@ -952,7 +954,7 @@ Qual è la risposta tradizionale all'augurio «In bocca al lupo»? | Crepi! | Ma
 Chi, secondo la leggenda, aprì il vaso da cui uscirono tutti i mali del mondo? | Pandora | Elena | Atena | Circe | 1
 Che cosa nascondeva il grande cavallo di legno portato dentro le mura di Troia? | Soldati greci | Il tesoro di Priamo | Armi per i Troiani | Un dono di Zeus | 1
 Qual è, nel mito, il punto debole di Achille? | Il tallone | Il ginocchio | La schiena | Il collo | 1
-Quale fiume attraversò Giulio Cesare con il suo esercito, secondo la tradizione «il dado è tratto»? | Rubicone | Tevere | Po | Arno | 2
+Quale fiume varcò Giulio Cesare con le sue legioni pronunciando «Il dado è tratto»? | Rubicone | Tevere | Po | Arno | 2
 Come si chiamava il tiranno di Siracusa legato alla spada di Damocle? | Dionisio | Gerone | Agatocle | Archimede | 3
 Contro chi combatté Pirro nelle battaglie che hanno dato nome alla «vittoria di Pirro»? | I Romani | I Persiani | I Galli | Gli Egizi | 2
 Chi si lavò le mani davanti alla folla prima della condanna di Gesù? | Ponzio Pilato | Erode | Caifa | Giuseppe d'Arimatea | 2
@@ -971,7 +973,7 @@ Che cosa doveva spingere Sisifo fino in cima al monte? | Un masso | Un carro | U
 Da quale sport nasce l'espressione «gettare la spugna»? | Pugilato | Calcio | Scherma | Nuoto | 2
 Da quale gioco deriva l'espressione «avere un asso nella manica»? | Giochi di carte | Scacchi | Dadi | Biliardo | 1
 Quale pianta c'entra con l'espressione «dormire sugli allori»? | Alloro | Ulivo | Quercia | Palma | 1
-Quale pianta è simbolo di pace nell'espressione «porgere il ramo...»? | Ulivo | Alloro | Quercia | Palma | 1
+Il ramo di quale pianta è simbolo di pace? | Ulivo | Alloro | Quercia | Palma | 1
 Che cosa non si deve gettare ai porci, secondo il detto? | Le perle | Le rose | Il pane | Le monete | 1
 Che cosa significa «fare le nozze con i fichi secchi»? | Voler fare le cose in grande con mezzi scarsi | Sposarsi in autunno | Invitare pochi parenti | Fare un banchetto vegetariano | 2
 Che cos'è «la ciliegina sulla torta»? | Il tocco finale che completa qualcosa di già bello | Una piccola delusione | Un errore da nascondere | Un dolce troppo dolce | 1
@@ -1011,6 +1013,13 @@ Quale santa si festeggia il 13 dicembre? | Santa Lucia | Santa Barbara | Sant'Ag
 Quale santo si festeggia il 10 agosto, la notte delle stelle cadenti? | San Lorenzo | San Pietro | San Giovanni | Sant'Antonio | 1
 Quale santo si festeggia il 19 marzo, giorno della festa del papà? | San Giuseppe | San Francesco | San Pietro | San Giovanni | 1
 Quale santo, protettore degli animali, si festeggia il 17 gennaio? | Sant'Antonio abate | San Francesco | San Martino | San Biagio | 2
+Completa il detto: «A Carnevale ogni scherzo _____» | vale | basta | piace | costa | 1
+Quale mese è definito «pazzerello» dal proverbio? | Marzo | Aprile | Maggio | Febbraio | 1
+Quale personaggio biblico è proverbiale per la pazienza? | Giobbe | Mosè | Noè | Davide | 2
+Quale personaggio biblico è proverbiale per la forza, perduta con il taglio dei capelli? | Sansone | Golia | Davide | Giosuè | 1
+Quale personaggio biblico è proverbiale per la lunga vita? | Matusalemme | Giobbe | Mosè | Abramo | 1
+Che cos'è il «pomo d'Adamo»? | La sporgenza della laringe sul collo | Un tipo di mela | Un osso del polso | Una parte del ginocchio | 1
+Che cos'è «il canto delle sirene»? | Una lusinga ingannevole a cui è difficile resistere | Una canzone marinara | Un coro di bambini | Un segnale d'allarme | 2
 `);
 
   const TF = lines(`
@@ -1082,6 +1091,9 @@ Il proverbio «La mela non cade lontano dall'albero» parla dei figli che somigl
 Nel detto «Piove, governo ladro!» si dà la colpa al governo di ogni inconveniente. | V | 2
 Il detto «Mal comune, mezzo gaudio» sostiene che le sventure condivise pesano meno. | V | 2
 Il detto «Mal comune, mezzo gaudio» sostiene che le sventure condivise pesano il doppio. | F | 2 | Sostiene che un male comune a più persone pesa la metà.
+Secondo la tradizione, le rondini che volano basse annunciano pioggia. | V | 2
+Matusalemme è il personaggio biblico proverbiale per la lunga vita. | V | 1
+Sansone, nella Bibbia, perse la sua forza quando gli furono tagliati i capelli. | V | 1
 `).map(([q, a, d, why]) => (why ? { q, a: a === 'V', d: Number(d), why } : { q, a: a === 'V', d: Number(d) }));
 
   const EMOJIS = lines(`
@@ -1136,11 +1148,11 @@ Le apparenze ingannano | Non è tutto oro / quel / che / luccica | 1
 Si può arrivare allo stesso risultato per vie diverse | Tutte le strade / portano / a Roma | 1
 Ci si scambia favori | Una mano / lava / l'altra | 1
 La sorte tocca a tutti, a turno | Oggi a me / domani / a te | 2
-Il fine non conta se è buono | Il fine / giustifica / i mezzi | 2
+Per un buon obiettivo ogni strumento è lecito | Il fine / giustifica / i mezzi | 2
 Chi osa ha più probabilità di riuscire | La fortuna / aiuta / gli audaci | 1
 Chi non pretende troppo è più felice | Chi / si accontenta / gode | 1
 Meglio evitare il male che rimediarvi | Prevenire / è meglio / che curare | 1
-Meglio fare tardi che non fare | Meglio / tardi / che / mai | 1
+È meglio fare una cosa in ritardo che non farla | Meglio / tardi / che / mai | 1
 Meglio stare soli che in cattiva compagnia | Meglio soli / che / mal accompagnati | 1
 Le menzogne vengono presto scoperte | Le bugie / hanno / le gambe / corte | 1
 Le sfortune si presentano a catena | Le disgrazie / non vengono / mai / sole | 1
@@ -1245,19 +1257,39 @@ Quale santo si festeggia il 10 agosto? | San Lorenzo | Lorenzo | 1
 Quale santo si festeggia l'11 novembre? | San Martino | Martino | 2
 Quale santo si festeggia il 19 marzo? | San Giuseppe | Giuseppe | 1
 Quale personaggio di Pinocchio dà consigli morali? | Il Grillo parlante | Grillo parlante ; Grillo | 1
-Il pianto falso si dice «lacrime di ...»? | Coccodrillo | Il coccodrillo | 1
+Di quale animale sono le «lacrime» che indicano un pianto falso? | Coccodrillo | Il coccodrillo | 1
 `).map(([q, a, acc, d]) => ({ q, a, accept: acc ? acc.split(' ; ').map((x) => x.trim()) : [], d: Number(d) }));
 
   (D.pop = D.pop || []).push({
     id: 'plusproverbi', extends: 'proverbi',
     tables: [
       {
-        id: 'modi', items: MODI,
+        id: 'modi', items: MODI_VERBALI,
         fields: {
           significato: {
             ask: 'Che cosa significa il modo di dire «{name}»?',
             who: 'Quale modo di dire significa «{value}»?',
             tf: 'Il modo di dire «{name}» significa «{value}».',
+          },
+        },
+      },
+      {
+        id: 'avverbiali', items: MODI_AVV,
+        fields: {
+          significato: {
+            ask: 'Che cosa significa la locuzione «{name}»?',
+            who: 'Quale locuzione significa «{value}»?',
+            tf: 'La locuzione «{name}» significa «{value}».',
+          },
+        },
+      },
+      {
+        id: 'nominali', items: MODI_NOM,
+        fields: {
+          significato: {
+            ask: 'Che cosa significa l\'espressione «{name}»?',
+            who: 'Quale espressione significa «{value}»?',
+            tf: 'L\'espressione «{name}» significa «{value}».',
           },
         },
       },
@@ -1346,7 +1378,7 @@ Il pianto falso si dice «lacrime di ...»? | Coccodrillo | Il coccodrillo | 1
     order: [...ORDER, ...SANTI],
     numbers: NUMBERS,
     typed: [
-      ...COMPLETA.map((r) => ({ q: `Completa il proverbio o modo di dire: «${r.name}»`, a: r.parola, d: r.d })),
+      ...COMPLETA.map((r) => ({ q: `Completa il proverbio o modo di dire: «${r.name}»`, a: r.parola, accept: ACCETTA[r.name] || [], d: r.d })),
       ...TYPED_EXTRA,
     ],
   });
