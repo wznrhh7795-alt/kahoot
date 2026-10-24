@@ -818,6 +818,134 @@ Il bacio di _____ | 1 | Giuda
 Tra Scilla e _____ | 2 | Cariddi
 `, 'parola');
 
+  // Altri formati: righe «campo | campo | …».
+  const lines = (text) => text.trim().split('\n').map((l) => l.split(' | ').map((x) => x.trim()));
+  const mkQuiz = (text) => lines(text).map(([q, a, w1, w2, w3, d]) => ({ q, a, wrong: [w1, w2, w3], d: Number(d) }));
+
+  // Completamenti a scelta multipla (proverbi, detti stagionali e modi di dire).
+  const QUIZ_COMPLETA = mkQuiz(`
+Completa il proverbio: «Chi ben comincia è a metà dell'_____» | opera | impresa | strada | giornata | 2
+Completa il proverbio: «Il troppo _____» | stroppia | stanca | sazia | annoia | 1
+Completa il proverbio: «Chi troppo vuole nulla _____» | stringe | beve | dice | gode | 2
+Completa il proverbio: «L'appetito vien _____» | mangiando | digiunando | cucinando | aspettando | 1
+Completa il proverbio: «Tutte le strade portano a _____» | Roma | Parigi | Gerusalemme | Atene | 1
+Completa il proverbio: «A mali estremi, estremi _____» | rimedi | dolori | pensieri | consigli | 2
+Completa il proverbio: «Non è tutto oro quel che _____» | luccica | pesa | costa | vale | 1
+Completa il proverbio: «Ogni medaglia ha il suo _____» | rovescio | valore | peso | nastro | 2
+Completa il proverbio: «Una mano lava l'_____» | altra | acqua | amico | stessa | 1
+Completa il proverbio: «Chi di spada ferisce, di spada _____» | perisce | guarisce | vince | parla | 2
+Completa il proverbio: «Tale padre, tale _____» | figlio | uomo | maestro | nonno | 1
+Completa il proverbio: «La notte porta _____» | consiglio | fortuna | sonno | paura | 1
+Completa il proverbio: «Chi nasce tondo non può morire _____» | quadrato | rotondo | piccolo | triangolare | 2
+Completa il proverbio: «Mal comune, mezzo _____» | gaudio | dolore | sollievo | guaio | 2
+Completa il proverbio: «Chi la dura la _____» | vince | spunta | sa | cura | 1
+Completa il proverbio: «Dopo la tempesta viene il _____» | sereno | caldo | gelo | vento | 1
+Completa il proverbio: «Tutto è bene quel che finisce _____» | bene | presto | male | subito | 1
+Completa il proverbio: «Meglio tardi che _____» | mai | prima | poco | male | 1
+Completa il proverbio: «Meglio soli che mal _____» | accompagnati | consigliati | educati | pagati | 1
+Completa il proverbio: «Le bugie hanno le gambe _____» | corte | lunghe | veloci | storte | 1
+Completa il proverbio: «A buon intenditor poche _____» | parole | mosse | ore | monete | 2
+Completa il proverbio: «Le disgrazie non vengono mai _____» | sole | tardi | piano | da lontano | 1
+Completa il proverbio: «L'occasione fa l'uomo _____» | ladro | forte | saggio | ricco | 1
+Completa il proverbio: «Chi tace _____» | acconsente | dorme | sbaglia | ascolta | 1
+Completa il proverbio: «Roma non fu fatta in un _____» | giorno | anno | secolo | momento | 1
+Completa il proverbio: «L'abitudine è una seconda _____» | natura | pelle | casa | vita | 2
+Completa il proverbio: «Il bisogno aguzza l'_____» | ingegno | appetito | ago | dente | 2
+Completa il proverbio: «Fare di necessità _____» | virtù | scelta | dovere | fortuna | 2
+Completa il proverbio: «Sbagliare è umano, perseverare è _____» | diabolico | stupido | normale | utile | 2
+Completa il proverbio: «Se vuoi la pace, prepara la _____» | guerra | tavola | festa | bandiera | 2
+Completa il proverbio: «Quattro occhi vedono meglio di _____» | due | uno | sei | tre | 2
+Completa il proverbio: «Un bel tacer non fu mai _____» | scritto | detto | pagato | perso | 3
+Completa il proverbio: «Il pesce puzza dalla _____» | testa | coda | pancia | lisca | 2
+Completa il proverbio: «Piove, governo _____» | ladro | cattivo | lento | assente | 2
+Completa il proverbio: «Per un punto Martin perse la _____» | cappa | testa | voce | strada | 3
+Completa il proverbio: «Non c'è fumo senza _____» | fuoco | camino | vento | cenere | 1
+Completa il proverbio: «Quando si chiude una porta si apre un _____» | portone | portico | balcone | cancello | 2
+Completa il proverbio: «Squadra che vince non si _____» | cambia | batte | ferma | gioca | 1
+Completa il proverbio: «Aiutati che il ciel ti _____» | aiuta | guarda | salva | ascolta | 2
+Completa il proverbio: «L'erba cattiva non muore _____» | mai | prima | presto | d'inverno | 2
+Completa il proverbio: «Anche l'occhio vuole la sua _____» | parte | ragione | ora | cena | 2
+Completa il proverbio: «Chi pecora si fa, il lupo se la _____» | mangia | porta | prende | lascia | 2
+Completa il proverbio: «Tutto il mondo è _____» | paese | casa | uguale | piccolo | 1
+Completa il proverbio: «Occhio per occhio, dente per _____» | dente | bocca | mano | morso | 1
+Completa il proverbio: «Chi è senza peccato scagli la prima _____» | pietra | freccia | parola | lancia | 2
+Completa il proverbio: «La speranza è l'ultima a _____» | morire | partire | arrivare | tornare | 1
+Completa il proverbio: «Con il tempo e con la paglia maturano le _____» | nespole | mele | pere | fragole | 3
+Completa il proverbio: «La gallina che canta ha fatto l'_____» | uovo | pulcino | nido | alba | 3
+Completa il proverbio: «Il diavolo fa le pentole ma non i _____» | coperchi | manici | fornelli | tegami | 2
+Completa il proverbio: «Chi va a letto senza cena tutta la notte si _____» | dimena | ammala | sazia | sveglia | 3
+Completa il proverbio: «Cosa fatta capo _____» | ha | fa | vuole | tiene | 2
+Completa il proverbio: «Dagli amici mi guardi Iddio, che dai nemici mi guardo _____» | io | bene | da solo | meglio | 3
+Completa il proverbio: «Il mondo è fatto a _____» | scale | pezzi | strati | cerchi | 3
+Completa il proverbio: «Il mondo è bello perché è _____» | vario | grande | tondo | nostro | 1
+Completa il proverbio: «Dio li fa e poi li _____» | accoppia | benedice | disfa | guarda | 2
+Completa il detto: «Cielo a pecorelle, acqua a _____» | catinelle | secchiate | brocche | tinozze | 1
+Completa il detto: «Rosso di mattina, la _____ è vicina» | pioggia | neve | notte | bufera | 1
+Completa il detto: «Marzo pazzerello, guarda il sole e prendi l'_____» | ombrello | cappello | mantello | ventaglio | 1
+Completa il detto: «Aprile, dolce _____» | dormire | partire | sbocciare | pensare | 2
+Completa il detto: «A San Martino ogni mosto diventa _____» | vino | aceto | olio | sidro | 2
+Completa il detto: «Sotto la neve pane, sotto la pioggia _____» | fame | festa | sete | freddo | 2
+Completa il detto: «Per Santa Lucia il giorno più _____ che ci sia» | corto | lungo | caldo | luminoso | 2
+Completa il modo di dire: «Avere un diavolo per _____» | capello | occhio | dito | naso | 2
+Completa il modo di dire: «Fare orecchie da _____» | mercante | cuoco | pastore | marinaio | 1
+Completa il modo di dire: «Mettere la pulce nell'_____» | orecchio | occhio | armadio | naso | 2
+Completa il modo di dire: «Dormire sugli _____» | allori | ulivi | aranci | cuscini | 2
+Completa il modo di dire: «Menare il can per l'_____» | aia | strada | piazza | porta | 2
+Completa il modo di dire: «Cercare un ago in un _____» | pagliaio | cassetto | pozzo | fienile | 1
+Completa il modo di dire: «Mettere il carro davanti ai _____» | buoi | cavalli | muli | asini | 2
+Completa il modo di dire: «Tirare il sasso e nascondere la _____» | mano | testa | faccia | pietra | 2
+Completa il modo di dire: «Avere la coda di _____» | paglia | volpe | fieno | cavallo | 2
+Completa il modo di dire: «Essere in alto _____» | mare | monte | cielo | volo | 2
+Completa il modo di dire: «Fare il passo più lungo della _____» | gamba | strada | scarpa | coperta | 1
+Completa il modo di dire: «Avere un asso nella _____» | manica | tasca | borsa | scarpa | 1
+Completa il modo di dire: «Mangiarsi le _____» | mani | scarpe | orecchie | guance | 2
+Completa il modo di dire: «Passare la notte in _____» | bianco | nero | chiaro | rosso | 1
+Completa il modo di dire: «Essere nato con la _____» | camicia | cuffia | spilla | corona | 1
+Completa il modo di dire: «Prendere il toro per le _____» | corna | briglie | zampe | redini | 2
+Completa il modo di dire: «Cadere dalle _____» | nuvole | scale | braccia | tasche | 1
+Completa il modo di dire: «Piangere lacrime di _____» | coccodrillo | serpente | elefante | iena | 1
+Completa il modo di dire: «Sputare il _____» | rospo | serpente | gambero | grillo | 2
+Completa il modo di dire: «Scoprire l'acqua _____» | calda | fresca | santa | pura | 1
+Completa il modo di dire: «Tenere il piede in due _____» | staffe | stanze | piazze | porte | 2
+Completa il modo di dire: «Fare i conti senza l'_____» | oste | cuoco | notaio | sindaco | 2
+Completa il modo di dire: «Essere un osso _____» | duro | grosso | secco | vecchio | 2
+Completa il modo di dire: «Avere le mani _____» | bucate | rotte | gonfie | storte | 1
+Completa il modo di dire: «Avere sale in _____» | zucca | bocca | tasca | casa | 1
+Completa il modo di dire: «Fare un buco nell'_____» | acqua | sabbia | muro | cielo | 1
+Completa il modo di dire: «Mettere il dito nella _____» | piaga | torta | porta | pentola | 1
+Completa il modo di dire: «Cercare il pelo nell'_____» | uovo | acqua | occhio | olio | 1
+Completa il modo di dire: «Salvare capra e _____» | cavoli | lupi | pecore | cavalli | 1
+Completa il modo di dire: «Essere al settimo _____» | cielo | piano | mare | giorno | 1
+Completa il modo di dire: «Mettere i bastoni fra le _____» | ruote | gambe | dita | porte | 1
+Completa il modo di dire: «Andare a letto con le _____» | galline | stelle | pecore | lepri | 1
+Completa il modo di dire: «Dalla padella alla _____» | brace | cenere | fiamma | pentola | 1
+Completa il modo di dire: «Fare buon viso a cattivo _____» | gioco | tempo | sapore | umore | 3
+Completa il modo di dire: «Fare di tutta l'erba un _____» | fascio | mazzo | prato | fiore | 2
+Completa il modo di dire: «Sudare sette _____» | camicie | volte | ore | giacche | 1
+Completa il modo di dire: «Gettare perle ai _____» | porci | cani | cavalli | polli | 2
+Completa il modo di dire: «Avere le farfalle nello _____» | stomaco | cervello | zaino | cappello | 1
+Completa il modo di dire: «Essere come cane e _____» | gatto | lupo | volpe | topo | 1
+Completa il modo di dire: «Prendere due piccioni con una _____» | fava | pietra | rete | freccia | 1
+Completa il modo di dire: «Salire sul carro del _____» | vincitore | vinto | re | sindaco | 2
+Completa il modo di dire: «Tirare l'acqua al proprio _____» | mulino | pozzo | orto | fiume | 2
+Completa il modo di dire: «Rompere le uova nel _____» | paniere | piatto | cestino | tegame | 2
+Completa il modo di dire: «Rimanere con un pugno di _____» | mosche | sabbia | farina | foglie | 2
+Completa il modo di dire: «Essere sulla cresta dell'_____» | onda | albero | monte | scala | 2
+Completa il modo di dire: «Mettere la mano sul _____» | fuoco | ferro | mare | muro | 1
+Completa il modo di dire: «Navigare in cattive _____» | acque | strade | notti | mani | 2
+Completa il modo di dire: «Spezzare una _____» | lancia | freccia | spada | catena | 3
+Completa il modo di dire: «Aprire il vaso di _____» | Pandora | Atena | Elena | Medusa | 2
+Completa il modo di dire: «Il tallone d'_____» | Achille | Ettore | Ulisse | Enea | 1
+Completa il modo di dire: «Il cavallo di _____» | Troia | Roma | Sparta | Atene | 1
+Completa il modo di dire: «Il filo d'_____» | Arianna | Elena | Penelope | Ifigenia | 2
+Completa il modo di dire: «La spada di _____» | Damocle | Teseo | Orione | Achille | 2
+Completa il modo di dire: «Una vittoria di _____» | Pirro | Annibale | Cesare | Alessandro | 2
+Completa il modo di dire: «L'uovo di _____» | Colombo | Marco Polo | Vespucci | Magellano | 2
+Completa il modo di dire: «Il bacio di _____» | Giuda | Pietro | Giovanni | Erode | 1
+Completa il modo di dire: «Tra Scilla e _____» | Cariddi | Cerbero | Medusa | Circe | 2
+Completa il modo di dire: «Passare il _____» | Rubicone | Tevere | Po | Piave | 2
+`);
+
   (D.pop = D.pop || []).push({
     id: 'plusproverbi', extends: 'proverbi',
     tables: [
@@ -906,16 +1034,8 @@ Tra Scilla e _____ | 2 | Cariddi
           },
         },
       },
-      {
-        id: 'completa', items: COMPLETA,
-        fields: {
-          parola: {
-            ask: 'Completa il proverbio o modo di dire: «{name}»',
-            tf: 'Nel detto «{name}» la parola mancante è «{value}».',
-            typed: true,
-          },
-        },
-      },
     ],
+    quiz: [...QUIZ_COMPLETA],
+    typed: COMPLETA.map((r) => ({ q: `Completa il proverbio o modo di dire: «${r.name}»`, a: r.parola, d: r.d })),
   });
 })(typeof window !== 'undefined' ? window : globalThis);

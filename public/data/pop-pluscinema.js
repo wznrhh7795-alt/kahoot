@@ -682,7 +682,6 @@ Il Vangelo secondo Matteo|Pier Paolo Pasolini|1964|2
 Uccellacci e uccellini|Pier Paolo Pasolini|1966|3
 Edipo re|Pier Paolo Pasolini|1967|3
 Teorema|Pier Paolo Pasolini|1968|2
-Medea|Pier Paolo Pasolini|1969|3
 Il Decameron|Pier Paolo Pasolini|1971|2
 I racconti di Canterbury|Pier Paolo Pasolini|1972|3
 Il fiore delle Mille e una notte|Pier Paolo Pasolini|1974|3
@@ -790,7 +789,6 @@ Vacanze di Natale|Carlo Vanzina|1983|1
 Vacanze in America|Carlo Vanzina|1984|3
 Yuppies - I giovani di successo|Carlo Vanzina|1986|3
 Selvaggi|Carlo Vanzina|1995|3
-Vita smeralda|Carlo Vanzina|2006|3
 Un'estate al mare|Carlo Vanzina|2008|3
 Un sacco bello|Carlo Verdone|1980|1
 Bianco, rosso e Verdone|Carlo Verdone|1981|2
@@ -849,7 +847,6 @@ Tu mi turbi|Roberto Benigni|1983|3
 Il piccolo diavolo|Roberto Benigni|1988|3
 Johnny Stecchino|Roberto Benigni|1991|1
 Il mostro|Roberto Benigni|1994|2
-Pinocchio|Roberto Benigni|2002|1
 La tigre e la neve|Roberto Benigni|2005|2
 Marrakech Express|Gabriele Salvatores|1989|2
 Turné|Gabriele Salvatores|1990|3
@@ -991,8 +988,6 @@ La leggenda del santo bevitore|Ermanno Olmi|1988|3
 Il mestiere delle armi|Ermanno Olmi|2001|3
 L'uccello dalle piume di cristallo|Dario Argento|1970|3
 Profondo rosso|Dario Argento|1975|1
-Suspiria|Dario Argento|1977|1
-Inferno|Dario Argento|1980|3
 Tenebre|Dario Argento|1982|2
 Phenomena|Dario Argento|1985|2
 Opera|Dario Argento|1987|3
@@ -1002,7 +997,6 @@ I tre volti della paura|Mario Bava|1963|3
 Sei donne per l'assassino|Mario Bava|1964|3
 Terrore nello spazio|Mario Bava|1965|3
 Operazione paura|Mario Bava|1966|3
-Diabolik|Mario Bava|1968|2
 Reazione a catena|Mario Bava|1971|3
 Django|Sergio Corbucci|1966|1
 Navajo Joe|Sergio Corbucci|1966|3
@@ -1028,7 +1022,6 @@ Romanzo criminale|Michele Placido|2005|1
 Il grande sogno|Michele Placido|2009|3
 Vallanzasca - Gli angeli del male|Michele Placido|2010|3
 La bisbetica domata|Franco Zeffirelli|1967|3
-Romeo e Giulietta|Franco Zeffirelli|1968|1
 Fratello sole, sorella luna|Franco Zeffirelli|1972|2
 Il campione|Franco Zeffirelli|1979|3
 Storia di una capinera|Franco Zeffirelli|1993|3
@@ -1076,6 +1069,435 @@ Queer|Luca Guadagnino|2024|3
         span: 30, tol: 1, format: 'year', unit: '', step: 1,
         duel: 'Quale di questi film italiani è uscito prima?', lowerWins: true,
         order: 'Metti in ordine di uscita questi film italiani, dal più vecchio', gap: 3,
+      },
+    },
+  });
+  // ===== Tabella 3: James Bond (film EON) =====
+  tables.push({
+    id: 'bond',
+    items: rows(['name', 'attore', 'cantante', 'anno', 'd'], `
+Agente 007 - Licenza di uccidere|Sean Connery||1962|2
+Dalla Russia con amore|Sean Connery|Matt Monro|1963|2
+Missione Goldfinger|Sean Connery|Shirley Bassey|1964|1
+Thunderball - Operazione tuono|Sean Connery|Tom Jones|1965|2
+Si vive solo due volte|Sean Connery|Nancy Sinatra|1967|2
+Al servizio segreto di Sua Maestà|George Lazenby||1969|3
+Una cascata di diamanti|Sean Connery|Shirley Bassey|1971|2
+Vivi e lascia morire|Roger Moore|Paul McCartney e i Wings|1973|2
+L'uomo dalla pistola d'oro|Roger Moore|Lulu|1974|3
+La spia che mi amava|Roger Moore|Carly Simon|1977|1
+Moonraker - Operazione spazio|Roger Moore|Shirley Bassey|1979|2
+Solo per i tuoi occhi|Roger Moore|Sheena Easton|1981|2
+Octopussy - Operazione piovra|Roger Moore|Rita Coolidge|1983|3
+007 - Bersaglio mobile|Roger Moore|Duran Duran|1985|2
+007 - Zona pericolo|Timothy Dalton|a-ha|1987|2
+007 - Vendetta privata|Timothy Dalton|Gladys Knight|1989|3
+007 - GoldenEye|Pierce Brosnan|Tina Turner|1995|1
+Il domani non muore mai|Pierce Brosnan|Sheryl Crow|1997|2
+Il mondo non basta|Pierce Brosnan|Garbage|1999|2
+La morte può attendere|Pierce Brosnan|Madonna|2002|2
+Casino Royale (2006)|Daniel Craig|Chris Cornell||1
+Quantum of Solace|Daniel Craig|Jack White e Alicia Keys|2008|2
+Skyfall|Daniel Craig|Adele|2012|1
+Spectre|Daniel Craig|Sam Smith|2015|2
+No Time to Die|Daniel Craig|Billie Eilish|2021|1
+`),
+    fields: {
+      attore: {
+        ask: 'Quale attore interpreta James Bond in «{name}»?',
+        who: 'In quale di questi film James Bond è interpretato da {value}?',
+        tf: 'In «{name}» James Bond è interpretato da {value}.',
+        odd: 'Trova l\'intruso: in quale di questi film James Bond NON è interpretato da {value}?',
+        typed: 'person',
+      },
+      cantante: {
+        ask: 'Chi canta il tema principale di «{name}»?',
+        who: 'Quale di questi film di 007 ha un tema principale cantato da {value}?',
+        tf: 'Il tema principale di «{name}» è cantato da {value}.',
+        odd: 'Trova l\'intruso: quale di questi film di 007 NON ha un tema cantato da {value}?',
+      },
+    },
+    numeric: {
+      anno: {
+        ask: 'In che anno è uscito il film di 007 «{name}»?',
+        span: 30, tol: 1, format: 'year', unit: '', step: 1,
+        duel: 'Quale film di James Bond è uscito prima?', lowerWins: true,
+        order: 'Metti in ordine di uscita questi film di 007, dal primo', gap: 2,
+      },
+    },
+  });
+
+  // ===== Tabella 4: Oscar al miglior film (anno della cerimonia) =====
+  tables.push({
+    id: 'oscarfilm',
+    items: rows(['name', 'regista', 'cerimonia', 'd'], `
+Via col vento|Victor Fleming|1940|1
+Rebecca - La prima moglie|Alfred Hitchcock|1941|2
+Com'era verde la mia valle|John Ford|1942|3
+La signora Miniver|William Wyler|1943|3
+Casablanca|Michael Curtiz|1944|1
+I migliori anni della nostra vita|William Wyler|1947|3
+Amleto|Laurence Olivier|1949|3
+Eva contro Eva|Joseph L. Mankiewicz|1951|2
+Un americano a Parigi|Vincente Minnelli|1952|3
+Il più grande spettacolo del mondo|Cecil B. DeMille|1953|3
+Da qui all'eternità|Fred Zinnemann|1954|2
+Fronte del porto|Elia Kazan|1955|2
+Il giro del mondo in 80 giorni|Michael Anderson|1957|3
+Il ponte sul fiume Kwai|David Lean|1958|1
+Gigi|Vincente Minnelli|1959|3
+Ben-Hur|William Wyler|1960|1
+L'appartamento|Billy Wilder|1961|2
+West Side Story|Robert Wise|1962|1
+Lawrence d'Arabia|David Lean|1963|1
+Tom Jones|Tony Richardson|1964|3
+My Fair Lady|George Cukor|1965|1
+Tutti insieme appassionatamente|Robert Wise|1966|1
+La calda notte dell'ispettore Tibbs|Norman Jewison|1968|3
+Oliver!|Carol Reed|1969|3
+Un uomo da marciapiede|John Schlesinger|1970|2
+Patton, generale d'acciaio|Franklin J. Schaffner|1971|2
+Il braccio violento della legge|William Friedkin|1972|2
+Il padrino||1973|1
+La stangata|George Roy Hill|1974|2
+Il padrino - Parte II|Francis Ford Coppola|1975|2
+Qualcuno volò sul nido del cuculo|Miloš Forman|1976|1
+Rocky|John G. Avildsen|1977|1
+Io e Annie|Woody Allen|1978|2
+Il cacciatore|Michael Cimino|1979|2
+Kramer contro Kramer|Robert Benton|1980|2
+Gente comune|Robert Redford|1981|3
+Momenti di gloria|Hugh Hudson|1982|2
+Gandhi|Richard Attenborough|1983|1
+Voglia di tenerezza|James L. Brooks|1984|3
+Amadeus|Miloš Forman|1985|1
+La mia Africa|Sydney Pollack|1986|1
+Platoon|Oliver Stone|1987|1
+L'ultimo imperatore||1988|1
+Rain Man|Barry Levinson|1989|1
+A spasso con Daisy|Bruce Beresford|1990|2
+Balla coi lupi|Kevin Costner|1991|1
+Il silenzio degli innocenti||1992|1
+Gli spietati|Clint Eastwood|1993|1
+Schindler's List||1994|1
+Forrest Gump||1995|1
+Braveheart - Cuore impavido|Mel Gibson|1996|1
+Il paziente inglese|Anthony Minghella|1997|1
+Titanic||1998|1
+Shakespeare in Love|John Madden|1999|2
+American Beauty|Sam Mendes|2000|1
+Il gladiatore||2001|1
+A Beautiful Mind|Ron Howard|2002|1
+Chicago|Rob Marshall|2003|2
+Il Signore degli Anelli - Il ritorno del re|Peter Jackson|2004|1
+Million Dollar Baby|Clint Eastwood|2005|1
+Crash - Contatto fisico|Paul Haggis|2006|2
+The Departed - Il bene e il male|Martin Scorsese|2007|1
+Non è un paese per vecchi|Joel ed Ethan Coen|2008|1
+The Millionaire|Danny Boyle|2009|1
+The Hurt Locker|Kathryn Bigelow|2010|2
+Il discorso del re|Tom Hooper|2011|1
+The Artist|Michel Hazanavicius|2012|1
+Argo|Ben Affleck|2013|2
+12 anni schiavo|Steve McQueen|2014|1
+Birdman|Alejandro González Iñárritu|2015|2
+Il caso Spotlight|Tom McCarthy|2016|2
+Moonlight|Barry Jenkins|2017|1
+La forma dell'acqua - The Shape of Water|Guillermo del Toro|2018|1
+Green Book|Peter Farrelly|2019|1
+Parasite|Bong Joon-ho|2020|1
+Nomadland|Chloé Zhao|2021|1
+CODA - I segni del cuore|Sian Heder|2022|2
+Everything Everywhere All at Once|Daniel Kwan e Daniel Scheinert|2023|1
+Oppenheimer|Christopher Nolan|2024|1
+Anora|Sean Baker|2025|2
+`),
+    fields: {
+      regista: {
+        ask: 'Chi ha diretto «{name}», vincitore dell\'Oscar come miglior film?',
+        who: 'Quale di questi film premiati con l\'Oscar come miglior film è stato diretto da {value}?',
+        tf: '«{name}», Oscar come miglior film, è stato diretto da {value}.',
+        odd: 'Trova l\'intruso: quale di questi film premiati con l\'Oscar NON è stato diretto da {value}?',
+        typed: 'person',
+      },
+    },
+    numeric: {
+      cerimonia: {
+        ask: 'In che anno si è tenuta la cerimonia degli Oscar in cui «{name}» ha vinto come miglior film?',
+        span: 40, tol: 1, format: 'year', unit: '', step: 1,
+        duel: 'Quale film ha vinto prima l\'Oscar come miglior film?', lowerWins: true,
+        order: 'Metti in ordine di vittoria dell\'Oscar come miglior film, dal primo', gap: 2,
+      },
+    },
+  });
+  // ===== Tabella 5: attori e ruoli famosi =====
+  tables.push({
+    id: 'ruoli',
+    items: rows(['name', 'attore', 'd'], `
+Indiana Jones|Harrison Ford|1
+Han Solo nella trilogia originale di Guerre stellari|Harrison Ford|2
+Rick Deckard in «Blade Runner»|Harrison Ford|3
+Richard Kimble ne «Il fuggitivo»|Harrison Ford|3
+Chuck Noland in «Cast Away»|Tom Hanks|1
+Il capitano John Miller in «Salvate il soldato Ryan»|Tom Hanks|2
+Jim Lovell in «Apollo 13»|Tom Hanks|2
+Robert Langdon ne «Il codice da Vinci»|Tom Hanks|2
+Andrew Beckett in «Philadelphia»|Tom Hanks|3
+Forrest Gump|Tom Hanks|1
+Travis Bickle in «Taxi Driver»|Robert De Niro|1
+Jake LaMotta in «Toro scatenato»|Robert De Niro|2
+Vito Corleone da giovane ne «Il padrino - Parte II»|Robert De Niro|2
+Rupert Pupkin in «Re per una notte»|Robert De Niro|3
+Max Cady in «Cape Fear»|Robert De Niro|3
+Jimmy Conway in «Quei bravi ragazzi»|Robert De Niro|3
+Michael Corleone|Al Pacino|1
+Tony Montana in «Scarface»|Al Pacino|1
+Frank Serpico in «Serpico»|Al Pacino|2
+Il colonnello Frank Slade in «Profumo di donna» (1992)|Al Pacino|3
+Carlito Brigante in «Carlito's Way»|Al Pacino|3
+Jack Torrance in «Shining»|Jack Nicholson|1
+Joker nel «Batman» del 1989|Jack Nicholson|2
+Randle McMurphy in «Qualcuno volò sul nido del cuculo»|Jack Nicholson|2
+Melvin Udall in «Qualcosa è cambiato»|Jack Nicholson|3
+Jake Gittes in «Chinatown»|Jack Nicholson|3
+Pete «Maverick» Mitchell in «Top Gun»|Tom Cruise|1
+Jerry Maguire|Tom Cruise|2
+Lestat in «Intervista col vampiro»|Tom Cruise|3
+Ron Kovic in «Nato il quattro luglio»|Tom Cruise|3
+Tyler Durden in «Fight Club»|Brad Pitt|1
+Benjamin Button|Brad Pitt|2
+Cliff Booth in «C'era una volta a... Hollywood»|Brad Pitt|2
+Achille in «Troy»|Brad Pitt|2
+Billy Beane ne «L'arte di vincere»|Brad Pitt|3
+Il tenente Aldo Raine in «Bastardi senza gloria»|Brad Pitt|2
+Jordan Belfort in «The Wolf of Wall Street»|Leonardo DiCaprio|1
+Dom Cobb in «Inception»|Leonardo DiCaprio|2
+Hugh Glass in «Revenant - Redivivo»|Leonardo DiCaprio|2
+Frank Abagnale Jr. in «Prova a prendermi»|Leonardo DiCaprio|2
+Howard Hughes in «The Aviator»|Leonardo DiCaprio|3
+Billy Costigan in «The Departed»|Leonardo DiCaprio|3
+Rick Dalton in «C'era una volta a... Hollywood»|Leonardo DiCaprio|3
+John Keating ne «L'attimo fuggente»|Robin Williams|1
+Mrs. Doubtfire|Robin Williams|1
+Patch Adams|Robin Williams|2
+Sean Maguire in «Will Hunting - Genio ribelle»|Robin Williams|3
+Peter Banning in «Hook - Capitan Uncino»|Robin Williams|3
+Ace Ventura|Jim Carrey|1
+Stanley Ipkiss in «The Mask»|Jim Carrey|1
+Truman Burbank in «The Truman Show»|Jim Carrey|1
+Lloyd Christmas in «Scemo & più scemo»|Jim Carrey|2
+Joel Barish in «Se mi lasci ti cancello»|Jim Carrey|3
+Andy Kaufman in «Man on the Moon»|Jim Carrey|3
+Vivian Ward in «Pretty Woman»|Julia Roberts|1
+Erin Brockovich|Julia Roberts|1
+Anna Scott in «Notting Hill»|Julia Roberts|2
+Julianne Potter ne «Il matrimonio del mio migliore amico»|Julia Roberts|3
+Miranda Priestly ne «Il diavolo veste Prada»|Meryl Streep|1
+Margaret Thatcher in «The Iron Lady»|Meryl Streep|2
+Karen Blixen ne «La mia Africa»|Meryl Streep|2
+Francesca Johnson ne «I ponti di Madison County»|Meryl Streep|3
+Donna in «Mamma Mia!»|Meryl Streep|2
+Joanna Kramer in «Kramer contro Kramer»|Meryl Streep|3
+Marcello Rubini ne «La dolce vita»|Marcello Mastroianni|1
+Guido Anselmi in «8½»|Marcello Mastroianni|2
+Ferdinando Cefalù in «Divorzio all'italiana»|Marcello Mastroianni|3
+Domenico Soriano in «Matrimonio all'italiana»|Marcello Mastroianni|3
+Gabriele in «Una giornata particolare»|Marcello Mastroianni|3
+Nando Mericoni in «Un americano a Roma»|Alberto Sordi|1
+Il marchese Onofrio del Grillo|Alberto Sordi|1
+Guido Tersilli ne «Il medico della mutua»|Alberto Sordi|2
+Giovanni Vivaldi in «Un borghese piccolo piccolo»|Alberto Sordi|3
+Cesira ne «La ciociara»|Sophia Loren|2
+Filumena Marturano|Sophia Loren|3
+Antonietta in «Una giornata particolare»|Sophia Loren|2
+Il conte Raffaello Mascetti in «Amici miei»|Ugo Tognazzi|1
+Renato Baldi ne «Il vizietto»|Ugo Tognazzi|3
+Bruno Cortona ne «Il sorpasso»|Vittorio Gassman|1
+Brancaleone da Norcia|Vittorio Gassman|1
+Fausto Consolo in «Profumo di donna» (1974)|Vittorio Gassman|3
+Gianni Perego in «C'eravamo tanto amati»|Vittorio Gassman|3
+Jep Gambardella ne «La grande bellezza»|Toni Servillo|1
+Giulio Andreotti ne «Il divo»|Toni Servillo|2
+Titta Di Girolamo ne «Le conseguenze dell'amore»|Toni Servillo|3
+Tommaso Buscetta ne «Il traditore»|Pierfrancesco Favino|2
+Bettino Craxi in «Hammamet»|Pierfrancesco Favino|3
+Il Libano in «Romanzo criminale»|Pierfrancesco Favino|3
+Guido Orefice ne «La vita è bella»|Roberto Benigni|1
+Dante in «Johnny Stecchino»|Roberto Benigni|2
+Saverio in «Non ci resta che piangere»|Roberto Benigni|2
+Gaetano in «Ricomincio da tre»|Massimo Troisi|2
+Mario Ruoppolo ne «Il postino»|Massimo Troisi|1
+Mario in «Non ci resta che piangere»|Massimo Troisi|2
+Holly Golightly in «Colazione da Tiffany»|Audrey Hepburn|1
+La principessa Ann in «Vacanze romane»|Audrey Hepburn|2
+Eliza Doolittle in «My Fair Lady»|Audrey Hepburn|2
+Sugar Kane in «A qualcuno piace caldo»|Marilyn Monroe|2
+Lorelei Lee in «Gli uomini preferiscono le bionde»|Marilyn Monroe|3
+Guglielmo da Baskerville ne «Il nome della rosa»|Sean Connery|2
+Henry Jones senior in «Indiana Jones e l'ultima crociata»|Sean Connery|2
+Juan Ramírez in «Highlander»|Sean Connery|3
+John Mason in «The Rock»|Sean Connery|3
+L'ispettore Callaghan|Clint Eastwood|1
+Walt Kowalski in «Gran Torino»|Clint Eastwood|2
+Bill Munny ne «Gli spietati»|Clint Eastwood|3
+Robert Kincaid ne «I ponti di Madison County»|Clint Eastwood|3
+Frankie Dunn in «Million Dollar Baby»|Clint Eastwood|3
+Conan il barbaro|Arnold Schwarzenegger|2
+Douglas Quaid in «Atto di forza»|Arnold Schwarzenegger|3
+Julius Benedict in «Gemelli»|Arnold Schwarzenegger|3
+John Matrix in «Commando»|Arnold Schwarzenegger|3
+Rocky Balboa|Sylvester Stallone|1
+John Rambo|Sylvester Stallone|1
+Barney Ross ne «I mercenari»|Sylvester Stallone|2
+Il giudice Dredd|Sylvester Stallone|3
+John McClane in «Trappola di cristallo»|Bruce Willis|1
+Butch Coolidge in «Pulp Fiction»|Bruce Willis|2
+Malcolm Crowe ne «Il sesto senso»|Bruce Willis|2
+Korben Dallas ne «Il quinto elemento»|Bruce Willis|3
+Harry Stamper in «Armageddon»|Bruce Willis|3
+Max Rockatansky in «Interceptor»|Mel Gibson|3
+William Wallace in «Braveheart»|Mel Gibson|1
+Martin Riggs in «Arma letale»|Mel Gibson|2
+Neo in «Matrix»|Keanu Reeves|1
+John Wick|Keanu Reeves|1
+Jack Traven in «Speed»|Keanu Reeves|2
+Johnny Utah in «Point Break»|Keanu Reeves|3
+Ted Logan in «Bill & Ted's Excellent Adventure»|Keanu Reeves|3
+Edward mani di forbice|Johnny Depp|1
+Willy Wonka ne «La fabbrica di cioccolato» (2005)|Johnny Depp|1
+Sweeney Todd|Johnny Depp|2
+Il Cappellaio Matto in «Alice in Wonderland» (2010)|Johnny Depp|2
+Gilbert Grape in «Buon compleanno Mr. Grape»|Johnny Depp|3
+Donnie Brasco|Johnny Depp|3
+L'agente J in «Men in Black»|Will Smith|1
+Robert Neville in «Io sono leggenda»|Will Smith|2
+Chris Gardner ne «La ricerca della felicità»|Will Smith|2
+Mike Lowrey in «Bad Boys»|Will Smith|2
+Del Spooner in «Io, Robot»|Will Smith|3
+Axel Foley in «Beverly Hills Cop»|Eddie Murphy|2
+Il principe Akeem ne «Il principe cerca moglie»|Eddie Murphy|2
+Billy Ray Valentine in «Una poltrona per due»|Eddie Murphy|3
+Benjamin Braddock ne «Il laureato»|Dustin Hoffman|2
+Ratso Rizzo in «Un uomo da marciapiede»|Dustin Hoffman|3
+Raymond Babbitt in «Rain Man»|Dustin Hoffman|1
+Dorothy Michaels in «Tootsie»|Dustin Hoffman|2
+Il capitano Uncino in «Hook - Capitan Uncino»|Dustin Hoffman|3
+Hannibal Lecter ne «Il silenzio degli innocenti»|Anthony Hopkins|1
+Alfred Hitchcock nel film «Hitchcock» (2012)|Anthony Hopkins|3
+Mr. Stevens in «Quel che resta del giorno»|Anthony Hopkins|3
+Odino nei film di «Thor»|Anthony Hopkins|2
+Ellis «Red» Redding ne «Le ali della libertà»|Morgan Freeman|1
+Nelson Mandela in «Invictus - L'invincibile»|Morgan Freeman|2
+Hoke Colburn in «A spasso con Daisy»|Morgan Freeman|3
+Il detective Somerset in «Seven»|Morgan Freeman|3
+Dio in «Una settimana da Dio»|Morgan Freeman|2
+Marty McFly in «Ritorno al futuro»|Michael J. Fox|1
+Doc Emmett Brown in «Ritorno al futuro»|Christopher Lloyd|1
+Zio Fester ne «La famiglia Addams»|Christopher Lloyd|3
+Il giudice Doom in «Chi ha incastrato Roger Rabbit»|Christopher Lloyd|3
+Christy Brown ne «Il mio piede sinistro»|Daniel Day-Lewis|3
+Bill il Macellaio in «Gangs of New York»|Daniel Day-Lewis|2
+Daniel Plainview ne «Il petroliere»|Daniel Day-Lewis|3
+Abraham Lincoln nel film «Lincoln»|Daniel Day-Lewis|2
+Occhio di Falco ne «L'ultimo dei Mohicani»|Daniel Day-Lewis|3
+Patrick Bateman in «American Psycho»|Christian Bale|2
+Dicky Eklund in «The Fighter»|Christian Bale|3
+Dick Cheney in «Vice - L'uomo nell'ombra»|Christian Bale|3
+Trevor Reznik ne «L'uomo senza sonno»|Christian Bale|3
+Joker ne «Il cavaliere oscuro»|Heath Ledger|1
+Ennis Del Mar in «I segreti di Brokeback Mountain»|Heath Ledger|3
+Arthur Fleck nel film «Joker» (2019)|Joaquin Phoenix|1
+Commodo ne «Il gladiatore»|Joaquin Phoenix|2
+Johnny Cash in «Quando l'amore brucia l'anima»|Joaquin Phoenix|3
+Nina Sayers ne «Il cigno nero»|Natalie Portman|1
+Jackie Kennedy nel film «Jackie»|Natalie Portman|3
+Mathilda in «Léon»|Natalie Portman|2
+Padmé Amidala nei prequel di «Star Wars»|Natalie Portman|2
+Evey Hammond in «V per Vendetta»|Natalie Portman|3
+Katharine Hepburn in «The Aviator»|Cate Blanchett|3
+Jasmine in «Blue Jasmine»|Cate Blanchett|3
+Lydia Tár nel film «Tár»|Cate Blanchett|3
+Galadriel ne «Il Signore degli Anelli»|Cate Blanchett|2
+Satine in «Moulin Rouge!»|Nicole Kidman|2
+Virginia Woolf ne «The Hours»|Nicole Kidman|3
+Grace in «Dogville»|Nicole Kidman|3
+Ada Monroe in «Ritorno a Cold Mountain»|Nicole Kidman|3
+Rose DeWitt Bukater in «Titanic»|Kate Winslet|1
+Hanna Schmitz in «The Reader - A voce alta»|Kate Winslet|3
+Clementine in «Se mi lasci ti cancello»|Kate Winslet|3
+Marianne Dashwood in «Ragione e sentimento»|Kate Winslet|3
+Vedova Nera nei film Marvel|Scarlett Johansson|1
+Charlotte in «Lost in Translation»|Scarlett Johansson|3
+Nicole Barber in «Storia di un matrimonio»|Scarlett Johansson|3
+Lara Croft nei film del 2001 e 2003|Angelina Jolie|1
+Malefica nel film del 2014|Angelina Jolie|2
+Jane Smith in «Mr. & Mrs. Smith»|Angelina Jolie|2
+Mia Dolan in «La La Land»|Emma Stone|1
+Bella Baxter in «Povere creature!»|Emma Stone|3
+Cruella nel film del 2021|Emma Stone|2
+Billie Jean King ne «La battaglia dei sessi»|Emma Stone|3
+Sebastian in «La La Land»|Ryan Gosling|1
+Ken nel film «Barbie»|Ryan Gosling|1
+Il pilota di «Drive»|Ryan Gosling|2
+L'agente K in «Blade Runner 2049»|Ryan Gosling|3
+Noah in «Le pagine della nostra vita»|Ryan Gosling|3
+Rossella O'Hara in «Via col vento»|Vivien Leigh|2
+Rhett Butler in «Via col vento»|Clark Gable|2
+Dorothy Gale ne «Il mago di Oz»|Judy Garland|1
+Mary Poppins nel film del 1964|Julie Andrews|1
+Maria in «Tutti insieme appassionatamente»|Julie Andrews|2
+Danny Zuko in «Grease»|John Travolta|1
+Vincent Vega in «Pulp Fiction»|John Travolta|2
+Tony Manero ne «La febbre del sabato sera»|John Travolta|2
+Sandy in «Grease»|Olivia Newton-John|2
+Jules Winnfield in «Pulp Fiction»|Samuel L. Jackson|2
+Nick Fury nei film Marvel|Samuel L. Jackson|2
+Mace Windu nei prequel di «Star Wars»|Samuel L. Jackson|3
+Mia Wallace in «Pulp Fiction»|Uma Thurman|2
+La Sposa in «Kill Bill»|Uma Thurman|1
+Ellen Ripley in «Alien»|Sigourney Weaver|1
+Dana Barrett in «Ghostbusters»|Sigourney Weaver|3
+Sarah Connor in «Terminator»|Linda Hamilton|2
+Clarice Starling ne «Il silenzio degli innocenti»|Jodie Foster|1
+Il dottor Alan Grant in «Jurassic Park»|Sam Neill|2
+Ian Malcolm in «Jurassic Park»|Jeff Goldblum|1
+Peter Venkman in «Ghostbusters»|Bill Murray|2
+Phil Connors in «Ricomincio da capo»|Bill Murray|2
+Jake Blues in «The Blues Brothers»|John Belushi|2
+Elwood Blues in «The Blues Brothers»|Dan Aykroyd|2
+Beetlejuice nel film del 1988|Michael Keaton|2
+Batman nel film del 1989|Michael Keaton|1
+Kevin McCallister in «Mamma, ho perso l'aereo»|Macaulay Culkin|1
+Ferris Bueller in «Una pazza giornata di vacanza»|Matthew Broderick|3
+Lex Luthor nel «Superman» del 1978|Gene Hackman|3
+Willy Wonka ne «Willy Wonka e la fabbrica di cioccolato» (1971)|Gene Wilder|2
+Il dottor Frankenstein ne «Il giovane Frankenstein»|Gene Wilder|3
+Massimo Decimo Meridio ne «Il gladiatore»|Russell Crowe|1
+John Nash in «A Beautiful Mind»|Russell Crowe|2
+Il capitano Jack Aubrey in «Master & Commander»|Russell Crowe|3
+Aragorn ne «Il Signore degli Anelli»|Viggo Mortensen|1
+Gandalf ne «Il Signore degli Anelli»|Ian McKellen|1
+Frodo Baggins ne «Il Signore degli Anelli»|Elijah Wood|1
+Gollum ne «Il Signore degli Anelli»|Andy Serkis|2
+Legolas ne «Il Signore degli Anelli»|Orlando Bloom|2
+Mark Watney in «Sopravvissuto - The Martian»|Matt Damon|2
+Jason Bourne|Matt Damon|1
+Will Hunting in «Will Hunting - Genio ribelle»|Matt Damon|2
+Tony Stark|Robert Downey Jr.|1
+Sherlock Holmes nei film di Guy Ritchie|Robert Downey Jr.|2
+J. Robert Oppenheimer nel film «Oppenheimer»|Cillian Murphy|1
+Mad Max in «Fury Road»|Tom Hardy|2
+Bane ne «Il cavaliere oscuro - Il ritorno»|Tom Hardy|2
+Furiosa in «Mad Max: Fury Road»|Charlize Theron|2
+Aileen Wuornos in «Monster»|Charlize Theron|3
+`),
+    fields: {
+      attore: {
+        ask: 'Chi ha interpretato {name}?',
+        who: 'Quale di questi personaggi è interpretato da {value}?',
+        tf: '{name} è interpretato da {value}.',
+        odd: 'Trova l\'intruso: quale di questi personaggi NON è interpretato da {value}?',
+        typed: 'person',
       },
     },
   });

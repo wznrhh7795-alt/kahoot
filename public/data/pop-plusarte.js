@@ -80,7 +80,6 @@ Giuditta e Oloferne||Palazzo Barberini|1599|2
 Vocazione di san Matteo||Chiesa di San Luigi dei Francesi|1600|2
 Amor vincit omnia|Caravaggio|Gemäldegalerie di Berlino|1602|3
 La Madonna dei Pellegrini|Caravaggio|Basilica di Sant'Agostino|1606|3
-Giuditta che decapita Oloferne|Artemisia Gentileschi|||2
 Il mangiafagioli|Annibale Carracci|||3
 La Madonna dal collo lungo|Parmigianino|Galleria degli Uffizi||3
 Venere, Cupido, la Follia e il Tempo|Bronzino|National Gallery||3
@@ -93,7 +92,6 @@ Il miracolo dello schiavo|Tintoretto|Gallerie dell'Accademia di Venezia|1548|3
 La cena in casa di Levi|Paolo Veronese|Gallerie dell'Accademia di Venezia|1573|3
 Camera degli Sposi|Andrea Mantegna|Palazzo Ducale di Mantova|1474|2
 Cristo morto||Pinacoteca di Brera||2
-L'Annunciata|Antonello da Messina|Palazzo Abatellis||3
 Ritratto d'ignoto marinaio|Antonello da Messina|Museo Mandralisca||3
 Pala di San Zaccaria|Giovanni Bellini|Chiesa di San Zaccaria|1505|3
 Maestà di Ognissanti|Giotto|Galleria degli Uffizi||2
@@ -148,7 +146,6 @@ Il Temerario|William Turner|National Gallery|1839|2
 Pioggia, vapore e velocità||National Gallery|1844|2
 Il bacio (1859)||Pinacoteca di Brera|1859|1
 Il Quarto Stato||Museo del Novecento|1901|2
-La Signora di Shalott|John William Waterhouse|||3
 Un funerale a Ornans|Gustave Courbet|Museo d'Orsay|1850|3
 L'atelier del pittore|Gustave Courbet|Museo d'Orsay|1855|3
 Le spigolatrici||Museo d'Orsay|1857|2
@@ -205,7 +202,6 @@ Psiche rianimata dal bacio di Amore|Antonio Canova|||2
 Il Pensatore|Auguste Rodin|||1
 I borghesi di Calais|Auguste Rodin|||3
 La porta dell'Inferno|Auguste Rodin|||3
-Il bacio (scultura in marmo)|Auguste Rodin|||2
 Monumento equestre al Gattamelata|Donatello||1453|3
 La porta del Paradiso|Lorenzo Ghiberti||1452|3
 Perseo con la testa di Medusa|Benvenuto Cellini|Loggia dei Lanzi|1554|3
@@ -240,7 +236,7 @@ Comedian (la banana attaccata al muro)|Maurizio Cattelan||2019|2
   const NASCOSTI = new Set(['Cappella Sistina']);
   const SENZA_CITTA = new Set(['Cappella Sistina', 'Musei Vaticani']); // Città del Vaticano ≠ Roma: meglio non confrontarle
   for (const r of operePittura) if (r.length !== 5) throw new Error('riga opere: ' + r.join('|'));
-  const opere = operePittura.map(([name, artista, luogo, , d]) => {
+  const opere = operePittura.filter((r) => r[1] || r[2]).map(([name, artista, luogo, , d]) => {
     const it = { name, d: +d };
     if (artista) it.artista = artista;
     if (luogo) {
@@ -250,7 +246,7 @@ Comedian (la banana attaccata al muro)|Maurizio Cattelan||2019|2
     }
     return it;
   });
-  const anniOpere = operePittura.filter((r) => r[3]).map((r) => ({ name: r[0], d: +r[4], anno: +r[3] }));
+  const anniOpere = operePittura.filter((r) => r[3] && !/\d/.test(r[0])).map((r) => ({ name: r[0], d: +r[4], anno: +r[3] }));
   const annoField = (span, tol, gap) => ({
     anno: { ask: 'In che anno è stata realizzata (o completata) quest\'opera: «{name}»?', span, tol, format: 'year', step: 1,
       duel: 'Quale delle due opere è stata realizzata prima?', lowerWins: true, order: 'Metti in ordine di realizzazione, dalla più antica', gap },
@@ -260,7 +256,7 @@ Comedian (la banana attaccata al muro)|Maurizio Cattelan||2019|2
   const artistiRows = rows(`
 Giotto|Italia||1337||2
 Masaccio|Italia|1401|1428|Rinascimento|2
-Beato Angelico|Italia|1395|1455|Rinascimento|3
+Beato Angelico|Italia||1455|Rinascimento|3
 Donatello|Italia|1386|1466|Rinascimento|1
 Filippo Brunelleschi|Italia|1377|1446|Rinascimento|2
 Sandro Botticelli|Italia|1445|1510|Rinascimento|1
@@ -363,7 +359,7 @@ André Derain|Francia|1880|1954||3
 Maurice de Vlaminck|Francia|1876|1958||3
 Georges Braque|Francia|1882|1963|Cubismo|2
 Fernand Léger|Francia|1881|1955||3
-Marcel Duchamp|Francia|1887|1968|Dadaismo|2
+Marcel Duchamp|Francia|1887|1968||2
 Yves Klein|Francia|1928|1962||3
 Yves Tanguy|Francia|1900|1955|Surrealismo|3
 Auguste Rodin|Francia|1840|1917||1
@@ -376,7 +372,7 @@ Francisco de Zurbarán|Spagna|1598|1664|Barocco|3
 Jusepe de Ribera|Spagna|1591|1652|Barocco|3
 Francisco Goya|Spagna|1746|1828||1
 Joaquín Sorolla|Spagna|1863|1923||3
-Pablo Picasso|Spagna|1881|1973|Cubismo|1
+Pablo Picasso|Spagna|1881|1973||1
 Juan Gris|Spagna|1887|1927|Cubismo|3
 Joan Miró|Spagna|1893|1983|Surrealismo|2
 Salvador Dalí|Spagna|1904|1989|Surrealismo|1
@@ -497,11 +493,11 @@ Frank Gehry||1929|||2
   const annoArt = (key, filtro) => artistiRows.filter((r) => r[key === 'nascita' ? 2 : 3] && filtro(+r[key === 'nascita' ? 2 : 3]))
     .map((r) => ({ name: r[0], d: +r[5], [key]: +r[key === 'nascita' ? 2 : 3] }));
   const nascField = (span, tol, gap) => ({
-    nascita: { ask: 'In che anno è nato (o nata) {name}?', span, tol, format: 'year', step: 1,
+    nascita: { ask: 'Qual è l\'anno di nascita di {name}?', span, tol, format: 'year', step: 1,
       duel: 'Chi è nato prima?', lowerWins: true, order: 'Metti in ordine di nascita, dal più anziano', gap },
   });
   const morteField = (span, tol, gap) => ({
-    morte: { ask: 'In che anno è morto (o morta) {name}?', span, tol, format: 'year', step: 1,
+    morte: { ask: 'Qual è l\'anno di morte di {name}?', span, tol, format: 'year', step: 1,
       duel: 'Chi è morto prima?', lowerWins: true, order: 'Metti in ordine di morte, dal primo a morire', gap },
   });
 
@@ -627,7 +623,7 @@ Frank Gehry||1929|||2
   QQ(3, 'Quale pittore decorò la sua casa, la «Quinta del Sordo», con le «Pitture nere»?', 'Francisco Goya', 'Diego Velázquez', 'Salvador Dalí', 'Pablo Picasso');
   QQ(2, 'Quale ciclo di dipinti di Monet è esposto al Musée de l\'Orangerie di Parigi?', 'Le ninfee', 'I covoni', 'La cattedrale di Rouen', 'I papaveri');
   QQ(2, 'In quale località normanna Monet creò il suo giardino con le ninfee?', 'Giverny', 'Auvers-sur-Oise', 'Étretat', 'Honfleur');
-  QQ(2, 'Quale pittore morì nel 1890 a Auvers-sur-Oise?', 'Vincent van Gogh', 'Paul Cézanne', 'Camille Pissarro', 'Georges Seurat');
+  QQ(2, 'Quale pittore morì nel 1890 ad Auvers-sur-Oise?', 'Vincent van Gogh', 'Paul Cézanne', 'Camille Pissarro', 'Georges Seurat');
   QQ(2, 'Come si chiamava il fratello di Vincent van Gogh, che lo sostenne economicamente?', 'Theo', 'Paul', 'Jan', 'Pieter');
   QQ(2, 'In quale città francese Van Gogh visse con Gauguin nel 1888?', 'Arles', 'Parigi', 'Marsiglia', 'Avignone');
   QQ(3, 'Che colore aveva la casa di Arles in cui Van Gogh sognava di fondare una comunità di artisti?', 'Gialla', 'Rossa', 'Bianca', 'Azzurra');
@@ -1051,16 +1047,16 @@ Frank Gehry||1929|||2
     T('anniModerni', anniOpere.filter((x) => x.anno >= 1850), {}, annoField(120, 4, 6)),
     T('artisti', artisti, {
       paese: {
-        ask: 'In quale Paese è nato (o nata) {name}?',
-        who: 'Quale di questi artisti è nato in questo Paese: {value}?',
-        tf: '{name} è nato (o nata) in questo Paese: {value}.',
-        odd: 'Trova l\'intruso: quale di questi artisti NON è nato in questo Paese: {value}?',
+        ask: 'Qual è il Paese di nascita di {name}?',
+        who: 'Tra questi artisti, chi è nato in questo Paese: {value}?',
+        tf: 'Il Paese di nascita di {name} è {value}.',
+        odd: 'Trova l\'intruso: chi NON è nato in questo Paese: {value}?',
       },
       movimento: {
-        ask: 'A quale movimento artistico è legato {name}?',
-        who: 'Quale di questi artisti è legato a questo movimento: {value}?',
-        tf: '{name} è legato a questo movimento artistico: {value}.',
-        odd: 'Trova l\'intruso: quale di questi artisti NON è legato a questo movimento: {value}?',
+        ask: 'A quale movimento artistico appartiene {name}?',
+        who: 'Tra questi artisti, chi appartiene a questo movimento: {value}?',
+        tf: '{name} appartiene al movimento artistico: {value}.',
+        odd: 'Trova l\'intruso: chi NON appartiene a questo movimento: {value}?',
       },
     }),
     T('nascitaAntica', annoArt('nascita', (y) => y < 1600), {}, nascField(260, 6, 12)),
