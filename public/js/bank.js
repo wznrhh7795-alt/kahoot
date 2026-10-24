@@ -2047,7 +2047,8 @@
       });
     }
     if (f.typed?.length) {
-      const answers = f.typed.map((x) => x.a);
+      // Anche i nomi dei Paesi: «Islanda» non deve passare come errore di battitura di «Irlanda».
+      const answers = [...f.typed.map((x) => x.a), ...(D.countries || []).map((c) => c.name)];
       gens.push(typedGen(`${id}:t`, f.typed, (it) => typed(it.q, it.a, { accept: it.accept || [], hint: it.hint, key: it.q }), answers));
     }
     if (f.songs?.length) gens.push(...songGens(id, f));
