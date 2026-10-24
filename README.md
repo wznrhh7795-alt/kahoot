@@ -14,7 +14,7 @@ smartphone, gli altri entrano con il PIN o con il link condiviso.
 
 ## Cosa c'è dentro
 
-- **Oltre 100.000 domande diverse** in **37 categorie**, comprese 13 categorie pop (Disney, Pixar, Harry Potter,
+- **Oltre 100.000 domande diverse** in **38 categorie**, comprese 13 categorie pop (Disney, Pixar, Harry Potter,
   Il Signore degli Anelli, Il Trono di Spade, Star Wars, Marvel, Supereroi DC, Anime e manga, Pokémon, Videogiochi,
   Cartoni animati, Serie TV), la categoria musicale 🎧 **Indovina la canzone** e oltre 60.000 domande nelle categorie classiche, che non si ripetono tra una partita e l'altra
   Geografia del mondo, Bandiere, Italia, Monumenti e luoghi, Storia, Mitologia, Arte, Letteratura, Citazioni,
