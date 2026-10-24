@@ -584,6 +584,240 @@ Una zona grigia | 2 | Grigio
 Le cellule grigie | 3 | Grigio
 `, 'colore');
 
+  const PROVERBI = rows(`
+Chi ben comincia è a metà dell'opera | 1 | Un buon inizio rende più facile il lavoro
+Il troppo stroppia | 1 | L'eccesso di qualsiasi cosa fa male
+Chi troppo vuole nulla stringe | 2 | Chi è troppo ambizioso rischia di restare senza niente
+L'appetito vien mangiando | 2 | Più si ottiene, più si desidera
+Ogni medaglia ha il suo rovescio | 2 | Ogni cosa ha anche un lato negativo
+Tutte le strade portano a Roma | 1 | Si può arrivare allo stesso risultato per vie diverse
+A mali estremi, estremi rimedi | 2 | Nei casi gravi servono soluzioni drastiche
+Chi non lavora non mangia | 1 | Senza impegno non si ha diritto ai frutti del lavoro
+Chi di spada ferisce di spada perisce | 2 | Chi usa la violenza ne subisce le conseguenze
+Non è tutto oro quel che luccica | 1 | Le apparenze ingannano
+La fortuna aiuta gli audaci | 1 | Chi osa ha più probabilità di riuscire
+Chi si accontenta gode | 1 | Chi non pretende troppo è più felice
+Prevenire è meglio che curare | 1 | È meglio evitare il male che rimediarvi
+Una mano lava l'altra | 1 | Ci si scambia favori
+Oggi a me, domani a te | 2 | La sorte tocca a tutti, a turno
+Il tempo è denaro | 1 | Il tempo ha un valore e non va sprecato
+Il fine giustifica i mezzi | 2 | Per un buon obiettivo ogni strumento è lecito
+Chi va a letto senza cena tutta la notte si dimena | 3 | A stomaco vuoto si dorme male
+Cosa fatta capo ha | 2 | Ciò che è fatto non si può disfare
+Il mondo è bello perché è vario | 1 | Le differenze rendono la vita interessante
+Tale padre, tale figlio | 1 | I figli somigliano ai genitori
+Chi nasce tondo non può morire quadrato | 2 | Il proprio carattere non si cambia
+Il tempo è galantuomo | 2 | Col tempo la verità viene a galla
+Tutto è bene quel che finisce bene | 1 | Conta il risultato finale
+La notte porta consiglio | 1 | Dormirci su aiuta a decidere meglio
+Ogni promessa è debito | 2 | Ciò che si promette va mantenuto
+Chi non ha testa abbia gambe | 3 | Chi dimentica deve faticare di più
+L'ozio è il padre dei vizi | 2 | Non fare nulla porta a comportamenti cattivi
+Meglio tardi che mai | 1 | È meglio fare una cosa in ritardo che non farla
+Meglio soli che mal accompagnati | 1 | Meglio stare soli che in cattiva compagnia
+Le bugie hanno le gambe corte | 1 | Le menzogne vengono presto scoperte
+Non rimandare a domani quel che puoi fare oggi | 1 | Non rimandare gli impegni
+Tra moglie e marito non mettere il dito | 1 | Non intromettersi nelle faccende di coppia
+A buon intenditor poche parole | 2 | A chi capisce bastano pochi cenni
+Le disgrazie non vengono mai sole | 1 | Le sfortune si presentano a catena
+L'occasione fa l'uomo ladro | 2 | L'opportunità spinge a comportarsi male
+Chi s'assomiglia si piglia | 2 | Le persone simili si cercano
+Occhio per occhio, dente per dente | 2 | La pena deve essere uguale al danno
+Chi è senza peccato scagli la prima pietra | 2 | Chi non è perfetto non può giudicare gli altri
+Mal comune, mezzo gaudio | 2 | Le sventure condivise pesano meno
+La speranza è l'ultima a morire | 1 | Non bisogna mai smettere di sperare
+Chi tace acconsente | 1 | Il silenzio equivale a un sì
+Non dir quattro se non l'hai nel sacco | 3 | Non cantare vittoria prima di aver ottenuto
+Chi pecora si fa il lupo se la mangia | 2 | Chi è troppo remissivo viene sfruttato
+Roma non fu fatta in un giorno | 1 | Le grandi cose richiedono tempo
+L'abitudine è una seconda natura | 2 | Ciò che si fa spesso diventa spontaneo
+Non c'è peggior sordo di chi non vuol sentire | 2 | Chi non vuol capire non capirà mai
+Fare di necessità virtù | 2 | Adattarsi a una situazione obbligata traendone vantaggio
+Sbagliare è umano, perseverare è diabolico | 2 | Sbagliare è normale, ripetere l'errore è colpa
+L'amore è cieco | 1 | Chi ama non vede i difetti
+Se vuoi la pace prepara la guerra | 3 | Per essere al sicuro bisogna essere pronti a difendersi
+Quattro occhi vedono meglio di due | 2 | Collaborare aiuta a vedere meglio
+Un bel tacer non fu mai scritto | 3 | Tacere è spesso la scelta migliore
+La gallina che canta ha fatto l'uovo | 3 | Chi si giustifica troppo si tradisce
+Tutto il mondo è paese | 1 | Ovunque le cose sono più o meno uguali
+Piove, governo ladro! | 2 | Si dà la colpa al governo di ogni inconveniente
+Per un punto Martin perse la cappa | 3 | Un piccolo errore causa un grande danno
+Non c'è fumo senza fuoco | 1 | Dietro una voce c'è sempre qualcosa di vero
+Quando si chiude una porta si apre un portone | 2 | Dopo una delusione arriva una nuova occasione
+Il bisogno aguzza l'ingegno | 2 | La necessità spinge a trovare soluzioni
+Squadra che vince non si cambia | 1 | Se una cosa funziona non conviene toccarla
+Anche l'occhio vuole la sua parte | 2 | Anche l'aspetto estetico conta
+Aiutati che il ciel ti aiuta | 1 | Impegnati e troverai aiuto
+L'erba cattiva non muore mai | 2 | Le persone cattive resistono a tutto
+Bacco, tabacco e Venere riducono l'uomo in cenere | 3 | I vizi rovinano la salute
+L'uomo propone e Dio dispone | 2 | I progetti umani dipendono dal destino
+Del senno di poi sono piene le fosse | 3 | A cose fatte è facile dire che cosa andava fatto
+La lingua batte dove il dente duole | 3 | Si parla volentieri di ciò che ci fa soffrire
+Fra i due litiganti il terzo gode | 2 | Dallo scontro di due ne approfitta un terzo
+Gli ultimi saranno i primi | 2 | Chi oggi è in fondo potrà essere in cima
+Parenti serpenti | 2 | I rapporti tra parenti sono spesso conflittuali
+Al cuor non si comanda | 1 | I sentimenti non si possono controllare
+L'erba voglio non cresce nemmeno nel giardino del re | 2 | Non tutti i capricci si possono accontentare
+Il lavoro nobilita l'uomo | 1 | Il lavoro dà dignità alla persona
+Il medico pietoso fa la piaga verminosa | 3 | Chi è troppo indulgente peggiora il male
+`, 'significato');
+
+  const LATINO = rows(`
+Carpe diem | 1 | Cogli l'attimo
+Errare humanum est | 2 | Sbagliare è umano
+Mens sana in corpore sano | 2 | Mente sana in corpo sano
+Alea iacta est | 2 | Il dado è tratto
+In vino veritas | 2 | Nel vino sta la verità
+Tempus fugit | 1 | Il tempo fugge
+Cui prodest | 3 | A chi giova?
+Do ut des | 2 | Ti do affinché tu mi dia
+Habemus Papam | 1 | Abbiamo il papa
+Ora et labora | 2 | Prega e lavora
+Sic transit gloria mundi | 3 | Così passa la gloria del mondo
+Ubi maior minor cessat | 3 | Dove c'è il maggiore il minore cede
+Pecunia non olet | 3 | Il denaro non ha odore
+Primus inter pares | 3 | Il primo tra pari
+Verba volant, scripta manent | 2 | Le parole volano, gli scritti restano
+Repetita iuvant | 2 | Le cose ripetute giovano
+Mors tua, vita mea | 3 | La tua morte è la mia vita
+Nomen omen | 3 | Il nome è un presagio
+Quod licet Iovi non licet bovi | 3 | Ciò che è lecito a Giove non lo è al bue
+Panem et circenses | 2 | Pane e giochi del circo
+Veni, vidi, vici | 1 | Venni, vidi, vinsi
+Memento mori | 2 | Ricordati che devi morire
+Homo homini lupus | 3 | L'uomo è lupo per l'uomo
+Per aspera ad astra | 3 | Attraverso le difficoltà fino alle stelle
+Dulcis in fundo | 1 | Il dolce alla fine
+In medio stat virtus | 3 | La virtù sta nel mezzo
+Fiat lux | 2 | Sia la luce
+Citius, altius, fortius | 2 | Più veloce, più alto, più forte
+Cogito ergo sum | 2 | Penso dunque sono
+Hic sunt leones | 3 | Qui ci sono i leoni
+Una tantum | 2 | Una volta sola
+Post scriptum | 1 | Scritto dopo
+Vade retro | 2 | Va' indietro
+Mea culpa | 1 | Per colpa mia
+Dura lex, sed lex | 2 | La legge è dura, ma è la legge
+Lapsus linguae | 2 | Errore di lingua
+`, 'significato');
+
+  const COMPLETA = rows(`
+Chi si accontenta _____ | 1 | gode
+Prevenire è meglio che _____ | 1 | curare
+Oggi a me, domani a _____ | 2 | te
+Non c'è due senza _____ | 1 | tre
+Il fine giustifica i _____ | 2 | mezzi
+La fortuna aiuta gli _____ | 1 | audaci
+Ogni cosa a suo _____ | 2 | tempo
+Ogni promessa è _____ | 2 | debito
+Chi non ha testa abbia _____ | 3 | gambe
+L'ozio è il padre dei _____ | 2 | vizi
+Chi vivrà _____ | 1 | vedrà
+Chi s'assomiglia si _____ | 2 | piglia
+Il bugiardo ha bisogno di buona _____ | 3 | memoria
+Chi ha il pane non ha i _____ | 2 | denti
+Tra moglie e marito non mettere il _____ | 1 | dito
+Ogni bel gioco dura _____ | 2 | poco
+Nella botte piccola c'è il vino _____ | 2 | buono
+Il sacco vuoto non sta in _____ | 2 | piedi
+Pietra mossa non fa _____ | 3 | muschio
+Il vino fa buon _____ | 1 | sangue
+L'amore è _____ | 1 | cieco
+Meglio un giorno da leone che cento da _____ | 2 | pecora
+Cavallo che corre non ha bisogno di _____ | 3 | sprone
+L'occhio del padrone ingrassa il _____ | 2 | cavallo
+A lavar la testa all'asino si perde il ranno e il _____ | 3 | sapone
+Il medico pietoso fa la piaga _____ | 3 | verminosa
+La lingua batte dove il dente _____ | 2 | duole
+Fra i due litiganti il terzo _____ | 2 | gode
+L'uomo propone e Dio _____ | 2 | dispone
+Parenti _____ | 2 | serpenti
+Tutto fa _____ | 1 | brodo
+Del senno di poi sono piene le _____ | 2 | fosse
+Gli ultimi saranno i _____ | 2 | primi
+Dio vede e _____ | 2 | provvede
+Al cuor non si _____ | 2 | comanda
+L'erba voglio non cresce nemmeno nel giardino del _____ | 2 | re
+Il lavoro nobilita l'_____ | 1 | uomo
+Bacco, tabacco e Venere riducono l'uomo in _____ | 3 | cenere
+Avere un diavolo per _____ | 2 | capello
+Fare orecchie da _____ | 1 | mercante
+Mettere la pulce nell'_____ | 2 | orecchio
+Dormire sugli _____ | 2 | allori
+Menare il can per l'_____ | 2 | aia
+Cercare un ago in un _____ | 1 | pagliaio
+Mettere il carro davanti ai _____ | 2 | buoi
+Tirare il sasso e nascondere la _____ | 2 | mano
+Avere la coda di _____ | 2 | paglia
+Essere in alto _____ | 2 | mare
+Avere il pollice _____ | 1 | verde
+Fare il passo più lungo della _____ | 1 | gamba
+Avere un asso nella _____ | 2 | manica
+Gettare la _____ | 1 | spugna
+Mangiarsi le _____ | 2 | mani
+Passare la notte in _____ | 1 | bianco
+Essere nato con la _____ | 1 | camicia
+Tagliare la _____ | 1 | corda
+Costare un occhio della _____ | 1 | testa
+Prendere il toro per le _____ | 2 | corna
+Cadere dalle _____ | 1 | nuvole
+Piangere lacrime di _____ | 1 | coccodrillo
+Prendere la palla al _____ | 2 | balzo
+Sputare il _____ | 2 | rospo
+Scoprire l'acqua _____ | 1 | calda
+Tenere il piede in due _____ | 2 | staffe
+Fare i conti senza l'_____ | 2 | oste
+Essere un osso _____ | 2 | duro
+Avere le mani _____ | 1 | bucate
+Avere sale in _____ | 1 | zucca
+Fare un buco nell'_____ | 1 | acqua
+Lavarsene le _____ | 1 | mani
+Mettere il dito nella _____ | 2 | piaga
+Cercare il pelo nell'_____ | 1 | uovo
+Parlare a _____ | 2 | vanvera
+Vendere la pelle dell'orso prima di averlo _____ | 2 | ucciso
+Salvare capra e _____ | 1 | cavoli
+Essere al settimo _____ | 1 | cielo
+Mettere i bastoni fra le _____ | 1 | ruote
+Andare a letto con le _____ | 1 | galline
+Dalla padella alla _____ | 1 | brace
+Il tallone d'_____ | 1 | Achille
+Fare buon viso a cattivo _____ | 3 | gioco
+Piove sul _____ | 1 | bagnato
+Fare di tutta l'erba un _____ | 2 | fascio
+Sudare sette _____ | 1 | camicie
+Il gioco non vale la _____ | 2 | candela
+Gettare perle ai _____ | 2 | porci
+Avere le farfalle nello _____ | 1 | stomaco
+Essere come cane e _____ | 1 | gatto
+Chiudere un _____ | 1 | occhio
+Alzare il _____ | 1 | gomito
+Prendere fischi per _____ | 2 | fiaschi
+Tirare l'acqua al proprio _____ | 2 | mulino
+Rompere le uova nel _____ | 2 | paniere
+Rimanere con un pugno di _____ | 2 | mosche
+Fare la parte del _____ | 1 | leone
+Essere sulla cresta dell'_____ | 2 | onda
+Stare con le mani in _____ | 1 | mano
+Mettere la mano sul _____ | 1 | fuoco
+Navigare in cattive _____ | 2 | acque
+Essere nel _____ | 2 | pallone
+Spezzare una _____ | 3 | lancia
+Salire sul carro del _____ | 2 | vincitore
+Prendere due piccioni con una _____ | 1 | fava
+Essere in un mare di _____ | 1 | guai
+Arrampicarsi sugli _____ | 1 | specchi
+Aprire il vaso di _____ | 2 | Pandora
+Passare il _____ | 2 | Rubicone
+Una vittoria di _____ | 2 | Pirro
+La spada di _____ | 2 | Damocle
+Il filo d'_____ | 2 | Arianna
+Il cavallo di _____ | 1 | Troia
+L'uovo di _____ | 2 | Colombo
+Il bacio di _____ | 1 | Giuda
+Tra Scilla e _____ | 2 | Cariddi
+`, 'parola');
+
   (D.pop = D.pop || []).push({
     id: 'plusproverbi', extends: 'proverbi',
     tables: [
@@ -649,6 +883,36 @@ Le cellule grigie | 3 | Grigio
             who: 'Quale di questi modi di dire contiene il colore «{value}»?',
             tf: 'Nel modo di dire «{name}» compare questo colore: {value}.',
             odd: 'Trova l\'intruso: quale detto NON contiene il colore «{value}»?',
+          },
+        },
+      },
+      {
+        id: 'proverbi', items: PROVERBI,
+        fields: {
+          significato: {
+            ask: 'Che cosa significa il proverbio «{name}»?',
+            who: 'Quale proverbio significa «{value}»?',
+            tf: 'Il proverbio «{name}» significa «{value}».',
+          },
+        },
+      },
+      {
+        id: 'latino', items: LATINO,
+        fields: {
+          significato: {
+            ask: 'Che cosa significa il detto latino «{name}»?',
+            who: 'Quale detto latino significa «{value}»?',
+            tf: 'Il detto latino «{name}» significa «{value}».',
+          },
+        },
+      },
+      {
+        id: 'completa', items: COMPLETA,
+        fields: {
+          parola: {
+            ask: 'Completa il proverbio o modo di dire: «{name}»',
+            tf: 'Nel detto «{name}» la parola mancante è «{value}».',
+            typed: true,
           },
         },
       },
